@@ -18,3 +18,18 @@ Camera::Camera() {
         }
     }
 }
+
+
+int Camera::get_width() {
+    return width;
+}
+
+
+int Camera::get_height() {
+    return height;
+}
+
+
+float3 Camera::get_ray(int i, int j) {
+    return rays[i][j];
+}

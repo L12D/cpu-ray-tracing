@@ -16,6 +16,14 @@ struct float3 {
         return {x * other.x, y * other.y, z * other.z};
     }
 
+    float3 operator-(const float3& other) {
+        return {x - other.x, y - other.y, z - other.z};
+    }
+
+    float3 operator-() const {
+        return {-x, -y, -z};
+    }
+
     friend std::ostream& operator<<(std::ostream& os, const float3& f) {
         os << "{" << f.x << ", " << f.y << ", " << f.z << "}";
         return os;
@@ -23,6 +31,8 @@ struct float3 {
 };
 
 float dot(float3 a, float3 b);
+float3 cross(float3 a, float3 b);
+float3 mul(float a, float3 b);
 float3 normalize(float3 a);
 
 
@@ -86,3 +96,5 @@ mat4 translate(float3 a);
 mat4 rotate(float3 axis, float angle); // angle in radians
 mat4 scale(float3 a);
 float3 mul(mat4 a, float3 b);
+
+bool intersect_triangle(float3 ray, float3 v0, float3 v1, float3 v2);
