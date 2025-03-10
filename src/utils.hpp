@@ -22,6 +22,9 @@ struct float3 {
     }
 };
 
+float dot(float3 a, float3 b);
+float3 normalize(float3 a);
+
 
 struct float4 {
     float x, y, z, w;
@@ -39,6 +42,9 @@ struct float4 {
         return os;
     }
 };
+
+
+float dot(float4 a, float4 b);
 
 
 struct mat4 {
@@ -80,6 +86,3 @@ mat4 translate(float3 a);
 mat4 rotate(float3 axis, float angle); // angle in radians
 mat4 scale(float3 a);
 float3 mul(mat4 a, float3 b);
-float dot(float3 a, float3 b);
-float dot(float4 a, float4 b);
-float3 normalize(float3 a);

@@ -3,6 +3,8 @@
 
 int main() {
 
+    Camera *camera = new Camera();
+
     // Create an empty image with 3 channels (BGR) and 8-bit depth
     cv::Mat image(1080, 1920, CV_8UC3, cv::Scalar(0, 0, 0));
     
@@ -16,6 +18,8 @@ int main() {
 
     // Save the image
     cv::imwrite("build/output.png", image);
+
+    delete camera;
 
     return 0;
 }

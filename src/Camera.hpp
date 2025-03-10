@@ -18,5 +18,6 @@ class Camera {
     public :
 
         Camera();
+        ~Camera() = default;
 
 };
