@@ -21,6 +21,7 @@ class Camera {
         int get_width();
         int get_height();
         float3 get_ray(int i, int j);
+        mat4 viewMatrix();
         ~Camera() = default;
 
 };
