@@ -34,6 +34,11 @@ std::pair<float3, float3> Object::getBoundingBox() {
 }
 
 
+void Object::intersect(Ray *ray) {
+    shape->intersect(ray);
+}
+
+
 Object::~Object() {
     delete this->shape;
 }

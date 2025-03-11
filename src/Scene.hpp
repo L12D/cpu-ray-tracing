@@ -14,7 +14,7 @@ class Scene {
 
     private :
 
-        float3 background_color;
+        cv::Vec3b background_color;
         std::vector<Object*> objects;
 
     public :

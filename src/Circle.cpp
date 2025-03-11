@@ -27,11 +27,34 @@ void Circle::setRadius(float radius) {
 }
 
 
-bool Circle::intersect(float3 ray) {
-    float3 oc = ray - this->center;
-    float a = dot(ray, ray);
-    float b = 2 * dot(oc, ray);
-    float c = dot(oc, oc) - this->radius * this->radius;
-    float discriminant = b * b - 4 * a * c;
-    return discriminant >= 0;
+void Circle::intersect(Ray *ray) {
+    float3 dir = ray->getDirection();
+    float3 oc = dir - this->center;
+    float b = 2.0f * dot(oc, dir);
+    float c = dot(oc, oc) - radius * radius;
+
+    float discriminant = b * b - 4.0f * c;  // Since a = 1, 4a = 4
+
+    if (discriminant < 0.0f) {
+        ray->setLength(10000.0); // No intersection
+        return;
+    }
+
+    float sqrtDiscriminant = sqrt(discriminant);
+
+    float t0 = (-b - sqrtDiscriminant) * 0.5f;  // Dividing by 2 directly
+    float t1 = (-b + sqrtDiscriminant) * 0.5f;
+
+    // Return the closest valid intersection point
+    if (t0 > 0.0f) {
+        ray->setLength(t0);
+        ray->setColor(cv::Vec3b(255, 255, 255));
+        return;
+    } else if (t1 > 0.0f) {
+        ray->setLength(t1);
+        ray->setColor(cv::Vec3b(255, 255, 255));
+        return;
+    }
+
+    ray->setLength(10000.0);
 }

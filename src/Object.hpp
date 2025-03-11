@@ -5,6 +5,7 @@
 
 #include "Shape.hpp"
 #include "utils.hpp"
+#include "Ray.hpp"
 
 
 class Object {
@@ -23,6 +24,7 @@ class Object {
         void setShape(Shape *shape);
         std::pair<float3, float3> computeBoundingBox();
         std::pair<float3, float3> getBoundingBox();
+        void intersect(Ray *ray);
         ~Object();
 
 };

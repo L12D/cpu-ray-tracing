@@ -3,6 +3,7 @@
 
 #include "Shape.hpp"
 #include "utils.hpp"
+#include "Ray.hpp"
 
 
 class Circle : public Shape {
@@ -19,7 +20,7 @@ class Circle : public Shape {
         void setCenter(float3 center);
         float getRadius();
         void setRadius(float radius);
-        bool intersect(float3 ray);
+        void intersect(Ray *ray);
         ~Circle() = default;
 
 };

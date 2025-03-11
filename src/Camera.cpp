@@ -6,15 +6,15 @@ Camera::Camera() {
     height = 1080;
     view = id();
     fov = M_PI / 2;
-    rays = std::vector<std::vector<float3>>(height, std::vector<float3>(width));
+    rays = std::vector<std::vector<Ray *>>(height, std::vector<Ray *>(width));
     float gap = 2*std::tan(fov/2)/height;
     for (int i = 0; i < height; ++i) {
         for (int j = 0; j < width; ++j) {
             float x = (j - width/2) * gap;
             float y = 1.0;
             float z = -(i - height/2) * gap;
-            float3 ray = normalize({x, y, z});
-            rays[i][j] = ray;
+            float3 dir = normalize({x, y, z});
+            rays[i][j] = new Ray({0, 0, 0}, dir);
         }
     }
 }
@@ -30,7 +30,7 @@ int Camera::get_height() {
 }
 
 
-float3 Camera::get_ray(int i, int j) {
+Ray *Camera::get_ray(int i, int j) {
     return rays[i][j];
 }
 
@@ -42,4 +42,13 @@ mat4 Camera::viewMatrix() {
 
 void Camera::translate(float3 t) {
     view = mTranslate(-t)*view;
+}
+
+
+Camera::~Camera() {
+    for (int i = 0; i < height; ++i) {
+        for (int j = 0; j < width; ++j) {
+            delete rays[i][j];
+        }
+    }
 }
