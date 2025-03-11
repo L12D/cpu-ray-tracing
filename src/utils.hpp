@@ -92,9 +92,9 @@ struct mat4 {
 
 
 mat4 id();
-mat4 translate(float3 a);
-mat4 rotate(float3 axis, float angle); // angle in radians
-mat4 scale(float3 a);
+mat4 mTranslate(float3 a);
+mat4 mRotate(float3 axis, float angle); // angle in radians
+mat4 mScale(float3 a);
 float3 mul(mat4 a, float3 b);
 
 bool intersect_triangle(float3 ray, float3 v0, float3 v1, float3 v2);

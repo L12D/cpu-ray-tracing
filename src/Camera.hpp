@@ -22,6 +22,7 @@ class Camera {
         int get_height();
         float3 get_ray(int i, int j);
         mat4 viewMatrix();
+        void translate(float3 t);
         ~Camera() = default;
 
 };

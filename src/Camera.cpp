@@ -38,3 +38,8 @@ float3 Camera::get_ray(int i, int j) {
 mat4 Camera::viewMatrix() {
     return view;
 }
+
+
+void Camera::translate(float3 t) {
+    view = mTranslate(-t)*view;
+}

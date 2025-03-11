@@ -11,7 +11,7 @@ mat4 id() {
 }
 
 
-mat4 translate(float3 a) {
+mat4 mTranslate(float3 a) {
     return {
         {1, 0, 0, a.x},
         {0, 1, 0, a.y},
@@ -21,7 +21,7 @@ mat4 translate(float3 a) {
 }
 
 
-mat4 rotate(float3 axis, float angle) {
+mat4 mRotate(float3 axis, float angle) {
     float c = std::cos(angle);
     float s = std::sin(angle);
     float t = 1 - c;
@@ -35,7 +35,7 @@ mat4 rotate(float3 axis, float angle) {
 }
 
 
-mat4 scale(float3 a) {
+mat4 mScale(float3 a) {
     return {
         {a.x, 0, 0, 0},
         {0, a.y, 0, 0},
