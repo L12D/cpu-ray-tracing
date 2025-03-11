@@ -3,12 +3,14 @@
 
 Object::Object() {
     this->shape = nullptr;
+    this->color = cv::Vec3b(0, 0, 0);
     this->bounding_box = std::make_pair((float3){0, 0, 0}, (float3){0, 0, 0});
 }
 
 
-Object::Object(Shape *shape) {
+Object::Object(Shape *shape, cv::Vec3b color) {
     this->shape = shape;
+    this->color = color;
     this->bounding_box = this->computeBoundingBox();
 }
 
@@ -24,6 +26,16 @@ void Object::setShape(Shape *shape) {
 }
 
 
+cv::Vec3b Object::getColor() {
+    return this->color;
+}
+
+
+void Object::setColor(cv::Vec3b color) {
+    this->color = color;
+}
+
+
 std::pair<float3, float3> Object::computeBoundingBox() {
     return std::make_pair((float3){0, 0, 0}, (float3){0, 0, 0});
 }
@@ -35,7 +47,7 @@ std::pair<float3, float3> Object::getBoundingBox() {
 
 
 void Object::intersect(Ray *ray) {
-    shape->intersect(ray);
+    shape->intersect(ray, color);
 }
 
 

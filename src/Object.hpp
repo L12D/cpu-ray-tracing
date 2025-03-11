@@ -13,15 +13,18 @@ class Object {
     private :
 
         Shape *shape;
+        cv::Vec3b color;
         std::pair<float3, float3> bounding_box;
         std::vector<Object *> children;
     
     public :
 
         Object();
-        Object(Shape *shape);
+        Object(Shape *shape, cv::Vec3b color);
         Shape *getShape();
         void setShape(Shape *shape);
+        cv::Vec3b getColor();
+        void setColor(cv::Vec3b color);
         std::pair<float3, float3> computeBoundingBox();
         std::pair<float3, float3> getBoundingBox();
         void intersect(Ray *ray);

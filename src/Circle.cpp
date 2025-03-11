@@ -27,7 +27,7 @@ void Circle::setRadius(float radius) {
 }
 
 
-void Circle::intersect(Ray *ray) {
+void Circle::intersect(Ray *ray, cv::Vec3b color) {
     float3 dir = ray->getDirection();
     float3 oc = dir - this->center;
     float b = 2.0f * dot(oc, dir);
@@ -48,11 +48,11 @@ void Circle::intersect(Ray *ray) {
     // Return the closest valid intersection point
     if (t0 > 0.0f) {
         ray->setLength(t0);
-        ray->setColor(cv::Vec3b(255, 255, 255));
+        ray->setColor(color);
         return;
     } else if (t1 > 0.0f) {
         ray->setLength(t1);
-        ray->setColor(cv::Vec3b(255, 255, 255));
+        ray->setColor(color);
         return;
     }
 

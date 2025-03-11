@@ -20,7 +20,7 @@ class Circle : public Shape {
         void setCenter(float3 center);
         float getRadius();
         void setRadius(float radius);
-        void intersect(Ray *ray);
+        void intersect(Ray *ray, cv::Vec3b color);
         ~Circle() = default;
 
 };

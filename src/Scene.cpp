@@ -3,7 +3,8 @@
 
 Scene::Scene() {
     background_color = {50, 50, 50};
-    objects.push_back(new Object(new Circle({0, 2, 0}, 1)));
+    objects.push_back(new Object(new Circle({0, 2, 0}, 1), {255, 255, 255}));
+    objects.push_back(new Object(new Circle({0, 2, 1}, 1), {0, 255, 0}));
 }
 
 
