@@ -8,7 +8,7 @@ class Shape {
     
     public :
 
-        virtual void intersect(Ray *ray, cv::Vec3b color) = 0;
+        virtual std::pair<float3, float3> intersect(Ray *ray, int depth) = 0;
         virtual ~Shape() = default;
 
 };

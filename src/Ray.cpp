@@ -4,8 +4,9 @@
 Ray::Ray(float3 origin, float3 direction) {
     this->origin = origin;
     this->direction = direction;
-    this->length = 0;
-    this->color = cv::Vec3b(0, 0, 0);
+    this->length = 10000.0;
+    this->color = {0, 0, 0};
+    this->hit = false;
 }
 
 
@@ -39,11 +40,39 @@ void Ray::setLength(float length) {
 }
 
 
-cv::Vec3b Ray::getColor() {
+float3 Ray::getColor() {
     return this->color;
 }
 
 
-void Ray::setColor(cv::Vec3b color) {
+void Ray::setColor(float3 color) {
     this->color = color;
+}
+
+
+bool Ray::getHit() {
+    return this->hit;
+}
+
+
+void Ray::setHit(bool hit) {
+    this->hit = hit;
+}
+
+
+std::vector<Ray *> generateRays(float3 origin, float3 normal, float3 direction, int n) {
+    std::vector<Ray *> rays;
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<float> dis(-1.0, 1.0);
+
+    for (int i = 0; i < n; ++i) {
+        float3 randomDirection = normalize({dis(gen), dis(gen), dis(gen)});
+        if (dot(randomDirection, normal) < 0) {
+            randomDirection = -randomDirection;
+        }
+        rays.push_back(new Ray(origin, randomDirection));
+    }
+
+    return rays;
 }

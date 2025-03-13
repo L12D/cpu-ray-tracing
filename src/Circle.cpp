@@ -27,7 +27,8 @@ void Circle::setRadius(float radius) {
 }
 
 
-void Circle::intersect(Ray *ray, cv::Vec3b color) {
+std::pair<float3, float3> Circle::intersect(Ray *ray, int depth) {
+    // std::cout << "Intersecting circle at depth " << depth << std::endl;
     float3 dir = ray->getDirection();
     float3 oc = dir - this->center;
     float b = 2.0f * dot(oc, dir);
@@ -36,8 +37,8 @@ void Circle::intersect(Ray *ray, cv::Vec3b color) {
     float discriminant = b * b - 4.0f * c;  // Since a = 1, 4a = 4
 
     if (discriminant < 0.0f) {
-        ray->setLength(10000.0); // No intersection
-        return;
+        ray->setHit(false);
+        return {{0, 0, 0}, {0, 0, 0}};
     }
 
     float sqrtDiscriminant = sqrt(discriminant);
@@ -45,16 +46,24 @@ void Circle::intersect(Ray *ray, cv::Vec3b color) {
     float t0 = (-b - sqrtDiscriminant) * 0.5f;  // Dividing by 2 directly
     float t1 = (-b + sqrtDiscriminant) * 0.5f;
 
+    // std::cout << "Ray origin: " << ray->getOrigin() << std::endl;
+    // std::cout << "Ray direction: " << ray->getDirection() << std::endl;
+
     // Return the closest valid intersection point
-    if (t0 > 0.0f) {
+    if (t0 > 0.0) {
+        // std::cout << "Intersected ###################################################" << std::endl;
+        ray->setHit(true);
         ray->setLength(t0);
-        ray->setColor(color);
-        return;
-    } else if (t1 > 0.0f) {
+        float3 intersectionPoint = ray->getOrigin() + mul(t0, ray->getDirection());
+        return {intersectionPoint, normalize(intersectionPoint - this->center)};
+    } else if (t1 > 0.0) {
+        // std::cout << "Intersected ###################################################" << std::endl;
+        ray->setHit(true);
         ray->setLength(t1);
-        ray->setColor(color);
-        return;
+        float3 intersectionPoint = ray->getOrigin() + mul(t1, ray->getDirection());
+        return {intersectionPoint, normalize(intersectionPoint - this->center)};
     }
 
-    ray->setLength(10000.0);
+    ray->setHit(false);
+    return {{0, 0, 0}, {0, 0, 0}};
 }

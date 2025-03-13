@@ -2,6 +2,7 @@
 
 
 #include <opencv2/opencv.hpp>
+#include <random>
 
 #include "utils.hpp"
 
@@ -13,7 +14,8 @@ class Ray {
         float3 origin;
         float3 direction;
         float length;
-        cv::Vec3b color;
+        float3 color; // BGR
+        bool hit;
     
     public :
 
@@ -24,8 +26,13 @@ class Ray {
         void setDirection(float3 direction);
         float getLength();
         void setLength(float length);
-        cv::Vec3b getColor();
-        void setColor(cv::Vec3b color);
+        float3 getColor();
+        void setColor(float3 color);
+        bool getHit();
+        void setHit(bool hit);
         ~Ray() = default;
 
 };
+
+
+std::vector<Ray *> generateRays(float3 origin, float3 normal, float3 direction, int n);

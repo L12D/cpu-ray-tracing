@@ -5,7 +5,7 @@ int main() {
 
     Camera *camera = new Camera();
 
-    Scene *scene = new Scene();
+    Scene *scene = Scene::getInstance();
 
     // Create an empty image with 3 channels (BGR) and 8-bit depth
     cv::Mat image(camera->get_height(), camera->get_width(), CV_8UC3, cv::Scalar(0, 0, 0));

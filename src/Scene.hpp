@@ -10,16 +10,22 @@
 #include "Circle.hpp"
 
 
+class Object;
+
+
 class Scene {
 
     private :
 
-        cv::Vec3b background_color;
+        static Scene *instance;
+        float3 background_color;
         std::vector<Object*> objects;
+        Scene();
 
     public :
 
-        Scene();
+        static Scene *getInstance();
+        std::vector<Object*> getObjects();
         void render(Camera *camera, cv::Mat &image);
         ~Scene();
 
