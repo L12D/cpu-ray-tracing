@@ -6,7 +6,7 @@
 #include "Ray.hpp"
 
 
-class Circle : public Shape {
+class Sphere : public Shape {
     
     private :
 
@@ -15,12 +15,12 @@ class Circle : public Shape {
     
     public :
 
-        Circle(float3 center, float radius);
+        Sphere(float3 center, float radius);
         float3 getCenter();
         void setCenter(float3 center);
         float getRadius();
         void setRadius(float radius);
         std::pair<float3, float3> intersect(Ray *ray, int depth);
-        ~Circle() = default;
+        ~Sphere() = default;
 
 };

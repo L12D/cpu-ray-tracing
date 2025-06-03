@@ -7,7 +7,7 @@
 #include "utils.hpp"
 #include "Camera.hpp"
 #include "Object.hpp"
-#include "Circle.hpp"
+#include "Sphere.hpp"
 
 
 class Object;
