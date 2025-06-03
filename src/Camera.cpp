@@ -5,7 +5,7 @@ Camera::Camera() {
     width = 1920;
     height = 1080;
     view = id();
-    fov = M_PI / 2;
+    fov = M_PI / 3;
     rays = std::vector<std::vector<Ray *>>(height, std::vector<Ray *>(width));
     float gap = 2*std::tan(fov/2)/height;
     for (int i = 0; i < height; ++i) {

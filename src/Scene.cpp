@@ -7,14 +7,14 @@ Scene *Scene::instance = nullptr;
 Scene::Scene() {
     background_color = {0.1, 0.1, 0.1};
     // objects.push_back(new Object(new Circle({0, 2, 1}, 1), {1.0, 1.0, 1.0}, false));
-    objects.push_back(new Object(new Sphere({-2, 3, 0}, 1), {1.0, 0.0, 0.0}, true));
-    objects.push_back(new Object(new Sphere({0, 3, 0}, 1), {0.0, 1.0, 0.0}, true));
-    objects.push_back(new Object(new Sphere({2, 3, 0}, 1), {0.0, 0.0, 1.0}, true));
-    // for (int i = 0; i < 9; ++i) {
-    //     for (int j = 0; j < 7; ++j) {
-    //        objects.push_back(new Object(new Circle((float3){(float)4*(i-4), 10, (float)4*(j-3)}, 1), {1.0, 1.0, 1.0}, (i+j)%2==0));
-    //     }
-    // }
+    // objects.push_back(new Object(new Sphere({-4, 3, 0}, 1), {1.0, 1.0, 1.0}, true));
+    // objects.push_back(new Object(new Sphere({0, 3, 0}, 1), {0.0, 1.0, 0.0}, true));
+    // objects.push_back(new Object(new Sphere({4, 3, 0}, 1), {1.0, 1.0, 1.0}, false));
+    for (int i = 0; i < 9; ++i) {
+        for (int j = 0; j < 5; ++j) {
+           objects.push_back(new Object(new Sphere((float3){(float)4*(i-4), 10, (float)4*(j-2)}, 1), {1.0, 1.0, 1.0}, (i+j)%2==0));
+        }
+    }
 }
 
 

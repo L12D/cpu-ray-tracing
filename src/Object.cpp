@@ -77,7 +77,16 @@ void Object::intersect(Ray *ray, int depth) {
     float3 normal = pair.second;
     // std::vector<Ray *> rays = generateRays(intersectionPoint, normal, ray->getDirection(), 500);
     std::vector<Ray *> rays;
-    rays.push_back(new Ray(intersectionPoint, normalize(ray->getDirection() - mul(2 * dot(ray->getDirection(), normal), normal))));
+
+    // Compute reflection direction using R = I - 2(N·I)N
+    // where I is incident direction, N is normal
+    float3 incident = ray->getDirection();
+    float3 reflectionDir = normalize(incident - mul(2.0f * dot(incident, normal), normal));
+    
+    // Add small offset to avoid self-intersection
+    float3 offsetOrigin = intersectionPoint + mul(0.001f, normal);
+    rays.push_back(new Ray(offsetOrigin, reflectionDir));
+    
     float3 reflexionColor = {0, 0, 0};
     Scene* scene = Scene::getInstance();
     float rayLength;
