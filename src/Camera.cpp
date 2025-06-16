@@ -2,8 +2,8 @@
 
 
 Camera::Camera() {
-    width = 1920;
-    height = 1080;
+    width = 1280;
+    height = 720;
     view = id();
     fov = M_PI / 3;
     rays = std::vector<std::vector<Ray *>>(height, std::vector<Ray *>(width));

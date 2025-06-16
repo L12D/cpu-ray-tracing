@@ -64,14 +64,26 @@ std::vector<Ray *> generateRays(float3 origin, float3 normal, float3 direction, 
     std::vector<Ray *> rays;
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::uniform_real_distribution<float> dis(-1.0, 1.0);
+    std::uniform_real_distribution<float> dis(0.0f, 1.0f);  // Changed range to [0,1]
 
     for (int i = 0; i < n; ++i) {
-        float3 randomDirection = normalize({dis(gen), dis(gen), dis(gen)});
+        // Generate random angles
+        float theta = 2.0f * M_PI * dis(gen);  // Azimuthal angle [0, 2π]
+        float phi = acos(2.0f * dis(gen) - 1.0f);  // Polar angle [0, π]
+        
+        // Convert spherical to Cartesian coordinates
+        float3 randomDirection = {
+            sin(phi) * cos(theta),
+            sin(phi) * sin(theta),
+            cos(phi)
+        };
+        
+        // Ensure the ray points in the same hemisphere as the normal
         if (dot(randomDirection, normal) < 0) {
             randomDirection = -randomDirection;
         }
-        rays.push_back(new Ray(origin, randomDirection));
+        
+        rays.push_back(new Ray(origin + mul(0.001f, normal), normalize(randomDirection)));
     }
 
     return rays;

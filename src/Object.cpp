@@ -59,35 +59,38 @@ std::pair<float3, float3> Object::getBoundingBox() {
 
 void Object::intersect(Ray *ray, int depth) {
     if (depth == 0) {
-        ray->setColor({0.2, 0.2, 0.2});
+        ray->setColor({0.4, 0.4, 0.4});
         return;
     }
     // TODO : Add bounding box test
     std::pair<float3, float3> pair = shape->intersect(ray, depth);
     if (!ray->getHit()) {
-        ray->setColor({0.2, 0.2, 0.2});
+        ray->setColor({0.1, 0.1, 0.1});
         return;
     }
     if (isLight) {
-        // std::cout << "Light at depth " << depth << std::endl;
+        // if (depth == 1) {
+        //     std::cout << "Light at depth " << depth << std::endl;
+        // }
         ray->setColor(color);
         return;
     }
     float3 intersectionPoint = pair.first;
     float3 normal = pair.second;
-    // std::vector<Ray *> rays = generateRays(intersectionPoint, normal, ray->getDirection(), 500);
-    std::vector<Ray *> rays;
+    std::vector<Ray *> rays = generateRays(intersectionPoint, normal, ray->getDirection(), 10);
 
-    // Compute reflection direction using R = I - 2(N·I)N
-    // where I is incident direction, N is normal
-    float3 incident = ray->getDirection();
-    float3 reflectionDir = normalize(incident - mul(2.0f * dot(incident, normal), normal));
+    // std::vector<Ray *> rays;
+
+    // // Compute reflection direction using R = I - 2(N·I)N
+    // // where I is incident direction, N is normal
+    // float3 incident = ray->getDirection();
+    // float3 reflectionDir = normalize(incident - mul(2.0f * dot(incident, normal), normal));
     
-    // Add small offset to avoid self-intersection
-    float3 offsetOrigin = intersectionPoint + mul(0.001f, normal);
-    rays.push_back(new Ray(offsetOrigin, reflectionDir));
-    
-    float3 reflexionColor = {0, 0, 0};
+    // // Add small offset to avoid self-intersection
+    // float3 offsetOrigin = intersectionPoint + mul(0.001f, normal);
+    // rays.push_back(new Ray(offsetOrigin, reflectionDir));
+
+    float3 reflexionColor = {0.4, 0.4, 0.4};
     Scene* scene = Scene::getInstance();
     float rayLength;
     float3 rayColor;
@@ -107,9 +110,11 @@ void Object::intersect(Ray *ray, int depth) {
         // std::cout << "Ray color: (" << r->getColor().x << ", " << r->getColor().y << ", " << r->getColor().z << ")" << std::endl;
         reflexionColor = reflexionColor + rayColor;
     }
-    // std::cout << "Reflexion color: (" << reflexionColor.x << ", " << reflexionColor.y << ", " << reflexionColor.z << ")" << std::endl;
-    reflexionColor = mul(1/rays.size(), reflexionColor);
-    ray->setColor(reflexionColor*color);
+    // if (depth == 2) {
+    //     std::cout << "Reflexion color: (" << reflexionColor.x << ", " << reflexionColor.y << ", " << reflexionColor.z << ")" << std::endl;
+    // }
+    reflexionColor = mul(1.0f/rays.size(), reflexionColor);
+    ray->setColor(reflexionColor*this->color);
     for (Ray *r : rays) {
         delete r;
     }
