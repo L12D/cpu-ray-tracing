@@ -81,7 +81,7 @@ void Object::intersect(Ray *ray, int depth, int maxDepth) {
 
     int n; // Number of rays to generate for reflection
     if (depth == 0) {
-        n = 150;
+        n = 300;
     } else {
         n = 10;
     }
@@ -90,10 +90,22 @@ void Object::intersect(Ray *ray, int depth, int maxDepth) {
     float3 reflexionColor = backgroundColor;
     float potRayLength;
     float3 potRayColor;
+
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<float> dis(0.0f, 1.0f);
+
     // std::cout << "Depth: " << depth << std::endl;
     Ray *r = new Ray(intersectionPoint + mul(0.001f, normal), {0, 0, 0});
     for (int i = 0; i < n; ++i) {
-        float3 direction = randomDirection(normal);
+
+        float3 direction = randomDirection(gen, dis);
+        // Ensure the ray points in the same hemisphere as the normal
+        if (dot(direction, normal) < 0) {
+            direction = -direction;
+        }
+        direction = normalize(direction);
+
         r->setDirection(direction);
         potRayLength = 10000.0;
         potRayColor = backgroundColor;
