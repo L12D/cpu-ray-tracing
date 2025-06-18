@@ -91,7 +91,7 @@ std::vector<Ray *> generateRays(float3 origin, float3 normal, float3 direction, 
 }
 
 
-float3 randomDirection(std::mt19937 gen, std::uniform_real_distribution<float> dis) {
+float3 randomDirection(std::mt19937& gen, std::uniform_real_distribution<float>& dis) {
     float theta = 2.0f * M_PI * dis(gen);  // Azimuthal angle [0, 2π]
     float phi = acos(2.0f * dis(gen) - 1.0f);  // Polar angle [0, π]
     

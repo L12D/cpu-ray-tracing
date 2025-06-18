@@ -81,7 +81,7 @@ void Object::intersect(Ray *ray, int depth, int maxDepth) {
 
     int n; // Number of rays to generate for reflection
     if (depth == 0) {
-        n = 300;
+        n = 100;
     } else {
         n = 10;
     }

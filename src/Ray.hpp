@@ -36,4 +36,4 @@ class Ray {
 
 
 std::vector<Ray *> generateRays(float3 origin, float3 normal, float3 direction, int n);
-float3 randomDirection(std::mt19937 gen, std::uniform_real_distribution<float> dis);
+float3 randomDirection(std::mt19937& gen, std::uniform_real_distribution<float>& dis);
