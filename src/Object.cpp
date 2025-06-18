@@ -60,21 +60,12 @@ void Object::intersect(Ray *ray, int depth, int maxDepth) {
         return;
     }
     if (isLight) {
-        // if (depth == 1) {
-        //     std::cout << "Light at depth " << depth << std::endl;
-        // }
         ray->setColor(color);
         return;
     }
     float3 intersectionPoint = pair.first;
     float3 normal = pair.second;
-    int n; // Number of rays to generate for reflection
-    if (depth == 0) {
-        n = 150;
-    } else {
-        n = 10;
-    }
-    std::vector<Ray *> rays = generateRays(intersectionPoint, normal, ray->getDirection(), n);
+
 
     // std::vector<Ray *> rays;
 
@@ -87,37 +78,50 @@ void Object::intersect(Ray *ray, int depth, int maxDepth) {
     // float3 offsetOrigin = intersectionPoint + mul(0.001f, normal);
     // rays.push_back(new Ray(offsetOrigin, reflectionDir));
 
+
+    int n; // Number of rays to generate for reflection
+    if (depth == 0) {
+        n = 150;
+    } else {
+        n = 10;
+    }
+    // std::vector<Ray *> rays = generateRays(intersectionPoint, normal, ray->getDirection(), n);
+
     float3 reflexionColor = backgroundColor;
-    float rayLength;
-    float3 rayColor;
+    float potRayLength;
+    float3 potRayColor;
     // std::cout << "Depth: " << depth << std::endl;
-    for (Ray *r : rays) {
-        rayLength = 10000.0;
-        rayColor = backgroundColor;
+    Ray *r = new Ray(intersectionPoint + mul(0.001f, normal), {0, 0, 0});
+    for (int i = 0; i < n; ++i) {
+        float3 direction = randomDirection(normal);
+        r->setDirection(direction);
+        potRayLength = 10000.0;
+        potRayColor = backgroundColor;
         for (Object *object : scene->getObjects()) {
             object->intersect(r, depth+1, maxDepth);
             // std::cout << "Ray " << r->getLength() << ", Direction: (" << r->getDirection().x << ", " << r->getDirection().y << ", " << r->getDirection().z << "), Origin: (" << r->getOrigin().x << ", " << r->getOrigin().y << ", " << r->getOrigin().z << ")" << std::endl;
-            if (r->getLength() < rayLength) {
+            if (r->getLength() < potRayLength) {
                 // std::cout << "Intersecting with object at depth " << depth-1 << std::endl;
-                rayLength = r->getLength();
-                rayColor = r->getColor();
+                potRayLength = r->getLength();
+                potRayColor = r->getColor();
             }
         }
         // std::cout << "Ray color: (" << r->getColor().x << ", " << r->getColor().y << ", " << r->getColor().z << ")" << std::endl;
-        reflexionColor = reflexionColor + mul(brightness, rayColor);
+        reflexionColor = reflexionColor + mul(brightness, potRayColor);
     }
     // if (depth == 2) {
     //     std::cout << "Reflexion color: (" << reflexionColor.x << ", " << reflexionColor.y << ", " << reflexionColor.z << ")" << std::endl;
     // }
-    reflexionColor = mul(1.0f/rays.size(), reflexionColor);
+    reflexionColor = mul(1.0f/n, reflexionColor);
     reflexionColor.x = std::min(1.0f, std::max(0.0f, reflexionColor.x));
     reflexionColor.y = std::min(1.0f, std::max(0.0f, reflexionColor.y));
     reflexionColor.z = std::min(1.0f, std::max(0.0f, reflexionColor.z));
 
     ray->setColor(reflexionColor*this->color);
-    for (Ray *r : rays) {
-        delete r;
-    }
+    // for (Ray *r : rays) {
+    //     delete r;
+    // }
+    delete r;
     
 }
 

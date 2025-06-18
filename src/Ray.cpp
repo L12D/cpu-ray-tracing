@@ -89,3 +89,26 @@ std::vector<Ray *> generateRays(float3 origin, float3 normal, float3 direction, 
 
     return rays;
 }
+
+
+float3 randomDirection(float3 normal) {
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<float> dis(0.0f, 1.0f);
+    
+    float theta = 2.0f * M_PI * dis(gen);  // Azimuthal angle [0, 2π]
+    float phi = acos(2.0f * dis(gen) - 1.0f);  // Polar angle [0, π]
+    
+    float3 randomDir = {
+        sin(phi) * cos(theta),
+        sin(phi) * sin(theta),
+        cos(phi)
+    };
+    
+    // Ensure the ray points in the same hemisphere as the normal
+    if (dot(randomDir, normal) < 0) {
+        randomDir = -randomDir;
+    }
+    
+    return normalize(randomDir);
+}
