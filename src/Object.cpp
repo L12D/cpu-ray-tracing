@@ -70,9 +70,9 @@ void Object::intersect(Ray *ray, int depth, int maxDepth) {
     float3 normal = pair.second;
     int n; // Number of rays to generate for reflection
     if (depth == 0) {
-        n = 60;
+        n = 150;
     } else {
-        n = 10; // Generate 10 reflection rays otherwise
+        n = 10;
     }
     std::vector<Ray *> rays = generateRays(intersectionPoint, normal, ray->getDirection(), n);
 
