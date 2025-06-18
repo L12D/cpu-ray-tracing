@@ -7,6 +7,9 @@
 #include "Ray.hpp"
 
 
+class Ray;
+
+
 class Camera {
 
     private :
@@ -18,7 +21,7 @@ class Camera {
 
     public :
 
-        Camera();
+        Camera(int resolution);
         int get_width();
         int get_height();
         Ray *get_ray(int i, int j);

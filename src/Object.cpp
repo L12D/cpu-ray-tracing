@@ -45,14 +45,18 @@ void Object::setIsLight(bool isLight) {
 
 
 void Object::intersect(Ray *ray, int depth, int maxDepth) {
+    Scene* scene = Application::getInstance()->getScene();
+    float brightness = scene->getBrightness();
+    float3 backgroundColor = scene->getBackgroundColor();
+
     if (depth == maxDepth) {
-        ray->setColor({0.4, 0.4, 0.4});
+        ray->setColor(backgroundColor);
         return;
     }
     // TODO : Add bounding box test
     std::pair<float3, float3> pair = shape->intersect(ray);
     if (!ray->getHit()) {
-        ray->setColor({0.1, 0.1, 0.1});
+        ray->setColor(backgroundColor);
         return;
     }
     if (isLight) {
@@ -66,7 +70,7 @@ void Object::intersect(Ray *ray, int depth, int maxDepth) {
     float3 normal = pair.second;
     int n; // Number of rays to generate for reflection
     if (depth == 0) {
-        n = 100;
+        n = 60;
     } else {
         n = 10; // Generate 10 reflection rays otherwise
     }
@@ -83,14 +87,13 @@ void Object::intersect(Ray *ray, int depth, int maxDepth) {
     // float3 offsetOrigin = intersectionPoint + mul(0.001f, normal);
     // rays.push_back(new Ray(offsetOrigin, reflectionDir));
 
-    float3 reflexionColor = {0.4, 0.4, 0.4};
-    Scene* scene = Scene::getInstance();
+    float3 reflexionColor = backgroundColor;
     float rayLength;
     float3 rayColor;
     // std::cout << "Depth: " << depth << std::endl;
     for (Ray *r : rays) {
         rayLength = 10000.0;
-        rayColor = {0.2, 0.2, 0.2};
+        rayColor = backgroundColor;
         for (Object *object : scene->getObjects()) {
             object->intersect(r, depth+1, maxDepth);
             // std::cout << "Ray " << r->getLength() << ", Direction: (" << r->getDirection().x << ", " << r->getDirection().y << ", " << r->getDirection().z << "), Origin: (" << r->getOrigin().x << ", " << r->getOrigin().y << ", " << r->getOrigin().z << ")" << std::endl;
@@ -101,12 +104,16 @@ void Object::intersect(Ray *ray, int depth, int maxDepth) {
             }
         }
         // std::cout << "Ray color: (" << r->getColor().x << ", " << r->getColor().y << ", " << r->getColor().z << ")" << std::endl;
-        reflexionColor = reflexionColor + rayColor;
+        reflexionColor = reflexionColor + mul(brightness, rayColor);
     }
     // if (depth == 2) {
     //     std::cout << "Reflexion color: (" << reflexionColor.x << ", " << reflexionColor.y << ", " << reflexionColor.z << ")" << std::endl;
     // }
     reflexionColor = mul(1.0f/rays.size(), reflexionColor);
+    reflexionColor.x = std::min(1.0f, std::max(0.0f, reflexionColor.x));
+    reflexionColor.y = std::min(1.0f, std::max(0.0f, reflexionColor.y));
+    reflexionColor.z = std::min(1.0f, std::max(0.0f, reflexionColor.z));
+
     ray->setColor(reflexionColor*this->color);
     for (Ray *r : rays) {
         delete r;

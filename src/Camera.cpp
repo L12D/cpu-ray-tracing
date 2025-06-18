@@ -1,9 +1,10 @@
 #include "Camera.hpp"
+#include "Ray.hpp"
 
 
-Camera::Camera() {
-    width = 1280;
-    height = 720;
+Camera::Camera(int resolution) {
+    height = resolution;
+    width = resolution * 16 / 9;
     view = id();
     fov = M_PI / 3;
     rays = std::vector<std::vector<Ray *>>(height, std::vector<Ray *>(width));

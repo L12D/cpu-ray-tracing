@@ -3,13 +3,12 @@
 
 int main() {
 
-    Camera *camera = new Camera();
-
-    Scene *scene = Scene::getInstance();
+    Application *app = Application::getInstance();
 
     // Create an empty image with 3 channels (BGR) and 8-bit depth
+    Camera *camera = app->getCamera();
     cv::Mat image(camera->get_height(), camera->get_width(), CV_8UC3, cv::Scalar(0, 0, 0));
-    scene->render(camera, image);
+    app->render(image);
 
     // Get current time
     auto now = std::chrono::system_clock::now();
@@ -20,8 +19,6 @@ int main() {
     // Save the image with timestamp
     cv::imwrite(ss.str(), image);
 
-    delete scene;
-    delete camera;
-
+    delete app;
     return 0;
 }

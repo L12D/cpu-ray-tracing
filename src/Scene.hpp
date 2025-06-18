@@ -17,15 +17,16 @@ class Scene {
 
     private :
 
-        static Scene *instance;
-        float3 background_color;
+        float3 backgroundColor;
+        float brightness;
         std::vector<Object*> objects;
-        Scene();
-
+        
     public :
 
-        static Scene *getInstance();
+        Scene(int sceneIndex);
         std::vector<Object*> getObjects();
+        float3 getBackgroundColor();
+        float getBrightness();
         void render(Camera *camera, cv::Mat &image);
         ~Scene();
 

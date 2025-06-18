@@ -1,4 +1,5 @@
 #include "Ray.hpp"
+#include "Application.hpp"
 
 
 Ray::Ray(float3 origin, float3 direction) {
@@ -64,7 +65,7 @@ std::vector<Ray *> generateRays(float3 origin, float3 normal, float3 direction, 
     std::vector<Ray *> rays;
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::uniform_real_distribution<float> dis(0.0f, 1.0f);  // Changed range to [0,1]
+    std::uniform_real_distribution<float> dis(0.0f, 1.0f);
 
     for (int i = 0; i < n; ++i) {
         // Generate random angles

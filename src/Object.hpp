@@ -7,6 +7,7 @@
 #include "utils.hpp"
 #include "Ray.hpp"
 #include "Scene.hpp"
+#include "Application.hpp"
 
 
 class Object {
