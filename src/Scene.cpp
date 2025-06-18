@@ -42,7 +42,7 @@ void Scene::render(Camera *camera, cv::Mat &image) {
             float rayLength = 10000.0;
             float3 color = background_color;
             for (Object *object : objects) {
-                object->intersect(ray, 2);
+                object->intersect(ray, 0, 2);
                 if (ray->getLength() < rayLength) {
                     rayLength = ray->getLength();
                     color = ray->getColor();

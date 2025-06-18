@@ -20,7 +20,7 @@ class Sphere : public Shape {
         void setCenter(float3 center);
         float getRadius();
         void setRadius(float radius);
-        std::pair<float3, float3> intersect(Ray *ray, int depth);
+        std::pair<float3, float3> intersect(Ray *ray);
         ~Sphere() = default;
 
 };

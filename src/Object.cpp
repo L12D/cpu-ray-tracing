@@ -4,7 +4,6 @@
 Object::Object() {
     this->shape = nullptr;
     this->color = {0, 0, 0};
-    this->bounding_box = std::make_pair((float3){0, 0, 0}, (float3){0, 0, 0});
 }
 
 
@@ -12,7 +11,6 @@ Object::Object(Shape *shape, float3 color, bool isLight) {
     this->shape = shape;
     this->color = color;
     this->isLight = isLight;
-    this->bounding_box = this->computeBoundingBox();
 }
 
 
@@ -23,7 +21,6 @@ Shape *Object::getShape() {
 
 void Object::setShape(Shape *shape) {
     this->shape = shape;
-    this->bounding_box = this->computeBoundingBox();
 }
 
 
@@ -47,23 +44,13 @@ void Object::setIsLight(bool isLight) {
 }
 
 
-std::pair<float3, float3> Object::computeBoundingBox() {
-    return std::make_pair((float3){0, 0, 0}, (float3){0, 0, 0});
-}
-
-
-std::pair<float3, float3> Object::getBoundingBox() {
-    return this->bounding_box;
-}
-
-
-void Object::intersect(Ray *ray, int depth) {
-    if (depth == 0) {
+void Object::intersect(Ray *ray, int depth, int maxDepth) {
+    if (depth == maxDepth) {
         ray->setColor({0.4, 0.4, 0.4});
         return;
     }
     // TODO : Add bounding box test
-    std::pair<float3, float3> pair = shape->intersect(ray, depth);
+    std::pair<float3, float3> pair = shape->intersect(ray);
     if (!ray->getHit()) {
         ray->setColor({0.1, 0.1, 0.1});
         return;
@@ -77,7 +64,13 @@ void Object::intersect(Ray *ray, int depth) {
     }
     float3 intersectionPoint = pair.first;
     float3 normal = pair.second;
-    std::vector<Ray *> rays = generateRays(intersectionPoint, normal, ray->getDirection(), 10);
+    int n; // Number of rays to generate for reflection
+    if (depth == 0) {
+        n = 100;
+    } else {
+        n = 10; // Generate 10 reflection rays otherwise
+    }
+    std::vector<Ray *> rays = generateRays(intersectionPoint, normal, ray->getDirection(), n);
 
     // std::vector<Ray *> rays;
 
@@ -99,7 +92,7 @@ void Object::intersect(Ray *ray, int depth) {
         rayLength = 10000.0;
         rayColor = {0.2, 0.2, 0.2};
         for (Object *object : scene->getObjects()) {
-            object->intersect(r, depth-1);
+            object->intersect(r, depth+1, maxDepth);
             // std::cout << "Ray " << r->getLength() << ", Direction: (" << r->getDirection().x << ", " << r->getDirection().y << ", " << r->getDirection().z << "), Origin: (" << r->getOrigin().x << ", " << r->getOrigin().y << ", " << r->getOrigin().z << ")" << std::endl;
             if (r->getLength() < rayLength) {
                 // std::cout << "Intersecting with object at depth " << depth-1 << std::endl;

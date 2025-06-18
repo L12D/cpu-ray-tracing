@@ -27,8 +27,7 @@ void Sphere::setRadius(float radius) {
 }
 
 
-std::pair<float3, float3> Sphere::intersect(Ray *ray, int depth) {
-    // std::cout << "Intersecting circle at depth " << depth << std::endl;
+std::pair<float3, float3> Sphere::intersect(Ray *ray) {
     float3 dir = ray->getDirection();
     float3 oc = ray->getOrigin() - this->center;
     float b = 2.0f * dot(oc, dir);

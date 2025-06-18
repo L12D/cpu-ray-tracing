@@ -29,9 +29,7 @@ class Object {
         void setColor(float3 color);
         bool getIsLight();
         void setIsLight(bool isLight);
-        std::pair<float3, float3> computeBoundingBox();
-        std::pair<float3, float3> getBoundingBox();
-        void intersect(Ray *ray, int depth);
+        void intersect(Ray *ray, int depth, int maxDepth);
         ~Object();
 
 };
