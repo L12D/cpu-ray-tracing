@@ -9,6 +9,9 @@
 struct float3 {
     float x, y, z;
 
+    float3() : x(0), y(0), z(0) {}
+    float3(float x, float y, float z) : x(x), y(y), z(z) {}
+
     float3 operator+(const float3& other) {
         return {x + other.x, y + other.y, z + other.z};
     }
@@ -39,6 +42,10 @@ float3 normalize(float3 a);
 
 struct float4 {
     float x, y, z, w;
+
+    float4() : x(0), y(0), z(0), w(0) {}
+    float4(float x, float y, float z, float w) : x(x), y(y), z(z), w(w) {}
+    float4(float3 v) : x(v.x), y(v.y), z(v.z), w(1) {}
 
     float4 operator+(const float4& other) {
         return {x + other.x, y + other.y, z + other.z, w + other.w};
@@ -89,6 +96,13 @@ struct mat4 {
             }
         };
     }
+};
+
+
+struct triangle {
+    float3 v0, v1, v2;
+
+    triangle(float3 v0, float3 v1, float3 v2) : v0(v0), v1(v1), v2(v2) {}
 };
 
 
