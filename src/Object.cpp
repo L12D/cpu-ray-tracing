@@ -53,7 +53,7 @@ void Object::intersect(Ray *ray, int depth, int maxDepth) {
         ray->setColor(backgroundColor);
         return;
     }
-    // TODO : Add bounding box test
+
     std::pair<float3, float3> pair = shape->intersect(ray);
     if (!ray->getHit()) {
         ray->setColor(backgroundColor);
@@ -66,12 +66,13 @@ void Object::intersect(Ray *ray, int depth, int maxDepth) {
         ray->setColor(color);
         return;
     }
+
     float3 intersectionPoint = pair.first;
     float3 normal = pair.second;
 
     std::vector<Ray *> rays;
     if (depth == 0) {
-        rays = generateRays(intersectionPoint, normal, ray->getDirection(), 100);
+        rays = generateRays(intersectionPoint, normal, ray->getDirection(), 500);
     } else {
         // Compute reflection direction using R = I - 2(N·I)N
         // where I is incident direction, N is normal

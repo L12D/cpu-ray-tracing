@@ -8,7 +8,13 @@ int main() {
     // Create an empty image with 3 channels (BGR) and 8-bit depth
     Camera *camera = app->getCamera();
     cv::Mat image(camera->get_height(), camera->get_width(), CV_8UC3, cv::Scalar(0, 0, 0));
+
+    auto start = std::chrono::high_resolution_clock::now();
     app->render(image);
+
+    auto end = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+    std::cout << "Execution time: " << duration.count() << " milliseconds" << std::endl;
 
     cv::Mat processed = image.clone();
     for(int y = 1; y < image.rows - 1; y++) {

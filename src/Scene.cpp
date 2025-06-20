@@ -21,7 +21,7 @@ Scene::Scene(int sceneIndex) {
         brightness = 2.5;
         backgroundColor = mul(brightness, backgroundColor);
         objects.push_back(new Object(new Sphere({-4, 7, 0}, 2), {1.0, 1.0, 1.0}, true));
-        objects.push_back(new Object(new Sphere({4, 7, 0}, 2), {0.6, 0.6, 1.0}, true));
+        objects.push_back(new Object(new Sphere({4, 7, 0}, 2), {0.3, 0.3, 1.0}, true));
         objects.push_back(new Object(new TriangleSet("assets/bishop.obj"), {1.0, 1.0, 1.0}, false));
     }
 }

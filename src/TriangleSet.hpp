@@ -11,11 +11,14 @@ class TriangleSet : public Shape {
     private :
 
         std::vector<triangle> *triangles;
+        std::pair<float3, float3> boundingBox;
 
     public :
 
         TriangleSet(std::string filename);
+
         std::vector<triangle> *getTriangles();
+        void computeBoundingBox();
         void setTriangles(std::vector<triangle> *triangles);
         std::pair<float3, float3> intersect(Ray *ray);
         ~TriangleSet();
