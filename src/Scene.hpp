@@ -8,6 +8,7 @@
 #include "Camera.hpp"
 #include "Object.hpp"
 #include "Sphere.hpp"
+#include "TriangleSet.hpp"
 
 
 class Object;

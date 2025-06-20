@@ -16,6 +16,13 @@ Scene::Scene(int sceneIndex) {
         //        objects.push_back(new Object(new Sphere((float3){(float)4*(i-4), 10, (float)4*(j-2)}, 1), {1.0, 1.0, 1.0}, (i+j)%2==0));
         //     }
         // }
+    } else if (sceneIndex == 2) {
+        backgroundColor = {0.05, 0.05, 0.05};
+        brightness = 2.5;
+        backgroundColor = mul(brightness, backgroundColor);
+        objects.push_back(new Object(new Sphere({-4, 7, 0}, 2), {1.0, 1.0, 1.0}, true));
+        objects.push_back(new Object(new Sphere({4, 7, 0}, 2), {0.6, 0.6, 1.0}, true));
+        objects.push_back(new Object(new TriangleSet("assets/bishop.obj"), {1.0, 1.0, 1.0}, false));
     }
 }
 

@@ -20,7 +20,7 @@ struct float3 {
         return {x * other.x, y * other.y, z * other.z};
     }
 
-    float3 operator-(const float3& other) {
+    float3 operator-(const float3& other) const {
         return {x - other.x, y - other.y, z - other.z};
     }
 
