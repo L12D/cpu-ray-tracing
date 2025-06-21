@@ -7,6 +7,7 @@ Application *Application::instance = nullptr;
 Application::Application() {
     camera = new Camera(720);
     scene = new Scene(2);
+    randomGenerator = new RandomGenerator();
 }
 
 
@@ -25,6 +26,11 @@ Camera *Application::getCamera() {
 
 Scene *Application::getScene() {
     return scene;
+}
+
+
+RandomGenerator *Application::getRandomGenerator() {
+    return randomGenerator;
 }
 
 

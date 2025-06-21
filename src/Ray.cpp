@@ -73,14 +73,12 @@ void Ray::setHit(bool hit) {
 
 std::vector<Ray *> generateRays(float3 origin, float3 normal, float3 direction, int n) {
     std::vector<Ray *> rays;
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_real_distribution<float> dis(0.0f, 1.0f);
+    RandomGenerator *rng = Application::getInstance()->getRandomGenerator();
 
     for (int i = 0; i < n; ++i) {
         // Generate random angles
-        float theta = 2.0f * M_PI * dis(gen);  // Azimuthal angle [0, 2π]
-        float phi = acos(2.0f * dis(gen) - 1.0f);  // Polar angle [0, π]
+        float theta = 2.0f * M_PI * rng->next();  // Azimuthal angle [0, 2π]
+        float phi = acos(2.0f * rng->next() - 1.0f);  // Polar angle [0, π]
         
         // Convert spherical to Cartesian coordinates
         float3 randomDirection = {

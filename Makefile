@@ -1,6 +1,6 @@
 # Fichiers
 TARGET = main
-SRCS = src/main.cpp src/utils.cpp src/Camera.cpp src/Scene.cpp src/Sphere.cpp src/Object.cpp src/Shape.cpp src/Ray.cpp src/Application.cpp src/TriangleSet.cpp
+SRCS = src/main.cpp src/utils.cpp src/Camera.cpp src/Scene.cpp src/Sphere.cpp src/Object.cpp src/Shape.cpp src/Ray.cpp src/Application.cpp src/TriangleSet.cpp src/RandomGenerator.cpp
 OBJS = $(SRCS:.cpp=.o)
 OBJS := $(patsubst %.o, build/%.o, $(OBJS))
 
@@ -12,6 +12,8 @@ LDFLAGS =
 # Libs
 CFLAGS += $(shell pkg-config --cflags opencv4)
 LDFLAGS += $(shell pkg-config --libs opencv4)
+CFLAGS += -I/usr/include
+LDFLAGS += -lOpenCL
 
 all: build/$(TARGET)
 

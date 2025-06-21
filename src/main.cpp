@@ -45,4 +45,11 @@ int main() {
 
     delete app;
     return 0;
+
+
+//     Application *app = Application::getInstance();
+//     for (int i = 0 ; i < 200; i++) {
+//         float randomNumber = app->getRandomGenerator()->next();
+//         std::cout << "Random number " << i << ": " << randomNumber << std::endl;
+//     }
 }
