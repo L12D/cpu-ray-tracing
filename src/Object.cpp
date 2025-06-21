@@ -60,9 +60,6 @@ void Object::intersect(Ray *ray, int depth, int maxDepth) {
         return;
     }
     if (isLight) {
-        // if (depth == 1) {
-        //     std::cout << "Light at depth " << depth << std::endl;
-        // }
         ray->setColor(color);
         return;
     }
@@ -72,7 +69,7 @@ void Object::intersect(Ray *ray, int depth, int maxDepth) {
 
     std::vector<Ray *> rays;
     if (depth == 0) {
-        rays = generateRays(intersectionPoint, normal, ray->getDirection(), 500);
+        rays = generateRays(intersectionPoint, normal, ray->getDirection(), 50);
     } else {
         // Compute reflection direction using R = I - 2(N·I)N
         // where I is incident direction, N is normal
@@ -87,14 +84,13 @@ void Object::intersect(Ray *ray, int depth, int maxDepth) {
     float3 reflexionColor = backgroundColor;
     float rayLength;
     float3 rayColor;
-    // std::cout << "Depth: " << depth << std::endl;
+    
     for (Ray *r : rays) {
         rayLength = 10000.0;
         rayColor = backgroundColor;
         for (Object *object : scene->getObjects()) {
             object->intersect(r, depth+1, maxDepth);
             if (r->getLength() < rayLength) {
-                // std::cout << "Intersecting with object at depth " << depth-1 << std::endl;
                 rayLength = r->getLength();
                 rayColor = r->getColor();
             }

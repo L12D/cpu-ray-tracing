@@ -81,12 +81,7 @@ void TriangleSet::setTriangles(std::vector<triangle>* triangles) {
 
 std::pair<float3, float3> TriangleSet::intersect(Ray* ray) {
     // Skip intersection test if ray doesn't intersect bounding box
-    float3 d = ray->getDirection();
-    float3 dirfrac = {
-        std::abs(d.x) > 1e-6f ? 1.0f / d.x : 1e6f,
-        std::abs(d.y) > 1e-6f ? 1.0f / d.y : 1e6f,
-        std::abs(d.z) > 1e-6f ? 1.0f / d.z : 1e6f
-    };
+    float3 dirfrac = ray->getInverseDirection();
 
     float t1 = (boundingBox.first.x - ray->getOrigin().x) * dirfrac.x;
     float t2 = (boundingBox.second.x - ray->getOrigin().x) * dirfrac.x;

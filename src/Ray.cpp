@@ -5,6 +5,7 @@
 Ray::Ray(float3 origin, float3 direction) {
     this->origin = origin;
     this->direction = direction;
+    this->inverseDirection = {1.0f / direction.x, 1.0f / direction.y, 1.0f / direction.z};
     this->length = 10000.0;
     this->color = {0, 0, 0};
     this->hit = false;
@@ -26,8 +27,17 @@ float3 Ray::getDirection() {
 }
 
 
+float3 Ray::getInverseDirection() {
+    return this->inverseDirection;
+}
+
+
 void Ray::setDirection(float3 direction) {
     this->direction = direction;
+    this->inverseDirection = {1.0f / direction.x, 1.0f / direction.y, 1.0f / direction.z};
+    if (this->inverseDirection.x == 0) this->inverseDirection.x = 1e6f; // Avoid division by zero
+    if (this->inverseDirection.y == 0) this->inverseDirection.y = 1e6f; // Avoid division by zero
+    if (this->inverseDirection.z == 0) this->inverseDirection.z = 1e6f; // Avoid division by zero
 }
 
 

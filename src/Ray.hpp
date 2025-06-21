@@ -13,6 +13,7 @@ class Ray {
 
         float3 origin;
         float3 direction;
+        float3 inverseDirection;
         float length;
         float3 color; // BGR
         bool hit;
@@ -23,6 +24,7 @@ class Ray {
         float3 getOrigin();
         void setOrigin(float3 origin);
         float3 getDirection();
+        float3 getInverseDirection();
         void setDirection(float3 direction);
         float getLength();
         void setLength(float length);
