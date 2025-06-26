@@ -22,7 +22,10 @@ Scene::Scene(int sceneIndex) {
         backgroundColor = mul(brightness, backgroundColor);
         objects.push_back(new Object(new Sphere({-4, 7, 0}, 2), {1.0, 1.0, 1.0}, true));
         objects.push_back(new Object(new Sphere({4, 7, 0}, 2), {0.3, 0.3, 1.0}, true));
-        objects.push_back(new Object(new TriangleSet("assets/bishop.obj"), {1.0, 1.0, 1.0}, false));
+        Object* bishop = new Object(new TriangleSet("assets/bishop.obj"), {1.0, 1.0, 1.0}, false);
+        // bishop->scale({0.5, 0.5, 0.5});
+        bishop->translate({0, 8, -4});
+        objects.push_back(bishop);
     }
 }
 

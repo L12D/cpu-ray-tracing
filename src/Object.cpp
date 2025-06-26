@@ -69,7 +69,7 @@ void Object::intersect(Ray *ray, int depth, int maxDepth) {
 
     std::vector<Ray *> rays;
     if (depth == 0) {
-        rays = generateRays(intersectionPoint, normal, ray->getDirection(), 50);
+        rays = generateRays(intersectionPoint, normal, ray->getDirection(), 30);
     } else {
         // Compute reflection direction using R = I - 2(N·I)N
         // where I is incident direction, N is normal
@@ -107,6 +107,21 @@ void Object::intersect(Ray *ray, int depth, int maxDepth) {
         delete r;
     }
     
+}
+
+
+void Object::translate(float3 translation) {
+    this->shape->translate(translation);
+}
+
+
+void Object::rotate(float3 axis, float angle) {
+    this->shape->rotate(axis, angle);
+}
+
+
+void Object::scale(float3 scaling) {
+    this->shape->scale(scaling);
 }
 
 

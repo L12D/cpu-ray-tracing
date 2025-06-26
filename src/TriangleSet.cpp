@@ -23,7 +23,7 @@ TriangleSet::TriangleSet(std::string filename) {
         if (type == "v") {
             float x, y, z;
             ss >> x >> y >> z;
-            vertices.push_back({x, y+8, z-4});
+            vertices.push_back({x, y, z});
         } else if (type == "f") {
             int vi[3];
             for (int i = 0; i < 3; ++i) {
@@ -148,6 +148,67 @@ std::pair<float3, float3> TriangleSet::intersect(Ray* ray) {
         ray->setHit(false);
         return {{0, 0, 0}, {0, 0, 0}};
     }
+}
+
+
+void TriangleSet::translate(float3 translation) {
+    for (auto& tri : *triangles) {
+        tri.v0 = tri.v0 + translation;
+        tri.v1 = tri.v1 + translation;
+        tri.v2 = tri.v2 + translation;
+    }
+    computeBoundingBox();
+}
+
+
+void TriangleSet::rotate(float3 axis, float angle) { // angle in degrees
+    // Convert angle to radians
+    float rad = angle * M_PI / 180.0f;
+    
+    // Create rotation matrix components
+    float c = cos(rad);
+    float s = sin(rad);
+    float t = 1.0f - c;
+    
+    // Normalize rotation axis
+    axis = normalize(axis);
+    
+    // Create rotation matrix
+    float matrix[3][3] = {
+        {t*axis.x*axis.x + c, t*axis.x*axis.y - s*axis.z, t*axis.x*axis.z + s*axis.y},
+        {t*axis.x*axis.y + s*axis.z, t*axis.y*axis.y + c, t*axis.y*axis.z - s*axis.x},
+        {t*axis.x*axis.z - s*axis.y, t*axis.y*axis.z + s*axis.x, t*axis.z*axis.z + c}
+    };
+    
+    // Apply rotation to each vertex of each triangle
+    for (auto& tri : *triangles) {
+        tri.v0 = float3{
+            matrix[0][0]*tri.v0.x + matrix[0][1]*tri.v0.y + matrix[0][2]*tri.v0.z,
+            matrix[1][0]*tri.v0.x + matrix[1][1]*tri.v0.y + matrix[1][2]*tri.v0.z,
+            matrix[2][0]*tri.v0.x + matrix[2][1]*tri.v0.y + matrix[2][2]*tri.v0.z
+        };
+        tri.v1 = float3{
+            matrix[0][0]*tri.v1.x + matrix[0][1]*tri.v1.y + matrix[0][2]*tri.v1.z,
+            matrix[1][0]*tri.v1.x + matrix[1][1]*tri.v1.y + matrix[1][2]*tri.v1.z,
+            matrix[2][0]*tri.v1.x + matrix[2][1]*tri.v1.y + matrix[2][2]*tri.v1.z
+        };
+        tri.v2 = float3{
+            matrix[0][0]*tri.v2.x + matrix[0][1]*tri.v2.y + matrix[0][2]*tri.v2.z,
+            matrix[1][0]*tri.v2.x + matrix[1][1]*tri.v2.y + matrix[1][2]*tri.v2.z,
+            matrix[2][0]*tri.v2.x + matrix[2][1]*tri.v2.y + matrix[2][2]*tri.v2.z
+        };
+    }
+    computeBoundingBox();
+}
+
+
+void TriangleSet::scale(float3 scaling) {
+    for (auto& tri : *triangles) {
+        tri.v0 = scaling * tri.v0;
+        tri.v1 = scaling * tri.v1;
+        tri.v2 = scaling * tri.v2;
+    }
+    computeBoundingBox();
 }
 
 

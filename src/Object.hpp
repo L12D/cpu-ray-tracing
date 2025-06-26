@@ -31,6 +31,9 @@ class Object {
         bool getIsLight();
         void setIsLight(bool isLight);
         void intersect(Ray *ray, int depth, int maxDepth);
+        void translate(float3 translation);
+        void rotate(float3 axis, float angle);
+        void scale(float3 scaling);
         ~Object();
 
 };

@@ -21,6 +21,9 @@ class Sphere : public Shape {
         float getRadius();
         void setRadius(float radius);
         std::pair<float3, float3> intersect(Ray *ray);
+        void translate(float3 translation);
+        void rotate(float3 axis, float angle);
+        void scale(float3 scaling);
         ~Sphere() = default;
 
 };

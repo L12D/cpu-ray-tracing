@@ -61,3 +61,16 @@ std::pair<float3, float3> Sphere::intersect(Ray *ray) {
     ray->setHit(false);
     return {{0, 0, 0}, {0, 0, 0}};
 }
+
+
+void Sphere::translate(float3 translation) {
+    this->center = this->center + translation;
+}
+
+void Sphere::rotate(float3 axis, float angle) {
+    // Nothing to do here
+}
+
+void Sphere::scale(float3 scaling) {
+    this->radius *= scaling.x;  // Assuming uniform scaling for spheres
+}

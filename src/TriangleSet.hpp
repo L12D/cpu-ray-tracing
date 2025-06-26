@@ -21,6 +21,9 @@ class TriangleSet : public Shape {
         void computeBoundingBox();
         void setTriangles(std::vector<triangle> *triangles);
         std::pair<float3, float3> intersect(Ray *ray);
+        void translate(float3 translation);
+        void rotate(float3 axis, float angle);
+        void scale(float3 scaling);
         ~TriangleSet();
 
 };
