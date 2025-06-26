@@ -99,3 +99,15 @@ std::vector<Ray *> generateRays(float3 origin, float3 normal, float3 direction, 
 
     return rays;
 }
+
+
+Ray *getMirrorRay(Ray *ray, float3 intersectionPoint, float3 normal) {
+    // Compute reflection direction using R = I - 2(N·I)N
+    // where I is incident direction, N is normal
+    float3 incident = ray->getDirection();
+    float3 reflectionDir = normalize(incident - mul(2.0f * dot(incident, normal), normal));
+    
+    // Add small offset to avoid self-intersection
+    float3 offsetOrigin = intersectionPoint + mul(0.001f, normal);
+    return new Ray(offsetOrigin, reflectionDir);
+}

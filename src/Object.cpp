@@ -7,10 +7,9 @@ Object::Object() {
 }
 
 
-Object::Object(Shape *shape, float3 color, bool isLight) {
+Object::Object(Shape *shape, float3 color) {
     this->shape = shape;
     this->color = color;
-    this->isLight = isLight;
 }
 
 
@@ -34,13 +33,13 @@ void Object::setColor(float3 color) {
 }
 
 
-bool Object::getIsLight() {
-    return this->isLight;
+void Object::setLight() {
+    this->isLight = true;
 }
 
 
-void Object::setIsLight(bool isLight) {
-    this->isLight = isLight;
+void Object::setMirror() {
+    this->isMirror = true;
 }
 
 
@@ -68,17 +67,10 @@ void Object::intersect(Ray *ray, int depth, int maxDepth) {
     float3 normal = pair.second;
 
     std::vector<Ray *> rays;
-    if (depth == 0) {
-        rays = generateRays(intersectionPoint, normal, ray->getDirection(), 30);
+    if (depth == 0 && !isMirror) {
+        rays = generateRays(intersectionPoint, normal, ray->getDirection(), 1500);
     } else {
-        // Compute reflection direction using R = I - 2(N·I)N
-        // where I is incident direction, N is normal
-        float3 incident = ray->getDirection();
-        float3 reflectionDir = normalize(incident - mul(2.0f * dot(incident, normal), normal));
-        
-        // Add small offset to avoid self-intersection
-        float3 offsetOrigin = intersectionPoint + mul(0.001f, normal);
-        rays.push_back(new Ray(offsetOrigin, reflectionDir));
+        rays.push_back(getMirrorRay(ray, intersectionPoint, normal));
     }
 
     float3 reflexionColor = backgroundColor;
@@ -89,7 +81,11 @@ void Object::intersect(Ray *ray, int depth, int maxDepth) {
         rayLength = 10000.0;
         rayColor = backgroundColor;
         for (Object *object : scene->getObjects()) {
-            object->intersect(r, depth+1, maxDepth);
+            if (depth == 0 && isMirror) {
+                object->intersect(r, depth, maxDepth);
+            } else {
+                object->intersect(r, depth+1, maxDepth);
+            }
             if (r->getLength() < rayLength) {
                 rayLength = r->getLength();
                 rayColor = r->getColor();

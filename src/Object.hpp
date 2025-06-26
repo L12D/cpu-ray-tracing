@@ -17,19 +17,20 @@ class Object {
         Shape *shape;
         float3 color; // BGR
         bool isLight;
+        bool isMirror;
         std::pair<float3, float3> bounding_box;
         std::vector<Object *> children;
     
     public :
 
         Object();
-        Object(Shape *shape, float3 color, bool isLight);
+        Object(Shape *shape, float3 color);
         Shape *getShape();
         void setShape(Shape *shape);
         float3 getColor();
         void setColor(float3 color);
-        bool getIsLight();
-        void setIsLight(bool isLight);
+        void setLight();
+        void setMirror();
         void intersect(Ray *ray, int depth, int maxDepth);
         void translate(float3 translation);
         void rotate(float3 axis, float angle);

@@ -6,3 +6,19 @@
 
 ![Figure 2](figures/fig2.png)
 835 seconds
+
+
+![Figure 3](figures/fig3.png)
+18 seconds, 30 rays per pixel
+
+
+![Figure 4](figures/fig4.png)
+1min26, 150 rays per pixel
+
+
+![Figure 5](figures/fig5.png)
+11min30, 1200 rays per pixel
+
+
+![Figure 6](figures/fig6.png)
+33min, 1500 rays per pixel, 1080p
