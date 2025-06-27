@@ -68,7 +68,7 @@ void Object::intersect(Ray *ray, int depth, int maxDepth) {
 
     std::vector<Ray *> rays;
     if (depth == 0 && !isMirror) {
-        rays = generateRays(intersectionPoint, normal, ray->getDirection(), 1500);
+        rays = generateRays(intersectionPoint, normal, ray->getDirection(), 150);
     } else {
         rays.push_back(getMirrorRay(ray, intersectionPoint, normal));
     }
@@ -88,7 +88,7 @@ void Object::intersect(Ray *ray, int depth, int maxDepth) {
             }
             if (r->getLength() < rayLength) {
                 rayLength = r->getLength();
-                rayColor = r->getColor();
+                rayColor = mul(dot(r->getDirection(), normal), r->getColor());
             }
         }
         reflexionColor = reflexionColor + mul(brightness, rayColor);
