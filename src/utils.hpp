@@ -4,6 +4,7 @@
 #include <iostream>
 #include <cmath>
 #include <vector>
+#include <memory>
 
 
 struct float3 {
@@ -103,6 +104,10 @@ struct triangle {
     float3 v0, v1, v2;
 
     triangle(float3 v0, float3 v1, float3 v2) : v0(v0), v1(v1), v2(v2) {}
+
+    float3 centroid() const {
+        return {(v0.x + v1.x + v2.x) / 3, (v0.y + v1.y + v2.y) / 3, (v0.z + v1.z + v2.z) / 3};
+    }
 };
 
 
@@ -112,4 +117,46 @@ mat4 mRotate(float3 axis, float angle); // angle in radians
 mat4 mScale(float3 a);
 float3 mul(mat4 a, float3 b);
 
-bool intersect_triangle(float3 ray, float3 v0, float3 v1, float3 v2);
+
+class Ray;
+
+
+struct AABB {
+    float3 min;
+    float3 max;
+
+    bool intersect(Ray* ray);
+
+    void expand(const AABB& other) {
+        min = {
+            std::min(min.x, other.min.x),
+            std::min(min.y, other.min.y),
+            std::min(min.z, other.min.z)
+        };
+        max = {
+            std::max(max.x, other.max.x),
+            std::max(max.y, other.max.y),
+            std::max(max.z, other.max.z)
+        };
+    }
+
+    static AABB fromTriangle(const triangle& p);
+};
+
+
+struct BVHNode {
+    AABB boundingBox;
+    std::unique_ptr<BVHNode> left;
+    std::unique_ptr<BVHNode> right;
+    std::unique_ptr<std::vector<triangle>> triangles;
+    bool isLeaf = false;
+
+    BVHNode() = default;
+};
+
+
+struct HitInfo {
+    float3 position;
+    float3 normal;
+    float distance = std::numeric_limits<float>::max();
+};

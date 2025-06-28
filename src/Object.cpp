@@ -4,12 +4,16 @@
 Object::Object() {
     this->shape = nullptr;
     this->color = {0, 0, 0};
+    this->isLight = false;
+    this->isMirror = false;
 }
 
 
 Object::Object(Shape *shape, float3 color) {
     this->shape = shape;
     this->color = color;
+    this->isLight = false;
+    this->isMirror = false;
 }
 
 
@@ -68,7 +72,7 @@ void Object::intersect(Ray *ray, int depth, int maxDepth) {
 
     std::vector<Ray *> rays;
     if (depth == 0 && !isMirror) {
-        rays = generateRays(intersectionPoint, normal, ray->getDirection(), 150);
+        rays = generateRays(intersectionPoint, normal, ray->getDirection(), 5000);
     } else {
         rays.push_back(getMirrorRay(ray, intersectionPoint, normal));
     }

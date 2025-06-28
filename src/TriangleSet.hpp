@@ -1,29 +1,28 @@
 #pragma once
 
 
-#include "Shape.hpp"
 #include "utils.hpp"
-#include "Ray.hpp"
+#include "Shape.hpp"
+// #include "Ray.hpp"
 
 
 class TriangleSet : public Shape {
     
     private :
 
-        std::vector<triangle> *triangles;
-        std::pair<float3, float3> boundingBox;
+        // std::unique_ptr<std::vector<triangle>> triangles;
+        std::unique_ptr<BVHNode> root;
+        // AABB boundingBox;
 
     public :
 
         TriangleSet(std::string filename);
-
-        std::vector<triangle> *getTriangles();
-        void computeBoundingBox();
-        void setTriangles(std::vector<triangle> *triangles);
+        // void computeBoundingBox();
         std::pair<float3, float3> intersect(Ray *ray);
         void translate(float3 translation);
         void rotate(float3 axis, float angle);
         void scale(float3 scaling);
-        ~TriangleSet();
+        std::unique_ptr<BVHNode> buildBVH(std::vector<triangle>& triangles, int depth = 0);
+        ~TriangleSet() = default;
 
 };

@@ -5,8 +5,8 @@ OBJS = $(SRCS:.cpp=.o)
 OBJS := $(patsubst %.o, build/%.o, $(OBJS))
 
 # Compilation
-CC = clang++
-CFLAGS = -std=c++17 -O3
+CC = g++
+CFLAGS = -std=c++17 -O3 -g
 LDFLAGS = 
 
 # Libs

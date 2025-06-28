@@ -84,29 +84,42 @@ float3 normalize(float3 a) {
 }
 
 
-// bool intersect_triangle(float3 ray, float3 v0, float3 v1, float3 v2) {
-//     float3 edge1 = v1 - v0;
-//     float3 edge2 = v2 - v0;
-//     float3 h = cross(ray, edge2);
-//     float a = dot(edge1, h);
-//     if (a > -0.00001 && a < 0.00001) {
-//         return false; // This ray is parallel to this triangle.
-//     }
-//     float f = 1.0 / a;
-//     float3 s = -v0;
-//     float u = f * dot(s, h);
-//     if (u < 0.0 || u > 1.0) {
-//         return false;
-//     }
-//     float3 q = cross(s, edge1);
-//     float v = f * dot(ray, q);
-//     if (v < 0.0 || u + v > 1.0) {
-//         return false;
-//     }
-//     float t = f * dot(edge2, q);
-//     if (t > 0.00001) { // ray intersection
-//         return true;
-//     } else {
-//         return false;
-//     }
-// }
+#include "Ray.hpp"
+
+
+bool AABB::intersect(Ray *ray) {
+    float3 dirfrac = ray->getInverseDirection();
+
+    float t1 = (min.x - ray->getOrigin().x) * dirfrac.x;
+    float t2 = (max.x - ray->getOrigin().x) * dirfrac.x;
+    float t3 = (min.y - ray->getOrigin().y) * dirfrac.y;
+    float t4 = (max.y - ray->getOrigin().y) * dirfrac.y;
+    float t5 = (min.z - ray->getOrigin().z) * dirfrac.z;
+    float t6 = (max.z - ray->getOrigin().z) * dirfrac.z;
+
+    float tmin = std::max(std::max(std::min(t1, t2), std::min(t3, t4)), std::min(t5, t6));
+    float tmax = std::min(std::min(std::max(t1, t2), std::max(t3, t4)), std::max(t5, t6));
+
+    if (tmax < 0 || tmin > tmax) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
+
+AABB AABB::fromTriangle(const triangle& tri) {
+    float3 min = {
+        std::min({tri.v0.x, tri.v1.x, tri.v2.x}),
+        std::min({tri.v0.y, tri.v1.y, tri.v2.y}),
+        std::min({tri.v0.z, tri.v1.z, tri.v2.z})
+    };
+
+    float3 max = {
+        std::max({tri.v0.x, tri.v1.x, tri.v2.x}),
+        std::max({tri.v0.y, tri.v1.y, tri.v2.y}),
+        std::max({tri.v0.z, tri.v1.z, tri.v2.z})
+    };
+
+    return AABB{min, max};
+}

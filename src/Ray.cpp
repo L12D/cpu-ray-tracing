@@ -8,7 +8,7 @@ Ray::Ray(float3 origin, float3 direction) {
     this->inverseDirection = {1.0f / direction.x, 1.0f / direction.y, 1.0f / direction.z};
     this->length = 10000.0;
     this->color = {0, 0, 0};
-    this->hit = false;
+    this->a_hit = false;
 }
 
 
@@ -62,12 +62,12 @@ void Ray::setColor(float3 color) {
 
 
 bool Ray::getHit() {
-    return this->hit;
+    return this->a_hit;
 }
 
 
-void Ray::setHit(bool hit) {
-    this->hit = hit;
+void Ray::hit() {
+    this->a_hit = true;
 }
 
 

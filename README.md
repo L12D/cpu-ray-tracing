@@ -22,3 +22,11 @@
 
 ![Figure 6](figures/fig6.png)
 33min, 1500 rays per pixel, 1080p
+
+
+![Figure 7](figures/fig7.png)
+8min20, 10 000 rays per pixel
+
+
+![Figure 8](figures/fig8.png)
+20min, 5 000 rays per pixel, 1080p, with basic BVH

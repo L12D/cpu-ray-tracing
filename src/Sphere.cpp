@@ -36,7 +36,6 @@ std::pair<float3, float3> Sphere::intersect(Ray *ray) {
     float discriminant = b * b - 4.0f * c;  // Since a = 1
 
     if (discriminant < 0.0f) {
-        ray->setHit(false);
         return {{0, 0, 0}, {0, 0, 0}};
     }
 
@@ -47,18 +46,17 @@ std::pair<float3, float3> Sphere::intersect(Ray *ray) {
 
     // Return the closest valid intersection point
     if (t0 > 0.0) {
-        ray->setHit(true);
+        ray->hit();
         ray->setLength(t0);
         float3 intersectionPoint = ray->getOrigin() + mul(t0, ray->getDirection());
         return {intersectionPoint, normalize(intersectionPoint - this->center)};
     } else if (t1 > 0.0) {
-        ray->setHit(true);
+        ray->hit();
         ray->setLength(t1);
         float3 intersectionPoint = ray->getOrigin() + mul(t1, ray->getDirection());
         return {intersectionPoint, normalize(intersectionPoint - this->center)};
     }
 
-    ray->setHit(false);
     return {{0, 0, 0}, {0, 0, 0}};
 }
 

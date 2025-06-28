@@ -18,7 +18,6 @@ class Object {
         float3 color; // BGR
         bool isLight;
         bool isMirror;
-        std::pair<float3, float3> bounding_box;
         std::vector<Object *> children;
     
     public :

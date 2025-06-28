@@ -16,7 +16,7 @@ class Ray {
         float3 inverseDirection;
         float length;
         float3 color; // BGR
-        bool hit;
+        bool a_hit;
     
     public :
 
@@ -31,7 +31,7 @@ class Ray {
         float3 getColor();
         void setColor(float3 color);
         bool getHit();
-        void setHit(bool hit);
+        void hit();
         ~Ray() = default;
 
 };
