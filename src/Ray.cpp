@@ -6,9 +6,7 @@ Ray::Ray(float3 origin, float3 direction) {
     this->origin = origin;
     this->direction = direction;
     this->inverseDirection = {1.0f / direction.x, 1.0f / direction.y, 1.0f / direction.z};
-    this->length = 10000.0;
     this->color = {0, 0, 0};
-    this->a_hit = false;
 }
 
 
@@ -41,16 +39,6 @@ void Ray::setDirection(float3 direction) {
 }
 
 
-float Ray::getLength() {
-    return this->length;
-}
-
-
-void Ray::setLength(float length) {
-    this->length = length;
-}
-
-
 float3 Ray::getColor() {
     return this->color;
 }
@@ -58,16 +46,6 @@ float3 Ray::getColor() {
 
 void Ray::setColor(float3 color) {
     this->color = color;
-}
-
-
-bool Ray::getHit() {
-    return this->a_hit;
-}
-
-
-void Ray::hit() {
-    this->a_hit = true;
 }
 
 

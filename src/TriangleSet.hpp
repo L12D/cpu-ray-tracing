@@ -18,7 +18,7 @@ class TriangleSet : public Shape {
 
         TriangleSet(std::string filename);
         // void computeBoundingBox();
-        std::pair<float3, float3> intersect(Ray *ray);
+        bool intersect(Ray *ray, HitInfo& globalHit);
         void translate(float3 translation);
         void rotate(float3 axis, float angle);
         void scale(float3 scaling);

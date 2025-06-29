@@ -14,9 +14,7 @@ class Ray {
         float3 origin;
         float3 direction;
         float3 inverseDirection;
-        float length;
         float3 color; // BGR
-        bool a_hit;
     
     public :
 
@@ -26,12 +24,8 @@ class Ray {
         float3 getDirection();
         float3 getInverseDirection();
         void setDirection(float3 direction);
-        float getLength();
-        void setLength(float length);
         float3 getColor();
         void setColor(float3 color);
-        bool getHit();
-        void hit();
         ~Ray() = default;
 
 };

@@ -23,7 +23,7 @@ build/%.o: %.cpp
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-test: override CFLAGS += -g -Wall -Wextra -pedantic -fsanitize=address -fno-omit-frame-pointer -Wno-c11-extensions -Wno-unused-but-set-variable
+test: override CFLAGS += -g -Wall -Wextra -pedantic -fsanitize=address -fno-omit-frame-pointer -Wno-unused-but-set-variable
 test: override LDFLAGS += -fsanitize=address
 test: build/$(TARGET)
 	./build/$(TARGET)

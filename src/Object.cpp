@@ -47,34 +47,32 @@ void Object::setMirror() {
 }
 
 
-void Object::intersect(Ray *ray, int depth, int maxDepth) {
+float Object::intersect(Ray *ray, int depth, int maxDepth) {
+    // return the distance to the intersection point
     Scene* scene = Application::getInstance()->getScene();
     float brightness = scene->getBrightness();
     float3 backgroundColor = scene->getBackgroundColor();
 
     if (depth == maxDepth) {
         ray->setColor(backgroundColor);
-        return;
+        return std::numeric_limits<float>::max();
     }
 
-    std::pair<float3, float3> pair = shape->intersect(ray);
-    if (!ray->getHit()) {
+    HitInfo hit;
+    if (!shape->intersect(ray, hit)) {
         ray->setColor(backgroundColor);
-        return;
+        return std::numeric_limits<float>::max();
     }
     if (isLight) {
         ray->setColor(color);
-        return;
+        return hit.distance;
     }
-
-    float3 intersectionPoint = pair.first;
-    float3 normal = pair.second;
 
     std::vector<Ray *> rays;
     if (depth == 0 && !isMirror) {
-        rays = generateRays(intersectionPoint, normal, ray->getDirection(), 5000);
+        rays = generateRays(hit.position, hit.normal, ray->getDirection(), 6000);
     } else {
-        rays.push_back(getMirrorRay(ray, intersectionPoint, normal));
+        rays.push_back(getMirrorRay(ray, hit.position, hit.normal));
     }
 
     float3 reflexionColor = backgroundColor;
@@ -82,17 +80,18 @@ void Object::intersect(Ray *ray, int depth, int maxDepth) {
     float3 rayColor;
     
     for (Ray *r : rays) {
-        rayLength = 10000.0;
+        rayLength = std::numeric_limits<float>::max();
         rayColor = backgroundColor;
         for (Object *object : scene->getObjects()) {
+            float distance;
             if (depth == 0 && isMirror) {
-                object->intersect(r, depth, maxDepth);
+                distance = object->intersect(r, depth, maxDepth);
             } else {
-                object->intersect(r, depth+1, maxDepth);
+                distance = object->intersect(r, depth+1, maxDepth);
             }
-            if (r->getLength() < rayLength) {
-                rayLength = r->getLength();
-                rayColor = mul(dot(r->getDirection(), normal), r->getColor());
+            if (distance < rayLength) {
+                rayLength = distance;
+                rayColor = mul(dot(r->getDirection(), hit.normal), r->getColor());
             }
         }
         reflexionColor = reflexionColor + mul(brightness, rayColor);
@@ -107,6 +106,7 @@ void Object::intersect(Ray *ray, int depth, int maxDepth) {
         delete r;
     }
     
+    return hit.distance;
 }
 
 

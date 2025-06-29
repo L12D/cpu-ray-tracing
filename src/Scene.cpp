@@ -14,17 +14,17 @@ Scene::Scene(int sceneIndex) {
         objects.push_back(new Object(new Sphere({1, 4, 0}, 1), {0.0, 0.0, 1.0}));
         objects.push_back(new Object(new Sphere({0, 4, -4}, 3), {1.0, 1.0, 1.0}));
     } else if (sceneIndex == 2) {
-        backgroundColor = {0.2, 0.2, 0.2};
-        brightness = 1.05;
+        backgroundColor = {0.3, 0.3, 0.3};
+        brightness = 1.0;
         backgroundColor = mul(brightness, backgroundColor);
 
-        Object *light1 = new Object(new Sphere({-2.5, 5, 0}, 1.0), {12.0, 12.0, 12.0});
+        Object *light1 = new Object(new Sphere({-2.5, 6, 0}, 1.5), {10.0, 10.0, 10.0});
         light1->setLight();
         objects.push_back(light1);
 
-        // Object *sphere = new Object(new Sphere({1, 12, 0}, 3), {0.8, 0.8, 0.8});
-        // sphere->setMirror();
-        // objects.push_back(sphere);
+        Object *sphere = new Object(new Sphere({0, 14, 0}, 5), {1.0, 1.0, 1.0});
+        sphere->setMirror();
+        objects.push_back(sphere);
 
         Object* bishop = new Object(new TriangleSet("assets/bishop.obj"), {0.5, 1.0, 0.5});
         bishop->scale({0.8, 0.8, 0.8});
@@ -56,12 +56,12 @@ void Scene::render(Camera *camera, cv::Mat &image) {
                 std::cout << "Rendering row " << i << " of " << camera->get_height() << std::endl;
             }
             Ray *ray = camera->get_ray(i, j);
-            float rayLength = 10000.0;
+            float rayLength = std::numeric_limits<float>::max();
             float3 color = backgroundColor;
             for (Object *object : objects) {
-                object->intersect(ray, 0, 2);
-                if (ray->getLength() < rayLength) {
-                    rayLength = ray->getLength();
+                float distance = object->intersect(ray, 0, 3);
+                if (distance < rayLength) {
+                    rayLength = distance;
                     color = ray->getColor();
                 }
             }

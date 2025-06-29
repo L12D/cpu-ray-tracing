@@ -30,7 +30,7 @@ class Object {
         void setColor(float3 color);
         void setLight();
         void setMirror();
-        void intersect(Ray *ray, int depth, int maxDepth);
+        float intersect(Ray *ray, int depth, int maxDepth);
         void translate(float3 translation);
         void rotate(float3 axis, float angle);
         void scale(float3 scaling);

@@ -91,18 +91,19 @@ bool traverseBVH(const std::unique_ptr<BVHNode>& node, Ray *ray, HitInfo& hit) {
 }
 
 
-std::pair<float3, float3> TriangleSet::intersect(Ray *ray) {
+bool TriangleSet::intersect(Ray *ray, HitInfo& globalHit) {
     if (!root->boundingBox.intersect(ray)) {
-        return {{0, 0, 0}, {0, 0, 0}};
+        return false;
     }
 
     HitInfo hit;
     if (traverseBVH(root, ray, hit)) {
-        ray->hit();
-        ray->setLength(hit.distance);
-        return {hit.position, hit.normal};
+        globalHit.distance = hit.distance;
+        globalHit.position = hit.position;
+        globalHit.normal = hit.normal;
+        return true;
     } else {
-        return {{0, 0, 0}, {0, 0, 0}};
+        return false;
     }
 }
 
