@@ -19,7 +19,6 @@ class Scene {
     private :
 
         float3 backgroundColor;
-        float brightness;
         std::vector<Object*> objects;
         
     public :
@@ -27,7 +26,6 @@ class Scene {
         Scene(int sceneIndex);
         std::vector<Object*> getObjects();
         float3 getBackgroundColor();
-        float getBrightness();
         void render(Camera *camera, cv::Mat &image);
         ~Scene();
 

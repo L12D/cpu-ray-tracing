@@ -4,8 +4,6 @@
 Scene::Scene(int sceneIndex) {
     if (sceneIndex == 1) {
         backgroundColor = {0.2, 0.2, 0.2};
-        brightness = 1.1;
-        backgroundColor = mul(brightness, backgroundColor);
 
         Object *light = new Object(new Sphere({-2, 4, 0}, 1), {4.0, 4.0, 4.0});
         light->setLight();
@@ -15,8 +13,6 @@ Scene::Scene(int sceneIndex) {
         objects.push_back(new Object(new Sphere({0, 4, -4}, 3), {1.0, 1.0, 1.0}));
     } else if (sceneIndex == 2) {
         backgroundColor = {0.3, 0.3, 0.3};
-        brightness = 1.0;
-        backgroundColor = mul(brightness, backgroundColor);
 
         Object *light1 = new Object(new Sphere({-2.5, 6, 0}, 1.5), {10.0, 10.0, 10.0});
         light1->setLight();
@@ -30,10 +26,8 @@ Scene::Scene(int sceneIndex) {
         bishop->scale({0.8, 0.8, 0.8});
         bishop->translate({2.5, 7, -3});
         objects.push_back(bishop);
-    } else if (sceneIndex == 3) {
+    } else if (sceneIndex == 3) { // 22 seconds without optimization, 720p, 50 rays per pixel
         backgroundColor = {0.3, 0.3, 0.3};
-        brightness = 1.0;
-        backgroundColor = mul(brightness, backgroundColor);
 
         Object *light = new Object(new Sphere({-2.5, 7, 0}, 2.0), {10.0, 10.0, 10.0});
         light->setLight();
@@ -62,12 +56,8 @@ float3 Scene::getBackgroundColor() {
 }
 
 
-float Scene::getBrightness() {
-    return brightness;
-}
-
-
 void Scene::render(Camera *camera, cv::Mat &image) {
+    int maxDepth = 3;
     for (int i = 0; i < camera->get_height(); ++i) {
         for (int j = 0; j < camera->get_width(); ++j) {
             if (j == 0 and i % 10 == 0) {
@@ -76,14 +66,28 @@ void Scene::render(Camera *camera, cv::Mat &image) {
             Ray *ray = camera->get_ray(i, j);
             float rayLength = std::numeric_limits<float>::max();
             float3 color = backgroundColor;
+
+            HitInfo hit;
+            Object *closestObject = nullptr;
+            float3 position;
+            float3 normal;
             for (Object *object : objects) {
-                float distance = object->intersect(ray, 0, 3);
-                if (distance < rayLength) {
-                    rayLength = distance;
-                    color = ray->getColor();
+                object->intersect(ray, hit, 0, maxDepth);
+                if (hit.distance < rayLength) {
+                    rayLength = hit.distance;
+                    position = hit.position;
+                    normal = hit.normal;
+                    closestObject = object;
                 }
             }
-            // std::cout << "Pixel (" << i << ", " << j << "): Color = (" << color.x << ", " << color.y << ", " << color.z << ")" << std::endl;
+
+            if (closestObject == nullptr) {
+                // No intersection, use background color
+                color = backgroundColor;
+            } else {
+                // Otherwise, calculate the color based on the object's material and lighting
+                color = closestObject->getRayColor(position, normal, ray->getDirection(), 0, maxDepth);
+            }
             image.at<cv::Vec3b>(i, j) = cv::Vec3b(color.x*255, color.y*255, color.z*255);
         }
     }    

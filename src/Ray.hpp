@@ -32,4 +32,4 @@ class Ray {
 
 
 std::vector<Ray *> generateRays(float3 origin, float3 normal, float3 direction, int n);
-Ray *getMirrorRay(Ray *ray, float3 intersectionPoint, float3 normal);
+Ray *getMirrorRay(float3 intersectionPoint, float3 normal, float3 incident);
