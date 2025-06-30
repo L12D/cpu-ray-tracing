@@ -5,8 +5,8 @@ Application *Application::instance = nullptr;
 
 
 Application::Application() {
-    camera = new Camera(1080);
-    scene = new Scene(2);
+    camera = new Camera(720);
+    scene = new Scene(3);
 }
 
 

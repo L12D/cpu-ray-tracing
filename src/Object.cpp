@@ -70,7 +70,7 @@ float Object::intersect(Ray *ray, int depth, int maxDepth) {
 
     std::vector<Ray *> rays;
     if (depth == 0 && !isMirror) {
-        rays = generateRays(hit.position, hit.normal, ray->getDirection(), 6000);
+        rays = generateRays(hit.position, hit.normal, ray->getDirection(), 50);
     } else {
         rays.push_back(getMirrorRay(ray, hit.position, hit.normal));
     }

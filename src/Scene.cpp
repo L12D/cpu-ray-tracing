@@ -30,6 +30,24 @@ Scene::Scene(int sceneIndex) {
         bishop->scale({0.8, 0.8, 0.8});
         bishop->translate({2.5, 7, -3});
         objects.push_back(bishop);
+    } else if (sceneIndex == 3) {
+        backgroundColor = {0.3, 0.3, 0.3};
+        brightness = 1.0;
+        backgroundColor = mul(brightness, backgroundColor);
+
+        Object *light = new Object(new Sphere({-2.5, 7, 0}, 2.0), {10.0, 10.0, 10.0});
+        light->setLight();
+        objects.push_back(light);
+
+        Object* bishop1 = new Object(new TriangleSet("assets/bishop.obj"), {0.5, 1.0, 0.5});
+        bishop1->scale({0.8, 0.8, 0.8});
+        bishop1->translate({2.5, 5.5, -3});
+        objects.push_back(bishop1);
+
+        Object* bishop2 = new Object(new TriangleSet("assets/bishop.obj"), {1.0, 0.5, 0.5});
+        bishop2->scale({0.8, 0.8, 0.8});
+        bishop2->translate({2.5, 8, -3});
+        objects.push_back(bishop2);
     }
 }
 
