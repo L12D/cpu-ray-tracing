@@ -71,7 +71,7 @@ float3 Object::getRayColor(float3 intersectionPoint, float3 normal, float3 incid
 
     std::vector<Ray *> rays;
     if (depth == 0 && !isMirror) {
-        rays = generateRays(intersectionPoint, normal, incident, 50);
+        rays = generateRays(intersectionPoint, normal, incident, 200);
     } else {
         rays.push_back(getMirrorRay(intersectionPoint, normal, incident));
     }

@@ -293,7 +293,7 @@ std::unique_ptr<BVHNode> TriangleSet::buildBVH(std::vector<triangle>& triangles,
         }
     }
 
-    if (triangles.size() <= 1 || depth > 20) {
+    if (triangles.size() <= 1 || depth >= 12) {
         node->isLeaf = true;
         node->triangles = std::make_unique<std::vector<triangle>>(triangles);
         return node;
