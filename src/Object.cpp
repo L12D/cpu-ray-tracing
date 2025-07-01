@@ -90,13 +90,13 @@ float3 Object::getRayColor(float3 intersectionPoint, float3 normal, float3 incid
         HitInfo hit;
         Object *closestObject = nullptr;
         float3 position;
-        float3 normal;
+        float3 hitNormal;
         for (Object *object : scene->getObjects()) {
             object->intersect(ray, hit, depth, maxDepth);
             if (hit.distance < rayLength) {
                 rayLength = hit.distance;
                 position = hit.position;
-                normal = hit.normal;
+                hitNormal = hit.normal;
                 closestObject = object;
             }
         }
@@ -105,31 +105,17 @@ float3 Object::getRayColor(float3 intersectionPoint, float3 normal, float3 incid
             // No intersection, use background color
             rayColor = backgroundColor;
         } else {
+            float3 direction = ray->getDirection();
             // Otherwise, calculate the color based on the object's material and lighting
             if (depth == 0 && isMirror) {
-                rayColor = closestObject->getRayColor(position, normal, ray->getDirection(), depth, maxDepth);
+                rayColor = closestObject->getRayColor(position, hitNormal, direction, depth, maxDepth);
             } else {
                 // For non-mirror objects, we can use the object's color directly
-                rayColor = closestObject->getRayColor(position, normal, ray->getDirection(), depth + 1, maxDepth);
-                // rayColor = mul(dot(incident, normal), rayColor);
+                rayColor = closestObject->getRayColor(position, hitNormal, direction, depth + 1, maxDepth);
+                rayColor = mul(dot(direction, hitNormal), rayColor);
             }
         }
-
-
-
-
-        // for (Object *object : scene->getObjects()) {
-        //     float distance;
-        //     if (depth == 0 && isMirror) {
-        //         distance = object->intersect(r, depth, maxDepth);
-        //     } else {
-        //         distance = object->intersect(r, depth+1, maxDepth);
-        //     }
-        //     if (distance < rayLength) {
-        //         rayLength = distance;
-        //         rayColor = mul(dot(r->getDirection(), hit.normal), r->getColor());
-        //     }
-        // }
+        
         reflexionColor = reflexionColor + rayColor;
     }
     reflexionColor = mul(1.0f/rays.size(), reflexionColor);

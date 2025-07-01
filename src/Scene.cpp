@@ -26,7 +26,7 @@ Scene::Scene(int sceneIndex) {
         bishop->scale({0.8, 0.8, 0.8});
         bishop->translate({2.5, 7, -3});
         objects.push_back(bishop);
-    } else if (sceneIndex == 3) { // 22 seconds without optimization, 720p, 50 rays per pixel
+    } else if (sceneIndex == 3) {
         backgroundColor = {0.3, 0.3, 0.3};
 
         Object *light = new Object(new Sphere({-2.5, 7, 0}, 2.0), {10.0, 10.0, 10.0});

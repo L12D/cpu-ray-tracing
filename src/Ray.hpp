@@ -14,7 +14,6 @@ class Ray {
         float3 origin;
         float3 direction;
         float3 inverseDirection;
-        float3 color; // BGR
     
     public :
 
@@ -24,8 +23,6 @@ class Ray {
         float3 getDirection();
         float3 getInverseDirection();
         void setDirection(float3 direction);
-        float3 getColor();
-        void setColor(float3 color);
         ~Ray() = default;
 
 };
