@@ -101,18 +101,14 @@ float3 Object::getRayColor(float3 intersectionPoint, float3 normal, float3 incid
             }
         }
 
-        if (closestObject == nullptr) {
-            // No intersection, use background color
-            rayColor = backgroundColor;
-        } else {
+        if (closestObject != nullptr) {
             float3 direction = ray->getDirection();
-            // Otherwise, calculate the color based on the object's material and lighting
             if (depth == 0 && isMirror) {
                 rayColor = closestObject->getRayColor(position, hitNormal, direction, depth, maxDepth);
             } else {
                 // For non-mirror objects, we can use the object's color directly
                 rayColor = closestObject->getRayColor(position, hitNormal, direction, depth + 1, maxDepth);
-                rayColor = mul(dot(direction, hitNormal), rayColor);
+                rayColor = mul(dot(direction, normal), rayColor);
             }
         }
         
