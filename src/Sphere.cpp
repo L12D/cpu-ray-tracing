@@ -65,9 +65,11 @@ void Sphere::translate(float3 translation) {
     this->center = this->center + translation;
 }
 
+
 void Sphere::rotate(float3 axis, float angle) {
     // Nothing to do here
 }
+
 
 void Sphere::scale(float3 scaling) {
     this->radius *= scaling.x;  // Assuming uniform scaling for spheres

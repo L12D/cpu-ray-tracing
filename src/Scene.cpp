@@ -61,7 +61,7 @@ void Scene::render(Camera *camera, cv::Mat &image) {
     for (int i = 0; i < camera->get_height(); ++i) {
         for (int j = 0; j < camera->get_width(); ++j) {
             if (j == 0 and i % 10 == 0) {
-                std::cout << "Rendering row " << i << " of " << camera->get_height() << std::endl;
+                std::cout << "\rRendering row " << i << " of " << camera->get_height() << std::flush;
             }
             Ray *ray = camera->get_ray(i, j);
             float rayLength = std::numeric_limits<float>::max();
@@ -90,7 +90,8 @@ void Scene::render(Camera *camera, cv::Mat &image) {
             }
             image.at<cv::Vec3b>(i, j) = cv::Vec3b(color.x*255, color.y*255, color.z*255);
         }
-    }    
+    }
+    std::cout << std::endl;
 }
 
 

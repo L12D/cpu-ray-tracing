@@ -42,6 +42,7 @@ TriangleSet::TriangleSet(std::string filename) {
     root = buildBVH(triangles);
 
     std::cout << "Loaded " << triangles.size() << " triangles.\n";
+    printStats();
 }
 
 
@@ -127,6 +128,7 @@ void translateBVH(std::unique_ptr<BVHNode>& node, float3 translation) {
     node->boundingBox.max = node->boundingBox.max + translation;
 }
 
+
 void TriangleSet::translate(float3 translation) {
     translateBVH(root, translation);
 }
@@ -185,6 +187,7 @@ void rotateBVH(std::unique_ptr<BVHNode>& node, float3 axis, float angle) {
     }
 }
 
+
 void TriangleSet::rotate(float3 axis, float angle) {
     rotateBVH(root, axis, angle);
 }
@@ -209,8 +212,69 @@ void scaleBVH(std::unique_ptr<BVHNode>& node, float3 scaling) {
     node->boundingBox.max = scaling * node->boundingBox.max;
 }
 
+
 void TriangleSet::scale(float3 scaling) {
     scaleBVH(root, scaling);
+}
+
+
+void collectBVHStats(const std::unique_ptr<BVHNode>& node, int depth,
+                    int& nodeCount, int& leafCount,
+                    int& minLeafDepth, int& maxLeafDepth, double& sumLeafDepths,
+                    int& maxTrianglesInLeaf, double& sumTriangles) {
+    if (!node) return;
+
+    nodeCount++;
+
+    if (node->isLeaf) {
+        leafCount++;
+        minLeafDepth = std::min(minLeafDepth, depth);
+        maxLeafDepth = std::max(maxLeafDepth, depth);
+        sumLeafDepths += depth;
+        
+        int triangleCount = node->triangles ? node->triangles->size() : 0;
+        maxTrianglesInLeaf = std::max(maxTrianglesInLeaf, triangleCount);
+        sumTriangles += triangleCount;
+    }
+
+    collectBVHStats(node->left, depth + 1, 
+                   nodeCount, leafCount,
+                   minLeafDepth, maxLeafDepth, sumLeafDepths,
+                   maxTrianglesInLeaf, sumTriangles);
+    collectBVHStats(node->right, depth + 1,
+                   nodeCount, leafCount,
+                   minLeafDepth, maxLeafDepth, sumLeafDepths,
+                   maxTrianglesInLeaf, sumTriangles);
+}
+
+
+void TriangleSet::printStats() {
+    int nodeCount = 0;
+    int leafCount = 0;
+    int minLeafDepth = std::numeric_limits<int>::max();
+    int maxLeafDepth = 0;
+    double sumLeafDepths = 0;
+    int maxTrianglesInLeaf = 0;
+    double sumTriangles = 0;
+
+    collectBVHStats(root, 0,
+                   nodeCount, leafCount,
+                   minLeafDepth, maxLeafDepth, sumLeafDepths,
+                   maxTrianglesInLeaf, sumTriangles);
+
+    double meanLeafDepth = leafCount > 0 ? sumLeafDepths / leafCount : 0;
+    double meanTrianglesPerLeaf = leafCount > 0 ? sumTriangles / leafCount : 0;
+
+    std::cout << "BVH Statistics:\n"
+              << "  Node Count: " << nodeCount << "\n"
+              << "  Leaf Node Count: " << leafCount << "\n"
+              << "  Leaf Depths:\n"
+              << "    Min: " << minLeafDepth << "\n"
+              << "    Max: " << maxLeafDepth << "\n"
+              << "    Mean: " << std::fixed << std::setprecision(2) << meanLeafDepth << "\n"
+              << "  Triangles in Leaf:\n"
+              << "    Max: " << maxTrianglesInLeaf << "\n"
+              << "    Mean: " << std::fixed << std::setprecision(2) << meanTrianglesPerLeaf << "\n";
 }
 
 

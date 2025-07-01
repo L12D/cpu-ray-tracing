@@ -22,6 +22,7 @@ class TriangleSet : public Shape {
         void translate(float3 translation);
         void rotate(float3 axis, float angle);
         void scale(float3 scaling);
+        void printStats();
         std::unique_ptr<BVHNode> buildBVH(std::vector<triangle>& triangles, int depth = 0);
         ~TriangleSet() = default;
 
