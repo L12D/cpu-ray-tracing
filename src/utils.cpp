@@ -84,18 +84,56 @@ float3 normalize(float3 a) {
 }
 
 
-#include "Ray.hpp"
+std::vector<ray> generateRays(float3 origin, float3 normal, float3 direction, int n) {
+    std::vector<ray> rays;
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<float> dis(0.0f, 1.0f);
+
+    for (int i = 0; i < n; ++i) {
+        // Generate random angles
+        float theta = 2.0f * M_PI * dis(gen);  // Azimuthal angle [0, 2π]
+        float phi = acos(2.0f * dis(gen) - 1.0f);  // Polar angle [0, π]
+        
+        // Convert spherical to Cartesian coordinates
+        float3 randomDirection = {
+            sin(phi) * cos(theta),
+            sin(phi) * sin(theta),
+            cos(phi)
+        };
+        
+        // Ensure the ray points in the same hemisphere as the normal
+        if (dot(randomDirection, normal) < 0) {
+            randomDirection = -randomDirection;
+        }
+        
+        rays.push_back(ray(origin + mul(0.001f, normal), normalize(randomDirection)));
+    }
+
+    return rays;
+}
 
 
-float AABB::intersect(Ray *ray) {
-    float3 dirfrac = ray->getInverseDirection();
+ray getMirrorRay(float3 intersectionPoint, float3 normal, float3 incident) {
+    // Compute reflection direction using R = I - 2(N·I)N
+    // where I is incident direction, N is normal
+    float3 reflectionDir = normalize(incident - mul(2.0f * dot(incident, normal), normal));
+    
+    // Add small offset to avoid self-intersection
+    float3 offsetOrigin = intersectionPoint + mul(0.001f, normal);
+    return ray(offsetOrigin, reflectionDir);
+}
 
-    float t1 = (min.x - ray->getOrigin().x) * dirfrac.x;
-    float t2 = (max.x - ray->getOrigin().x) * dirfrac.x;
-    float t3 = (min.y - ray->getOrigin().y) * dirfrac.y;
-    float t4 = (max.y - ray->getOrigin().y) * dirfrac.y;
-    float t5 = (min.z - ray->getOrigin().z) * dirfrac.z;
-    float t6 = (max.z - ray->getOrigin().z) * dirfrac.z;
+
+float AABB::intersect(const ray& ray) const {
+    float3 dirfrac = ray.inverseDirection;
+
+    float t1 = (min.x - ray.origin.x) * dirfrac.x;
+    float t2 = (max.x - ray.origin.x) * dirfrac.x;
+    float t3 = (min.y - ray.origin.y) * dirfrac.y;
+    float t4 = (max.y - ray.origin.y) * dirfrac.y;
+    float t5 = (min.z - ray.origin.z) * dirfrac.z;
+    float t6 = (max.z - ray.origin.z) * dirfrac.z;
 
     float tmin = std::max(std::max(std::min(t1, t2), std::min(t3, t4)), std::min(t5, t6));
     float tmax = std::min(std::min(std::max(t1, t2), std::max(t3, t4)), std::max(t5, t6));
@@ -109,15 +147,15 @@ float AABB::intersect(Ray *ray) {
 
 AABB AABB::fromTriangle(const triangle& tri) {
     float3 min = {
-        std::min({tri.v0.x, tri.v1.x, tri.v2.x}),
-        std::min({tri.v0.y, tri.v1.y, tri.v2.y}),
-        std::min({tri.v0.z, tri.v1.z, tri.v2.z})
+        std::min(std::min(tri.v0.x, tri.v1.x), tri.v2.x),
+        std::min(std::min(tri.v0.y, tri.v1.y), tri.v2.y),
+        std::min(std::min(tri.v0.z, tri.v1.z), tri.v2.z)
     };
 
     float3 max = {
-        std::max({tri.v0.x, tri.v1.x, tri.v2.x}),
-        std::max({tri.v0.y, tri.v1.y, tri.v2.y}),
-        std::max({tri.v0.z, tri.v1.z, tri.v2.z})
+        std::max(std::max(tri.v0.x, tri.v1.x), tri.v2.x),
+        std::max(std::max(tri.v0.y, tri.v1.y), tri.v2.y),
+        std::max(std::max(tri.v0.z, tri.v1.z), tri.v2.z)
     };
 
     return AABB{min, max};

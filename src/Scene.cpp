@@ -52,7 +52,7 @@ Scene::Scene(int sceneIndex) {
         Object* lion = new Object(new TriangleSet("assets/lion.obj"), {0.7, 0.7, 0.7});
         // lion->scale({0.8, 0.8, 0.8});
         lion->rotate({1.0, 0.0, 0.0}, 90.0f);
-        lion->translate({0.0, 1.0, -0.2});
+        lion->translate({0.0, 1.5, -0.2});
         objects.push_back(lion);
     }
 }
@@ -75,7 +75,7 @@ void Scene::render(Camera *camera, cv::Mat &image) {
             if (j == 0 and i % 10 == 0) {
                 std::cout << "\rRendering row " << i << " of " << camera->get_height() << std::flush;
             }
-            Ray *ray = camera->get_ray(i, j);
+            ray ray = camera->get_ray(i, j);
             float rayLength = std::numeric_limits<float>::max();
             float3 color = backgroundColor;
 
@@ -98,7 +98,8 @@ void Scene::render(Camera *camera, cv::Mat &image) {
                 color = backgroundColor;
             } else {
                 // Otherwise, calculate the color based on the object's material and lighting
-                color = closestObject->getRayColor(position, normal, ray->getDirection(), 0, maxDepth);
+                color = closestObject->getRayColor(position, normal, ray.direction, 0, maxDepth);
+                // color = {0.0, 0.0, 1.0};
             }
             image.at<cv::Vec3b>(i, j) = cv::Vec3b(color.x*255, color.y*255, color.z*255);
         }

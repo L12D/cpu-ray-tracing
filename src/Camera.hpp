@@ -4,10 +4,6 @@
 #include <vector>
 
 #include "utils.hpp"
-#include "Ray.hpp"
-
-
-class Ray;
 
 
 class Camera {
@@ -17,14 +13,14 @@ class Camera {
         int width, height; // in pixels
         mat4 view;
         float fov;
-        std::vector<std::vector<Ray *>> rays;
+        std::vector<std::vector<ray>> *rays;
 
     public :
 
         Camera(int resolution);
         int get_width();
         int get_height();
-        Ray *get_ray(int i, int j);
+        ray get_ray(int i, int j);
         mat4 viewMatrix();
         void translate(float3 t);
         ~Camera();

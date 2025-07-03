@@ -3,7 +3,6 @@
 
 #include "Shape.hpp"
 #include "utils.hpp"
-#include "Ray.hpp"
 
 
 class Sphere : public Shape {
@@ -20,7 +19,7 @@ class Sphere : public Shape {
         void setCenter(float3 center);
         float getRadius();
         void setRadius(float radius);
-        bool intersect(Ray *ray, HitInfo& hit);
+        bool intersect(const ray& ray, HitInfo& hit);
         void translate(float3 translation);
         void rotate(float3 axis, float angle);
         void scale(float3 scaling);

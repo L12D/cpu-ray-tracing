@@ -47,7 +47,7 @@ void Object::setMirror() {
 }
 
 
-void Object::intersect(Ray *ray, HitInfo &hit, int depth, int maxDepth) {
+void Object::intersect(const ray& ray, HitInfo &hit, int depth, int maxDepth) {
     // return the distance to the intersection point
     
     if (depth == maxDepth) {
@@ -76,7 +76,7 @@ float3 Object::getRayColor(float3 intersectionPoint, float3 normal, float3 incid
         return color;
     }
 
-    std::vector<Ray *> rays;
+    std::vector<ray> rays;
     if (depth == 0 && !isMirror) {
         rays = generateRays(intersectionPoint, normal, incident, 10);
     } else {
@@ -87,8 +87,8 @@ float3 Object::getRayColor(float3 intersectionPoint, float3 normal, float3 incid
     float3 reflexionColor = backgroundColor;
     float rayLength;
     float3 rayColor;
-    
-    for (Ray *ray : rays) {
+
+    for (const ray& ray : rays) {
         rayLength = std::numeric_limits<float>::max();
         rayColor = backgroundColor;
 
@@ -107,7 +107,7 @@ float3 Object::getRayColor(float3 intersectionPoint, float3 normal, float3 incid
         }
 
         if (closestObject != nullptr) {
-            float3 direction = ray->getDirection();
+            float3 direction = ray.direction;
             if (depth == 0 && isMirror) {
                 rayColor = closestObject->getRayColor(position, hitNormal, direction, depth, maxDepth);
             } else {
@@ -123,10 +123,6 @@ float3 Object::getRayColor(float3 intersectionPoint, float3 normal, float3 incid
     reflexionColor.x = std::min(1.0f, std::max(0.0f, reflexionColor.x));
     reflexionColor.y = std::min(1.0f, std::max(0.0f, reflexionColor.y));
     reflexionColor.z = std::min(1.0f, std::max(0.0f, reflexionColor.z));
-
-    for (Ray *r : rays) {
-        delete r;
-    }
     return reflexionColor*color;
 }
 

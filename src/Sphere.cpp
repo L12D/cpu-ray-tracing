@@ -27,9 +27,9 @@ void Sphere::setRadius(float radius) {
 }
 
 
-bool Sphere::intersect(Ray *ray, HitInfo& hit) {
-    float3 dir = ray->getDirection();
-    float3 oc = ray->getOrigin() - this->center;
+bool Sphere::intersect(const ray& ray, HitInfo& hit) {
+    float3 dir = ray.direction;
+    float3 oc = ray.origin - this->center;
     float b = 2.0f * dot(oc, dir);
     float c = dot(oc, oc) - radius * radius;
 
@@ -47,12 +47,12 @@ bool Sphere::intersect(Ray *ray, HitInfo& hit) {
     // Return the closest valid intersection point
     if (t0 > 0.0) {
         hit.distance = t0;
-        hit.position = ray->getOrigin() + mul(t0, ray->getDirection());
+        hit.position = ray.origin + mul(t0, ray.direction);
         hit.normal = normalize(hit.position - this->center);
         return true;
     } else if (t1 > 0.0) {
         hit.distance = t1;
-        hit.position = ray->getOrigin() + mul(t1, ray->getDirection());
+        hit.position = ray.origin + mul(t1, ray.direction);
         hit.normal = normalize(hit.position - this->center);
         return true;
     }

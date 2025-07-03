@@ -5,6 +5,7 @@
 #include <cmath>
 #include <vector>
 #include <memory>
+#include <random>
 
 
 struct float3 {
@@ -13,11 +14,11 @@ struct float3 {
     float3() : x(0), y(0), z(0) {}
     float3(float x, float y, float z) : x(x), y(y), z(z) {}
 
-    float3 operator+(const float3& other) {
+    float3 operator+(const float3& other) const {
         return {x + other.x, y + other.y, z + other.z};
     }
 
-    float3 operator*(const float3& other) {
+    float3 operator*(const float3& other) const {
         return {x * other.x, y * other.y, z * other.z};
     }
 
@@ -100,6 +101,26 @@ struct mat4 {
 };
 
 
+struct ray {
+    float3 origin;
+    float3 direction;
+    float3 inverseDirection;
+    
+    ray() : origin({0, 0, 0}), direction({0, 0, 1}), inverseDirection({1e6f, 1e6f, 1e6f}) {}
+
+    ray(float3 origin, float3 direction) : origin(origin), direction(direction) {
+        inverseDirection = {1.0f / direction.x, 1.0f / direction.y, 1.0f / direction.z};
+        if (inverseDirection.x == 0) inverseDirection.x = 1e6f; // Avoid division by zero
+        if (inverseDirection.y == 0) inverseDirection.y = 1e6f; // Avoid division by zero
+        if (inverseDirection.z == 0) inverseDirection.z = 1e6f; // Avoid division by zero
+    }
+};
+
+
+std::vector<ray> generateRays(float3 origin, float3 normal, float3 direction, int n);
+ray getMirrorRay(float3 intersectionPoint, float3 normal, float3 incident);
+
+
 struct triangle {
     float3 v0, v1, v2;
 
@@ -118,14 +139,11 @@ mat4 mScale(float3 a);
 float3 mul(mat4 a, float3 b);
 
 
-class Ray;
-
-
 struct AABB {
     float3 min;
     float3 max;
 
-    float intersect(Ray* ray);
+    float intersect(const ray& ray) const;
 
     void expand(const AABB& other) {
         min = {
@@ -152,6 +170,16 @@ struct BVHNode {
     bool isLeaf = false;
 
     BVHNode() = default;
+};
+
+
+struct FlatBVHNode {
+    AABB boundingBox;
+    uint32_t leftChildIndex;
+    uint32_t rightChildIndex;
+    uint32_t triangleOffset;
+    uint32_t triangleCount;
+    bool isLeaf;
 };
 
 

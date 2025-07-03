@@ -1,5 +1,4 @@
 #include "Camera.hpp"
-#include "Ray.hpp"
 
 
 Camera::Camera(int resolution) {
@@ -7,7 +6,7 @@ Camera::Camera(int resolution) {
     width = resolution * 16 / 9;
     view = id();
     fov = M_PI / 3;
-    rays = std::vector<std::vector<Ray *>>(height, std::vector<Ray *>(width));
+    rays = new std::vector<std::vector<ray>>(height, std::vector<ray>(width));
     float gap = 2*std::tan(fov/2)/height;
     for (int i = 0; i < height; ++i) {
         for (int j = 0; j < width; ++j) {
@@ -15,7 +14,7 @@ Camera::Camera(int resolution) {
             float y = 1.0;
             float z = -(i - height/2) * gap;
             float3 dir = normalize({x, y, z});
-            rays[i][j] = new Ray({0, 0, 0}, dir);
+            (*rays)[i][j] = ray({0, 0, 0}, dir);
         }
     }
 }
@@ -31,8 +30,8 @@ int Camera::get_height() {
 }
 
 
-Ray *Camera::get_ray(int i, int j) {
-    return rays[i][j];
+ray Camera::get_ray(int i, int j) {
+    return (*rays)[i][j];
 }
 
 
@@ -47,9 +46,5 @@ void Camera::translate(float3 t) {
 
 
 Camera::~Camera() {
-    for (int i = 0; i < height; ++i) {
-        for (int j = 0; j < width; ++j) {
-            delete rays[i][j];
-        }
-    }
+    delete rays;
 }
