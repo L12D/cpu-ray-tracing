@@ -42,3 +42,7 @@
 
 ![Figure 11](figures/fig11.png)
 43min, 600 rays per pixel
+
+
+![Figure 12](figures/fig12.png)
+45min, 600 rays per pixel

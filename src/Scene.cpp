@@ -45,9 +45,17 @@ Scene::Scene(int sceneIndex) {
     } else if (sceneIndex == 4) {
         backgroundColor = {0.3, 0.3, 0.3};
 
-        Object *light1 = new Object(new Sphere({0.0, 0.0, 2.0}, 1.0), {8.0, 8.0, 8.0});
+        Object *light1 = new Object(new Sphere({-2.3, 0.8, 0.0}, 1.0), {7.0, 7.0, 7.0});
         light1->setLight();
         objects.push_back(light1);
+
+        Object *light2 = new Object(new Sphere({2.3, 0.8, 0.0}, 1.0), {2.0, 2.0, 10.0});
+        light2->setLight();
+        objects.push_back(light2);
+
+        Object *light3 = new Object(new Sphere({0.0, 0.0, 2.0}, 1.0), {2.0, 2.0, 2.0});
+        light3->setLight();
+        objects.push_back(light3);
 
         Object* lion = new Object(new TriangleSet("assets/lion.obj"), {0.7, 0.7, 0.7});
         // lion->scale({0.8, 0.8, 0.8});
