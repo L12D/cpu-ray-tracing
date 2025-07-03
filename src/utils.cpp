@@ -87,7 +87,7 @@ float3 normalize(float3 a) {
 #include "Ray.hpp"
 
 
-bool AABB::intersect(Ray *ray) {
+float AABB::intersect(Ray *ray) {
     float3 dirfrac = ray->getInverseDirection();
 
     float t1 = (min.x - ray->getOrigin().x) * dirfrac.x;
@@ -101,10 +101,9 @@ bool AABB::intersect(Ray *ray) {
     float tmax = std::min(std::min(std::max(t1, t2), std::max(t3, t4)), std::max(t5, t6));
 
     if (tmax < 0 || tmin > tmax) {
-        return false;
-    } else {
-        return true;
+        return std::numeric_limits<float>::max();
     }
+    return tmin;
 }
 
 

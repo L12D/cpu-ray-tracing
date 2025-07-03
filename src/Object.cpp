@@ -65,19 +65,24 @@ void Object::intersect(Ray *ray, HitInfo &hit, int depth, int maxDepth) {
 
 
 float3 Object::getRayColor(float3 intersectionPoint, float3 normal, float3 incident, int depth, int maxDepth) {
+    Scene* scene = Application::getInstance()->getScene();
+    float3 backgroundColor = scene->getBackgroundColor();
+
+    if (depth == maxDepth) {
+        return backgroundColor;
+    }
+
     if (isLight) {
         return color;
     }
 
     std::vector<Ray *> rays;
     if (depth == 0 && !isMirror) {
-        rays = generateRays(intersectionPoint, normal, incident, 200);
+        rays = generateRays(intersectionPoint, normal, incident, 10);
     } else {
         rays.push_back(getMirrorRay(intersectionPoint, normal, incident));
     }
 
-    Scene* scene = Application::getInstance()->getScene();
-    float3 backgroundColor = scene->getBackgroundColor();
 
     float3 reflexionColor = backgroundColor;
     float rayLength;

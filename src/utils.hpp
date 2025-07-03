@@ -125,7 +125,7 @@ struct AABB {
     float3 min;
     float3 max;
 
-    bool intersect(Ray* ray);
+    float intersect(Ray* ray);
 
     void expand(const AABB& other) {
         min = {

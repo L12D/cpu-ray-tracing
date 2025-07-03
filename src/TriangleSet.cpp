@@ -47,10 +47,12 @@ TriangleSet::TriangleSet(std::string filename) {
 
 
 bool traverseBVH(const std::unique_ptr<BVHNode>& node, Ray *ray, HitInfo& hit) {
-    if (!node || (node->isLeaf && !node->triangles))
+    if (!node || (node->isLeaf && !node->triangles)) {
         return false;
-    if (!node || !node->boundingBox.intersect(ray))
+    }
+    if (!node || node->boundingBox.intersect(ray) >= hit.distance) {
         return false;
+    }
 
     bool result = false;
 
@@ -85,17 +87,35 @@ bool traverseBVH(const std::unique_ptr<BVHNode>& node, Ray *ray, HitInfo& hit) {
             }
         }
     } else {
-        bool hitLeft = traverseBVH(node->left, ray, hit);
-        bool hitRight = traverseBVH(node->right, ray, hit);
-        result = hitLeft || hitRight;
-    }
+        if (node->left == nullptr && node->right == nullptr) {
+            return false; // No children to traverse
+        }
+        if (node->left == nullptr) {
+            return traverseBVH(node->right, ray, hit);
+        }
+        if (node->right == nullptr) {
+            return traverseBVH(node->left, ray, hit);
+        }
 
+        float dstLeft = node->left->boundingBox.intersect(ray);
+        float dstRight = node->right->boundingBox.intersect(ray);
+        // Process closer node first for better ray termination
+        if (dstLeft <= dstRight) {
+            bool hitLeft = traverseBVH(node->left, ray, hit);
+            bool hitRight = traverseBVH(node->right, ray, hit);
+            result = hitLeft || hitRight;
+        } else {
+            bool hitRight = traverseBVH(node->right, ray, hit);
+            bool hitLeft = traverseBVH(node->left, ray, hit);
+            result = hitRight || hitLeft;
+        }
+    }
     return result;
 }
 
 
 bool TriangleSet::intersect(Ray *ray, HitInfo& globalHit) {
-    if (!root->boundingBox.intersect(ray)) {
+    if (root->boundingBox.intersect(ray) >= std::numeric_limits<float>::max()) {
         return false;
     }
 
