@@ -52,7 +52,7 @@ Scene::Scene(int sceneIndex) {
         Object* lion = new Object(new TriangleSet("assets/lion.obj"), {0.7, 0.7, 0.7});
         // lion->scale({0.8, 0.8, 0.8});
         lion->rotate({1.0, 0.0, 0.0}, 90.0f);
-        lion->translate({0.0, 1.5, -0.2});
+        lion->translate({0.0, 1.0, -0.2});
         objects.push_back(lion);
     }
 }

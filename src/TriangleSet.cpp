@@ -39,7 +39,7 @@ TriangleSet::TriangleSet(std::string filename) {
     }
     std::cout << "Loading " << triangles.size() << " triangles.\n";
 
-    root = buildBVH(triangles);    
+    std::unique_ptr<BVHNode> root = buildBVH(triangles);
     printStats(root);
     rootIndex = flattenBVH(root);
     std::cout << "Flattened BVH with " << nodes.size() << " nodes.\n";

@@ -18,7 +18,6 @@ class TriangleSet : public Shape {
         std::vector<triangle> triangleArray;
         std::vector<FlatBVHNode> nodes;
         int rootIndex;
-        std::unique_ptr<BVHNode> root;
     
     public :
 
