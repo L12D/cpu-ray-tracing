@@ -131,7 +131,8 @@ float3 Object::getRayColor(float3 intersectionPoint, float3 normal, float3 incid
         reflexionColor = reflexionColor + rayColor;
     }
     if (depth == 0 && !isMirror) {
-        reflexionColor = mul(1.0f/rays.size(), reflexionColor); // ... don't forget to change this one too
+        reflexionColor = mul(0.00016666f, reflexionColor); // ... don't forget to change this one too
+        // reflexionColor = mul(1.0f/rays.size(), reflexionColor);
     }
     return reflexionColor.clamp()*color;
 }
