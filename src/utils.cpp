@@ -135,27 +135,50 @@ float AABB::intersect(const ray& ray) const {
     float t5 = (min.z - ray.origin.z) * dirfrac.z;
     float t6 = (max.z - ray.origin.z) * dirfrac.z;
 
-    float tmin = std::max(std::max(std::min(t1, t2), std::min(t3, t4)), std::min(t5, t6));
-    float tmax = std::min(std::min(std::max(t1, t2), std::max(t3, t4)), std::max(t5, t6));
+    // float tmin = std::max(std::max(std::min(t1, t2), std::min(t3, t4)), std::min(t5, t6));
+    // float tmax = std::min(std::min(std::max(t1, t2), std::max(t3, t4)), std::max(t5, t6));
 
-    if (tmax < 0 || tmin > tmax) {
-        return std::numeric_limits<float>::max();
-    }
-    return tmin;
+    float tmin = (((t1 < t2 ? t1 : t2) > (t3 < t4 ? t3 : t4) ? (t1 < t2 ? t1 : t2) : (t3 < t4 ? t3 : t4)) > (t5 < t6 ? t5 : t6) 
+              ? ((t1 < t2 ? t1 : t2) > (t3 < t4 ? t3 : t4) ? (t1 < t2 ? t1 : t2) : (t3 < t4 ? t3 : t4)) 
+              : (t5 < t6 ? t5 : t6));
+
+    float tmax = (((t1 > t2 ? t1 : t2) < (t3 > t4 ? t3 : t4) ? (t1 > t2 ? t1 : t2) : (t3 > t4 ? t3 : t4)) < (t5 > t6 ? t5 : t6) 
+              ? ((t1 > t2 ? t1 : t2) < (t3 > t4 ? t3 : t4) ? (t1 > t2 ? t1 : t2) : (t3 > t4 ? t3 : t4)) 
+              : (t5 > t6 ? t5 : t6));
+
+
+    // if (tmax < 0 || tmin > tmax) {
+    //     return std::numeric_limits<float>::max();
+    // }
+    // return tmin;
+
+    return (tmax < 0.0f || tmin > tmax) ? std::numeric_limits<float>::max() : tmin;
 }
 
 
 AABB AABB::fromTriangle(const triangle& tri) {
+    // float3 min = {
+    //     std::min(std::min(tri.v0.x, tri.v1.x), tri.v2.x),
+    //     std::min(std::min(tri.v0.y, tri.v1.y), tri.v2.y),
+    //     std::min(std::min(tri.v0.z, tri.v1.z), tri.v2.z)
+    // };
+
+    // float3 max = {
+    //     std::max(std::max(tri.v0.x, tri.v1.x), tri.v2.x),
+    //     std::max(std::max(tri.v0.y, tri.v1.y), tri.v2.y),
+    //     std::max(std::max(tri.v0.z, tri.v1.z), tri.v2.z)
+    // };
+
     float3 min = {
-        std::min(std::min(tri.v0.x, tri.v1.x), tri.v2.x),
-        std::min(std::min(tri.v0.y, tri.v1.y), tri.v2.y),
-        std::min(std::min(tri.v0.z, tri.v1.z), tri.v2.z)
+        (tri.v0.x < tri.v1.x ? (tri.v0.x < tri.v2.x ? tri.v0.x : tri.v2.x) : (tri.v1.x < tri.v2.x ? tri.v1.x : tri.v2.x)),
+        (tri.v0.y < tri.v1.y ? (tri.v0.y < tri.v2.y ? tri.v0.y : tri.v2.y) : (tri.v1.y < tri.v2.y ? tri.v1.y : tri.v2.y)),
+        (tri.v0.z < tri.v1.z ? (tri.v0.z < tri.v2.z ? tri.v0.z : tri.v2.z) : (tri.v1.z < tri.v2.z ? tri.v1.z : tri.v2.z))
     };
 
     float3 max = {
-        std::max(std::max(tri.v0.x, tri.v1.x), tri.v2.x),
-        std::max(std::max(tri.v0.y, tri.v1.y), tri.v2.y),
-        std::max(std::max(tri.v0.z, tri.v1.z), tri.v2.z)
+        (tri.v0.x > tri.v1.x ? (tri.v0.x > tri.v2.x ? tri.v0.x : tri.v2.x) : (tri.v1.x > tri.v2.x ? tri.v1.x : tri.v2.x)),
+        (tri.v0.y > tri.v1.y ? (tri.v0.y > tri.v2.y ? tri.v0.y : tri.v2.y) : (tri.v1.y > tri.v2.y ? tri.v1.y : tri.v2.y)),
+        (tri.v0.z > tri.v1.z ? (tri.v0.z > tri.v2.z ? tri.v0.z : tri.v2.z) : (tri.v1.z > tri.v2.z ? tri.v1.z : tri.v2.z))
     };
 
     return AABB{min, max};

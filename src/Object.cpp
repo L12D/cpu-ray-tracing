@@ -78,7 +78,7 @@ float3 Object::getRayColor(float3 intersectionPoint, float3 normal, float3 incid
 
     std::vector<ray> rays;
     if (depth == 0 && !isMirror) {
-        rays = generateRays(intersectionPoint, normal, incident, 600);
+        rays = generateRays(intersectionPoint, normal, incident, 50); // when you change this number ...
     } else {
         rays.push_back(getMirrorRay(intersectionPoint, normal, incident));
     }
@@ -119,11 +119,10 @@ float3 Object::getRayColor(float3 intersectionPoint, float3 normal, float3 incid
         
         reflexionColor = reflexionColor + rayColor;
     }
-    reflexionColor = mul(1.0f/rays.size(), reflexionColor);
-    reflexionColor.x = std::min(1.0f, std::max(0.0f, reflexionColor.x));
-    reflexionColor.y = std::min(1.0f, std::max(0.0f, reflexionColor.y));
-    reflexionColor.z = std::min(1.0f, std::max(0.0f, reflexionColor.z));
-    return reflexionColor*color;
+    if (depth == 0 && !isMirror) {
+        reflexionColor = mul(0.02, reflexionColor); // ... don't forget to change this one too
+    }
+    return reflexionColor.clamp()*color;
 }
 
 

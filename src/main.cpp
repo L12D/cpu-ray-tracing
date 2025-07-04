@@ -14,7 +14,7 @@ int main() {
 
     auto end = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    std::cout << "Execution time: " << duration.count() << " milliseconds" << std::endl;
+    std::cout << "Execution time: " << duration.count() << " ms" << std::endl;
 
     cv::Mat processed = image.clone();
     for(int y = 1; y < image.rows - 1; y++) {

@@ -8,6 +8,9 @@
 #include <random>
 
 
+#define CLAMP01(v) ((v) < 0.0f ? 0.0f : ((v) > 1.0f ? 1.0f : (v)))
+
+
 struct float3 {
     float x, y, z;
 
@@ -33,6 +36,10 @@ struct float3 {
     friend std::ostream& operator<<(std::ostream& os, const float3& f) {
         os << "{" << f.x << ", " << f.y << ", " << f.z << "}";
         return os;
+    }
+    
+    float3 clamp() const {
+        return {CLAMP01(x), CLAMP01(y), CLAMP01(z)};
     }
 };
 

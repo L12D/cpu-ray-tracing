@@ -6,6 +6,7 @@
 #include <sstream>
 #include <algorithm>
 #include <iomanip>
+#include <chrono>
 
 #include "utils.hpp"
 #include "Shape.hpp"

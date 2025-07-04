@@ -39,10 +39,17 @@ TriangleSet::TriangleSet(std::string filename) {
     }
     std::cout << "Loading " << triangles.size() << " triangles.\n";
 
+    auto start = std::chrono::high_resolution_clock::now();
+    
     std::unique_ptr<BVHNode> root = buildBVH(triangles);
-    printStats(root);
     rootIndex = flattenBVH(root);
-    std::cout << "Flattened BVH with " << nodes.size() << " nodes.\n";
+
+    auto end = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+    std::cout << "BVH build: " << duration.count() << " ms" << std::endl;
+
+    printStats(root);
+    // std::cout << "Flattened BVH with " << nodes.size() << " nodes.\n";
 
 }
 
