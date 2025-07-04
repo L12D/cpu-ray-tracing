@@ -65,7 +65,8 @@ void Object::intersect(const ray& ray, HitInfo &hit, int depth, int maxDepth) {
 
 
 float3 Object::getRayColor(float3 intersectionPoint, float3 normal, float3 incident, int depth, int maxDepth) {
-    Scene* scene = Application::getInstance()->getScene();
+    Application* app = Application::getInstance();
+    Scene* scene = app->getScene();
     float3 backgroundColor = scene->getBackgroundColor();
 
     if (depth == maxDepth) {
@@ -78,7 +79,17 @@ float3 Object::getRayColor(float3 intersectionPoint, float3 normal, float3 incid
 
     std::vector<ray> rays;
     if (depth == 0 && !isMirror) {
-        rays = generateRays(intersectionPoint, normal, incident, 50); // when you change this number ...
+        std::vector<float3> directions = app->getDirections();
+
+        for (float3& randomDirection : directions) {
+            // Ensure the ray points in the same hemisphere as the normal
+            if (dot(randomDirection, normal) < 0) {
+                randomDirection = -randomDirection;
+            }
+            
+            rays.push_back(ray(intersectionPoint + mul(0.001f, normal), normalize(randomDirection)));
+        }
+        // rays = generateRays(intersectionPoint, normal, incident, 50); // when you change this number ...
     } else {
         rays.push_back(getMirrorRay(intersectionPoint, normal, incident));
     }
@@ -120,7 +131,7 @@ float3 Object::getRayColor(float3 intersectionPoint, float3 normal, float3 incid
         reflexionColor = reflexionColor + rayColor;
     }
     if (depth == 0 && !isMirror) {
-        reflexionColor = mul(0.02, reflexionColor); // ... don't forget to change this one too
+        reflexionColor = mul(1.0f/rays.size(), reflexionColor); // ... don't forget to change this one too
     }
     return reflexionColor.clamp()*color;
 }

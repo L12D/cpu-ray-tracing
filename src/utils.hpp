@@ -125,6 +125,7 @@ struct ray {
 
 
 std::vector<ray> generateRays(float3 origin, float3 normal, float3 direction, int n);
+// std::vector<ray> recoverRays(float3 origin, float3 normal, float3 direction, int n);
 ray getMirrorRay(float3 intersectionPoint, float3 normal, float3 incident);
 
 
