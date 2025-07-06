@@ -186,7 +186,6 @@ struct FlatBVHNode {
     uint32_t rightChildIndex;
     uint32_t triangleOffset;
     uint32_t triangleCount;
-    bool isLeaf;
 };
 
 

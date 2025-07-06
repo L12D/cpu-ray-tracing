@@ -72,7 +72,7 @@ bool traverseBVH(const std::vector<FlatBVHNode>& flatNodes, const std::vector<tr
             continue;
         }
 
-        if (node.isLeaf) {
+        if (node.leftChildIndex == 4294967295) { // Leaf node
             for (uint32_t i = 0; i < node.triangleCount; ++i) {
                 const triangle& tri = triangles[node.triangleOffset + i];
 
@@ -202,7 +202,7 @@ void rotateBVH(std::vector<FlatBVHNode>& nodes, std::vector<triangle>& triangles
 
     std::function<AABB(int)> updateBounds = [&](int nodeIndex) -> AABB {
         FlatBVHNode& node = nodes[nodeIndex];
-        if (node.isLeaf) {
+        if (node.leftChildIndex == 4294967295) { // Leaf node
             node.boundingBox = AABB();
             for (uint32_t i = 0; i < node.triangleCount; ++i) {
                 const triangle& tri = triangles[node.triangleOffset + i];
@@ -365,7 +365,8 @@ int TriangleSet::flattenBVH(const std::unique_ptr<BVHNode>& node) {
 
     FlatBVHNode newNode;
     newNode.boundingBox = node->boundingBox;
-    newNode.isLeaf = node->isLeaf;
+    newNode.leftChildIndex = node->isLeaf ? 4294967295 : 0;
+    newNode.rightChildIndex = node->isLeaf ? 4294967295 : 0;
 
     if (node->isLeaf) {
         newNode.triangleOffset = triangleArray.size();
