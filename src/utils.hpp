@@ -128,7 +128,7 @@ std::vector<ray> generateRays(float3 origin, float3 normal, float3 direction, in
 ray getMirrorRay(float3 intersectionPoint, float3 normal, float3 incident);
 
 
-struct triangle {
+struct triangle { // this structure is not actually used in the bvh traversal
     float3 v0, v1, v2;
 
     triangle(float3 v0, float3 v1, float3 v2) : v0(v0), v1(v1), v2(v2) {}

@@ -16,7 +16,9 @@ class TriangleSet : public Shape {
     
     private :
 
-        std::vector<triangle> triangleArray;
+        std::vector<float3> v0s;
+        std::vector<float3> v1s;
+        std::vector<float3> v2s;
         std::vector<FlatBVHNode> nodes;
         int rootIndex;
     

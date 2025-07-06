@@ -54,7 +54,7 @@ TriangleSet::TriangleSet(std::string filename) {
 }
 
 
-bool traverseBVH(const std::vector<FlatBVHNode>& flatNodes, const std::vector<triangle>& triangles, int rootIndex, const ray& ray, HitInfo& hit) {
+bool traverseBVH(const std::vector<FlatBVHNode>& flatNodes, const std::vector<float3>& v0s, const std::vector<float3>& v1s, const std::vector<float3>& v2s, int rootIndex, const ray& ray, HitInfo& hit) {
     std::vector<int> stack;
     stack.reserve(64);
     stack.push_back(rootIndex); // root node is at the end of the vector
@@ -74,12 +74,12 @@ bool traverseBVH(const std::vector<FlatBVHNode>& flatNodes, const std::vector<tr
 
         if (node.leftChildIndex == 4294967295) { // Leaf node
             for (uint32_t i = 0; i < node.triangleCount; ++i) {
-                const triangle& tri = triangles[node.triangleOffset + i];
+                // const triangle& tri = triangles[node.triangleOffset + i];
 
                 // Möller–Trumbore intersection test
-                const float3& v0 = tri.v0;
-                const float3& v1 = tri.v1;
-                const float3& v2 = tri.v2;
+                const float3& v0 = v0s[node.triangleOffset + i];
+                const float3& v1 = v1s[node.triangleOffset + i];
+                const float3& v2 = v2s[node.triangleOffset + i];
 
                 float3 edge1 = v1 - v0;
                 float3 edge2 = v2 - v0;
@@ -138,7 +138,7 @@ bool TriangleSet::intersect(const ray& ray, HitInfo& globalHit) {
 
     HitInfo hit;
     hit.distance = std::numeric_limits<float>::max();
-    if (traverseBVH(nodes, triangleArray, rootIndex, ray, hit)) {
+    if (traverseBVH(nodes, v0s, v1s, v2s, rootIndex, ray, hit)) {
         globalHit.distance = hit.distance;
         globalHit.position = hit.position;
         globalHit.normal = hit.normal;
@@ -149,11 +149,11 @@ bool TriangleSet::intersect(const ray& ray, HitInfo& globalHit) {
 }
 
 
-void translateBVH(std::vector<FlatBVHNode>& nodes, std::vector<triangle>& triangles, float3 translation) {
-    for (size_t i = 0; i < triangles.size(); ++i) {
-        triangles[i].v0 = triangles[i].v0 + translation;
-        triangles[i].v1 = triangles[i].v1 + translation;
-        triangles[i].v2 = triangles[i].v2 + translation;
+void translateBVH(std::vector<FlatBVHNode>& nodes, std::vector<float3>& v0s, std::vector<float3>& v1s, std::vector<float3>& v2s, float3 translation) {
+    for (size_t i = 0; i < v0s.size(); ++i) {
+        v0s[i] = v0s[i] + translation;
+        v1s[i] = v1s[i] + translation;
+        v2s[i] = v2s[i] + translation;
     }
     for (FlatBVHNode& node : nodes) {
         node.boundingBox.min = node.boundingBox.min + translation;
@@ -163,12 +163,12 @@ void translateBVH(std::vector<FlatBVHNode>& nodes, std::vector<triangle>& triang
 
 
 void TriangleSet::translate(float3 translation) {
-    translateBVH(nodes, triangleArray, translation);
+    translateBVH(nodes, v0s, v1s, v2s, translation);
     // updateAABBs();
 }
 
 
-void rotateBVH(std::vector<FlatBVHNode>& nodes, std::vector<triangle>& triangles, float3 axis, float angle) {
+void rotateBVH(std::vector<FlatBVHNode>& nodes, std::vector<float3>& v0s, std::vector<float3>& v1s, std::vector<float3>& v2s, float3 axis, float angle) {
     float rad = angle * M_PI / 180.0f;
     float c = cos(rad);
     float s = sin(rad);
@@ -182,21 +182,25 @@ void rotateBVH(std::vector<FlatBVHNode>& nodes, std::vector<triangle>& triangles
     };
 
     // Rotate all triangles
-    for (triangle& tri : triangles) {
-        tri.v0 = float3{
-            matrix[0][0]*tri.v0.x + matrix[0][1]*tri.v0.y + matrix[0][2]*tri.v0.z,
-            matrix[1][0]*tri.v0.x + matrix[1][1]*tri.v0.y + matrix[1][2]*tri.v0.z,
-            matrix[2][0]*tri.v0.x + matrix[2][1]*tri.v0.y + matrix[2][2]*tri.v0.z
+    for (size_t i = 0; i < v0s.size(); ++i) {
+        float3& v0 = v0s[i];
+        float3& v1 = v1s[i];
+        float3& v2 = v2s[i];
+
+        v0s[i] = float3{
+            matrix[0][0]*v0.x + matrix[0][1]*v0.y + matrix[0][2]*v0.z,
+            matrix[1][0]*v0.x + matrix[1][1]*v0.y + matrix[1][2]*v0.z,
+            matrix[2][0]*v0.x + matrix[2][1]*v0.y + matrix[2][2]*v0.z
         };
-        tri.v1 = float3{
-            matrix[0][0]*tri.v1.x + matrix[0][1]*tri.v1.y + matrix[0][2]*tri.v1.z,
-            matrix[1][0]*tri.v1.x + matrix[1][1]*tri.v1.y + matrix[1][2]*tri.v1.z,
-            matrix[2][0]*tri.v1.x + matrix[2][1]*tri.v1.y + matrix[2][2]*tri.v1.z
+        v1s[i] = float3{
+            matrix[0][0]*v1.x + matrix[0][1]*v1.y + matrix[0][2]*v1.z,
+            matrix[1][0]*v1.x + matrix[1][1]*v1.y + matrix[1][2]*v1.z,
+            matrix[2][0]*v1.x + matrix[2][1]*v1.y + matrix[2][2]*v1.z
         };
-        tri.v2 = float3{
-            matrix[0][0]*tri.v2.x + matrix[0][1]*tri.v2.y + matrix[0][2]*tri.v2.z,
-            matrix[1][0]*tri.v2.x + matrix[1][1]*tri.v2.y + matrix[1][2]*tri.v2.z,
-            matrix[2][0]*tri.v2.x + matrix[2][1]*tri.v2.y + matrix[2][2]*tri.v2.z
+        v2s[i] = float3{
+            matrix[0][0]*v2.x + matrix[0][1]*v2.y + matrix[0][2]*v2.z,
+            matrix[1][0]*v2.x + matrix[1][1]*v2.y + matrix[1][2]*v2.z,
+            matrix[2][0]*v2.x + matrix[2][1]*v2.y + matrix[2][2]*v2.z
         };
     }
 
@@ -205,7 +209,7 @@ void rotateBVH(std::vector<FlatBVHNode>& nodes, std::vector<triangle>& triangles
         if (node.leftChildIndex == 4294967295) { // Leaf node
             node.boundingBox = AABB();
             for (uint32_t i = 0; i < node.triangleCount; ++i) {
-                const triangle& tri = triangles[node.triangleOffset + i];
+                const triangle& tri = triangle({v0s[node.triangleOffset + i], v1s[node.triangleOffset + i], v2s[node.triangleOffset + i]});
                 node.boundingBox.expand(AABB::fromTriangle(tri));
             }
         } else {
@@ -221,16 +225,16 @@ void rotateBVH(std::vector<FlatBVHNode>& nodes, std::vector<triangle>& triangles
 
 
 void TriangleSet::rotate(float3 axis, float angle) {
-    rotateBVH(nodes, triangleArray, axis, angle);
+    rotateBVH(nodes, v0s, v1s, v2s, axis, angle);
 }
 
 
-void scaleBVH(std::vector<FlatBVHNode>& node, std::vector<triangle>& triangles, float3 scaling) {
+void scaleBVH(std::vector<FlatBVHNode>& node, std::vector<float3>& v0s, std::vector<float3>& v1s, std::vector<float3>& v2s, float3 scaling) {
     // Scale triangles
-    for (triangle& tri : triangles) {
-        tri.v0 = float3{tri.v0.x * scaling.x, tri.v0.y * scaling.y, tri.v0.z * scaling.z};
-        tri.v1 = float3{tri.v1.x * scaling.x, tri.v1.y * scaling.y, tri.v1.z * scaling.z};
-        tri.v2 = float3{tri.v2.x * scaling.x, tri.v2.y * scaling.y, tri.v2.z * scaling.z};
+    for (size_t i = 0; i < v0s.size(); ++i) {
+        v0s[i] = float3{v0s[i].x * scaling.x, v0s[i].y * scaling.y, v0s[i].z * scaling.z};
+        v1s[i] = float3{v1s[i].x * scaling.x, v1s[i].y * scaling.y, v1s[i].z * scaling.z};
+        v2s[i] = float3{v2s[i].x * scaling.x, v2s[i].y * scaling.y, v2s[i].z * scaling.z};
     }
 
     // Scale bounding boxes
@@ -250,7 +254,7 @@ void scaleBVH(std::vector<FlatBVHNode>& node, std::vector<triangle>& triangles, 
 
 
 void TriangleSet::scale(float3 scaling) {
-    scaleBVH(nodes, triangleArray, scaling);
+    scaleBVH(nodes, v0s, v1s, v2s, scaling);
 }
 
 
@@ -369,12 +373,14 @@ int TriangleSet::flattenBVH(const std::unique_ptr<BVHNode>& node) {
     newNode.rightChildIndex = node->isLeaf ? 4294967295 : 0;
 
     if (node->isLeaf) {
-        newNode.triangleOffset = triangleArray.size();
+        newNode.triangleOffset = v0s.size();
         newNode.triangleCount = node->triangles ? node->triangles->size() : 0;
         if (node->triangles) {
-            triangleArray.insert(triangleArray.end(),
-                                 node->triangles->begin(),
-                                 node->triangles->end());
+            for (const auto& tri : *node->triangles) {
+                v0s.push_back(tri.v0);
+                v1s.push_back(tri.v1);
+                v2s.push_back(tri.v2);
+            }
         }
     } else {
         // Recursively flatten children first
