@@ -29,8 +29,8 @@ class Object {
         void setColor(float3 color);
         void setLight();
         void setMirror();
-        void intersect(const ray& ray, HitInfo &hit, int depth, int maxDepth);
-        float3 getRayColor(float3 intersectionPoint, float3 normal, float3 incident, int depth, int maxDepth);
+        void intersect(const ray& ray, HitInfo &hit, int depth);
+        float3 getRayColor(float3 intersectionPoint, float3 normal, float3 incident, int depth);
         void translate(float3 translation);
         void rotate(float3 axis, float angle);
         void scale(float3 scaling);

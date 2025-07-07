@@ -5,9 +5,9 @@ Application *Application::instance = nullptr;
 
 
 Application::Application() {
-    camera = new Camera(720);
-    scene = new Scene(2);
-    directions = generateDirections(100);
+    camera = new Camera(RESOLUTION);
+    scene = new Scene(SCENE);
+    directions = generateDirections();
 }
 
 
@@ -29,13 +29,13 @@ Scene *Application::getScene() {
 }
 
 
-std::vector<float3> Application::generateDirections(int n) {
+std::vector<float3> Application::generateDirections() {
     std::vector<float3> result;
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_real_distribution<float> dis(0.0f, 1.0f);
 
-    for (int i = 0; i < n; ++i) {
+    for (int i = 0; i < N_RAYS; ++i) {
         // Generate random angles
         float theta = 2.0f * M_PI * dis(gen);  // Azimuthal angle [0, 2π]
         float phi = acos(2.0f * dis(gen) - 1.0f);  // Polar angle [0, π]

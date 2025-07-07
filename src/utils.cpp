@@ -148,11 +148,11 @@ float AABB::intersect(const ray& ray) const {
 
 
     // if (tmax < 0 || tmin > tmax) {
-    //     return std::numeric_limits<float>::max();
+    //     return FLOAT_MAX;
     // }
     // return tmin;
 
-    return (tmax < 0.0f || tmin > tmax) ? std::numeric_limits<float>::max() : tmin;
+    return (tmax < 0.0f || tmin > tmax) ? FLOAT_MAX : tmin;
 }
 
 

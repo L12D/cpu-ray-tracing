@@ -3,8 +3,6 @@
 
 Scene::Scene(int sceneIndex) {
     if (sceneIndex == 1) {
-        backgroundColor = {0.2, 0.2, 0.2};
-
         Object *light = new Object(new Sphere({-2, 4, 0}, 1), {4.0, 4.0, 4.0});
         light->setLight();
         objects.push_back(light);
@@ -12,9 +10,7 @@ Scene::Scene(int sceneIndex) {
         objects.push_back(new Object(new Sphere({1, 4, 0}, 1), {0.0, 0.0, 1.0}));
         objects.push_back(new Object(new Sphere({0, 4, -4}, 3), {1.0, 1.0, 1.0}));
     } else if (sceneIndex == 2) {
-        backgroundColor = {0.3, 0.3, 0.3};
-
-        Object *light1 = new Object(new Sphere({-2.5, 6, 0}, 1.5), {10.0, 10.0, 10.0});
+        Object *light1 = new Object(new Sphere({-2.5, 6, 0}, 1.5), {8.0, 8.0, 8.0});
         light1->setLight();
         objects.push_back(light1);
 
@@ -27,8 +23,6 @@ Scene::Scene(int sceneIndex) {
         bishop->translate({2.5, 7, -3});
         objects.push_back(bishop);
     } else if (sceneIndex == 3) {
-        backgroundColor = {0.3, 0.3, 0.3};
-
         Object *light = new Object(new Sphere({-2.5, 7, 0}, 2.0), {10.0, 10.0, 10.0});
         light->setLight();
         objects.push_back(light);
@@ -43,24 +37,22 @@ Scene::Scene(int sceneIndex) {
         bishop2->translate({2.5, 8, -3});
         objects.push_back(bishop2);
     } else if (sceneIndex == 4) {
-        backgroundColor = {0.3, 0.3, 0.3};
-
-        Object *light1 = new Object(new Sphere({-2.3, 0.8, 0.0}, 1.0), {7.0, 7.0, 7.0});
+        Object *light1 = new Object(new Sphere({-2.3, 0.6, 0.0}, 1.0), {7.0, 7.0, 7.0});
         light1->setLight();
         objects.push_back(light1);
 
-        Object *light2 = new Object(new Sphere({2.3, 0.8, 0.0}, 1.0), {2.0, 2.0, 10.0});
+        Object *light2 = new Object(new Sphere({2.3, 0.6, 0.0}, 1.0), {2.0, 2.0, 10.0});
         light2->setLight();
         objects.push_back(light2);
 
-        Object *light3 = new Object(new Sphere({0.0, 0.0, 2.0}, 1.0), {2.0, 2.0, 2.0});
+        Object *light3 = new Object(new Sphere({0.0, -0.2, 2.0}, 1.0), {2.0, 2.0, 2.0});
         light3->setLight();
         objects.push_back(light3);
 
         Object* lion = new Object(new TriangleSet("assets/lion.obj"), {0.7, 0.7, 0.7});
         // lion->scale({0.8, 0.8, 0.8});
         lion->rotate({1.0, 0.0, 0.0}, 90.0f);
-        lion->translate({0.0, 1.0, -0.2});
+        lion->translate({0.0, 0.8, -0.2});
         objects.push_back(lion);
     }
 }
@@ -68,11 +60,6 @@ Scene::Scene(int sceneIndex) {
 
 std::vector<Object*> Scene::getObjects() {
     return objects;
-}
-
-
-float3 Scene::getBackgroundColor() {
-    return backgroundColor;
 }
 
 
@@ -84,15 +71,15 @@ void Scene::render(Camera *camera, cv::Mat &image) {
                 std::cout << "\rRendering row " << i << " of " << camera->get_height() << std::flush;
             }
             ray ray = camera->get_ray(i, j);
-            float rayLength = std::numeric_limits<float>::max();
-            float3 color = backgroundColor;
+            float rayLength = FLOAT_MAX;
+            float3 color = BC_COLOR_2;
 
             HitInfo hit;
             Object *closestObject = nullptr;
             float3 position;
             float3 normal;
             for (Object *object : objects) {
-                object->intersect(ray, hit, 0, maxDepth);
+                object->intersect(ray, hit, 0);
                 if (hit.distance < rayLength) {
                     rayLength = hit.distance;
                     position = hit.position;
@@ -103,10 +90,10 @@ void Scene::render(Camera *camera, cv::Mat &image) {
 
             if (closestObject == nullptr) {
                 // No intersection, use background color
-                color = backgroundColor;
+                color = BC_COLOR_1;
             } else {
                 // Otherwise, calculate the color based on the object's material and lighting
-                color = closestObject->getRayColor(position, normal, ray.direction, 0, maxDepth);
+                color = closestObject->getRayColor(position, normal, ray.direction, 0);
                 // color = {0.0, 0.0, 1.0};
             }
             image.at<cv::Vec3b>(i, j) = cv::Vec3b(color.x*255, color.y*255, color.z*255);

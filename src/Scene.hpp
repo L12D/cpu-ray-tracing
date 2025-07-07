@@ -18,14 +18,12 @@ class Scene {
 
     private :
 
-        float3 backgroundColor;
         std::vector<Object*> objects;
         
     public :
 
         Scene(int sceneIndex);
         std::vector<Object*> getObjects();
-        float3 getBackgroundColor();
         void render(Camera *camera, cv::Mat &image);
         ~Scene();
 

@@ -132,12 +132,12 @@ bool traverseBVH(const std::vector<FlatBVHNode>& flatNodes, const std::vector<tr
 
 
 bool TriangleSet::intersect(const ray& ray, HitInfo& globalHit) {
-    if (nodes.back().boundingBox.intersect(ray) >= std::numeric_limits<float>::max()) {
+    if (nodes.back().boundingBox.intersect(ray) >= FLOAT_MAX) {
         return false;
     }
 
     HitInfo hit;
-    hit.distance = std::numeric_limits<float>::max();
+    hit.distance = FLOAT_MAX;
     if (traverseBVH(nodes, triangleArray, rootIndex, ray, hit)) {
         globalHit.distance = hit.distance;
         globalHit.position = hit.position;

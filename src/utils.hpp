@@ -10,6 +10,16 @@
 
 #define CLAMP01(v) ((v) < 0.0f ? 0.0f : ((v) > 1.0f ? 1.0f : (v)))
 
+static constexpr float FLOAT_MAX = std::numeric_limits<float>::max();
+
+#define BC_COLOR_1 {0.0f, 0.0f, 0.0f}
+#define BC_COLOR_2 {0.3f, 0.3f, 0.3f}
+#define RESOLUTION 1080
+#define SCENE 4
+#define N_RAYS 200
+static constexpr float INV_N_RAYS = 1.0f / static_cast<float>(N_RAYS);
+#define MAX_DEPTH 3
+
 
 struct float3 {
     float x, y, z;
@@ -192,5 +202,5 @@ struct FlatBVHNode {
 struct HitInfo {
     float3 position;
     float3 normal;
-    float distance = std::numeric_limits<float>::max();
+    float distance = FLOAT_MAX;
 };

@@ -10,6 +10,7 @@ int main() {
     cv::Mat image(camera->get_height(), camera->get_width(), CV_8UC3, cv::Scalar(0, 0, 0));
 
     auto start = std::chrono::high_resolution_clock::now();
+    
     app->render(image);
 
     auto end = std::chrono::high_resolution_clock::now();

@@ -23,7 +23,7 @@ class Application {
         static Application *getInstance();
         Camera *getCamera();
         Scene *getScene();
-        std::vector<float3> generateDirections(int n);
+        std::vector<float3> generateDirections();
         std::vector<float3> getDirections();
         void render(cv::Mat &image);
         ~Application();

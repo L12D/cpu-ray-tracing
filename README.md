@@ -35,3 +35,7 @@
 
 ![Figure 12](figures/fig12.png)
 45min, 600 rays per pixel
+
+
+![Figure 13](figures/fig13.png)
+1h, 200 rays per pixel, 1080p
