@@ -39,3 +39,7 @@
 
 ![Figure 13](figures/fig13.png)
 1h, 200 rays per pixel, 1080p
+
+
+![Figure 14](figures/fig14.png)
+1h, 1200 rays per pixel, 0.3 triangles, 1080p
