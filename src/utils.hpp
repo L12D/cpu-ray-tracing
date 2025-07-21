@@ -14,9 +14,9 @@ static constexpr float FLOAT_MAX = std::numeric_limits<float>::max();
 
 #define BC_COLOR_1 {0.1f, 0.1f, 0.1f}
 #define BC_COLOR_2 {0.3f, 0.3f, 0.3f}
-#define RESOLUTION 1080
+#define RESOLUTION 720
 #define SCENE 4
-#define N_RAYS 1200
+#define N_RAYS 10
 static constexpr float INV_N_RAYS = 1.0f / static_cast<float>(N_RAYS);
 #define MAX_DEPTH 3
 
@@ -176,6 +176,11 @@ struct AABB {
     }
 
     static AABB fromTriangle(const triangle& p);
+
+    float surfaceArea() const {
+        float3 extent = max - min;
+        return 2.0f * (extent.x * extent.y + extent.y * extent.z + extent.z * extent.x);
+    }
 };
 
 

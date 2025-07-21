@@ -320,42 +320,93 @@ std::unique_ptr<BVHNode> TriangleSet::buildBVH(std::vector<triangle>& triangles,
     // Compute bounding box
     for (const auto& tri : triangles) {
         AABB triBox = AABB::fromTriangle(tri);
-        if (node->boundingBox.min.x == 0 && node->boundingBox.max.x == 0) {
-            node->boundingBox = triBox;
-        } else {
-            node->boundingBox.expand(triBox);
-        }
+        node->boundingBox.expand(triBox);
     }
 
-    if (triangles.size() <= 1 || depth >= 12) {
+    if (triangles.size() <= 2 || depth >= 20) {
         node->isLeaf = true;
         node->triangles = std::make_unique<std::vector<triangle>>(triangles);
         return node;
     }
 
-    // Split by longest axis
-    float3 size = node->boundingBox.max - node->boundingBox.min;
-    int axis = (size.x > size.y && size.x > size.z) ? 0 : (size.y > size.z ? 1 : 2);
+    const float traversalCost = 1.0f;
+    const float intersectionCost = 1.0f;
+    const float parentArea = node->boundingBox.surfaceArea();
 
-    std::sort(triangles.begin(), triangles.end(), [axis](const triangle& a, const triangle& b) {
-        float ac = (axis == 0 ? (a.v0.x + a.v1.x + a.v2.x) : 
-                   axis == 1 ? (a.v0.y + a.v1.y + a.v2.y) : 
-                              (a.v0.z + a.v1.z + a.v2.z)) / 3.0f;
-        float bc = (axis == 0 ? (b.v0.x + b.v1.x + b.v2.x) : 
-                   axis == 1 ? (b.v0.y + b.v1.y + b.v2.y) : 
-                              (b.v0.z + b.v1.z + b.v2.z)) / 3.0f;
-        return ac < bc;
+    int bestAxis = -1;
+    int bestSplit = -1;
+    float bestCost = std::numeric_limits<float>::infinity();
+
+    for (int axis = 0; axis < 3; ++axis) {
+        // Sort triangles along axis by centroid
+        std::sort(triangles.begin(), triangles.end(), [axis](const triangle& a, const triangle& b) {
+            auto centroid = [](const triangle& t, int ax) {
+            float v0c = (ax == 0) ? t.v0.x : (ax == 1) ? t.v0.y : t.v0.z;
+            float v1c = (ax == 0) ? t.v1.x : (ax == 1) ? t.v1.y : t.v1.z;
+            float v2c = (ax == 0) ? t.v2.x : (ax == 1) ? t.v2.y : t.v2.z;
+            return (v0c + v1c + v2c) / 3.0f;
+        };
+            return centroid(a, axis) < centroid(b, axis);
+        });
+
+        // Precompute left and right bounding boxes
+        std::vector<AABB> leftBoxes(triangles.size());
+        std::vector<AABB> rightBoxes(triangles.size());
+
+        AABB leftBox, rightBox;
+        for (size_t i = 0; i < triangles.size(); ++i) {
+            leftBox.expand(AABB::fromTriangle(triangles[i]));
+            leftBoxes[i] = leftBox;
+        }
+        for (int i = static_cast<int>(triangles.size()) - 1; i >= 0; --i) {
+            rightBox.expand(AABB::fromTriangle(triangles[i]));
+            rightBoxes[i] = rightBox;
+        }
+
+        // Try all possible split positions
+        for (size_t i = 1; i < triangles.size(); ++i) {
+            float Sl = leftBoxes[i - 1].surfaceArea();
+            float Sr = rightBoxes[i].surfaceArea();
+
+            float cost = traversalCost + intersectionCost * (
+                (Sl * i + Sr * (triangles.size() - i)) / parentArea
+            );
+
+            if (cost < bestCost) {
+                bestCost = cost;
+                bestAxis = axis;
+                bestSplit = i;
+            }
+        }
+    }
+
+    // If no good split found, make leaf
+    if (bestSplit == -1) {
+        node->isLeaf = true;
+        node->triangles = std::make_unique<std::vector<triangle>>(triangles);
+        return node;
+    }
+
+    // Sort and split on best axis
+    std::sort(triangles.begin(), triangles.end(), [bestAxis](const triangle& a, const triangle& b) {
+        auto centroid = [](const triangle& t, int ax) {
+            float v0c = (ax == 0) ? t.v0.x : (ax == 1) ? t.v0.y : t.v0.z;
+            float v1c = (ax == 0) ? t.v1.x : (ax == 1) ? t.v1.y : t.v1.z;
+            float v2c = (ax == 0) ? t.v2.x : (ax == 1) ? t.v2.y : t.v2.z;
+            return (v0c + v1c + v2c) / 3.0f;
+        };
+        return centroid(a, bestAxis) < centroid(b, bestAxis);
     });
 
-    size_t mid = triangles.size() / 2;
-    std::vector<triangle> leftTriangles(triangles.begin(), triangles.begin() + mid);
-    std::vector<triangle> rightTriangles(triangles.begin() + mid, triangles.end());
+    std::vector<triangle> leftTriangles(triangles.begin(), triangles.begin() + bestSplit);
+    std::vector<triangle> rightTriangles(triangles.begin() + bestSplit, triangles.end());
 
     node->left = buildBVH(leftTriangles, depth + 1);
     node->right = buildBVH(rightTriangles, depth + 1);
 
     return node;
 }
+
 
 
 int TriangleSet::flattenBVH(const std::unique_ptr<BVHNode>& node) {
