@@ -28,7 +28,7 @@
 31min, 6 000 rays per pixel, 1080p (then 16min)
 
 ![Figure 10](figures/fig10.png)
-18min, 200 rays per pixel (just for the record)
+18min, 200 rays per pixel
 
 ![Figure 11](figures/fig11.png)
 43min, 600 rays per pixel
@@ -36,10 +36,11 @@
 ![Figure 12](figures/fig12.png)
 45min, 600 rays per pixel
 
-
 ![Figure 13](figures/fig13.png)
 1h, 200 rays per pixel, 1080p
 
-
 ![Figure 14](figures/fig14.png)
 1h, 1200 rays per pixel, 0.3 triangles, 1080p
+
+![Figure 15](figures/fig15.png)
+1h40, 2000 rays per pixel, 0.3 triangles, 1080p, with surface area heuristic

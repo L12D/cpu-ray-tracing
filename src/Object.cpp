@@ -79,16 +79,16 @@ float3 Object::getRayColor(float3 intersectionPoint, float3 normal, float3 incid
     std::vector<ray> rays;
     if (depth == 0 && !isMirror) {
 
-        // std::vector<float3> directions = app->getDirections();
-        // for (float3& randomDirection : directions) {
-        //     // Ensure the ray points in the same hemisphere as the normal
-        //     if (dot(randomDirection, normal) < 0) {
-        //         randomDirection = -randomDirection;
-        //     }
-        //     rays.push_back(ray(intersectionPoint + mul(0.001f, normal), normalize(randomDirection)));
-        // }
+        std::vector<float3> directions = app->getDirections();
+        for (float3& randomDirection : directions) {
+            // Ensure the ray points in the same hemisphere as the normal
+            if (dot(randomDirection, normal) < 0) {
+                randomDirection = -randomDirection;
+            }
+            rays.push_back(ray(intersectionPoint + mul(0.001f, normal), normalize(randomDirection)));
+        }
 
-        rays = generateRays(intersectionPoint, normal, incident, N_RAYS);
+        // rays = generateRays(intersectionPoint, normal, incident, N_RAYS);
 
     } else {
         rays.push_back(getMirrorRay(intersectionPoint, normal, incident));
