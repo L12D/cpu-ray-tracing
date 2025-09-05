@@ -1,4 +1,11 @@
-# any-car-grit
+# CPU Ray Tracing
+
+This is a basic cpu ray tracing project.
+
+These successive steps are implemented:
+- Axis-Aligned Bounding Boxes (AABB)
+- Bounding Volume Hierarchy (BVH)
+- Surface Area Hauristic (SAH)
 
 ![Figure 1](figures/fig1.png)
 21.6 seconds without AABB (axis aligned bounding box) test, 20 seconds with AABB testing
