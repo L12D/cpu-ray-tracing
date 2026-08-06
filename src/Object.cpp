@@ -52,12 +52,15 @@ void Object::intersect(const ray& ray, HitInfo &hit, int depth) {
 
     if (depth == MAX_DEPTH) {
         hit.distance = FLOAT_MAX;
+        return;
     }
 
     HitInfo shapeHit;
     if (!shape->intersect(ray, shapeHit)) {
         hit.distance = FLOAT_MAX;
+        return;
     }
+
     hit.distance = shapeHit.distance;
     hit.position = shapeHit.position;
     hit.normal = shapeHit.normal;
@@ -98,21 +101,22 @@ float3 Object::getRayColor(float3 intersectionPoint, float3 normal, float3 incid
     float3 reflexionColor = BC_COLOR_2;
     float rayLength;
     float3 rayColor;
+    const std::vector<Object*>& sceneObjects = scene->getObjects();
 
     for (const ray& ray : rays) {
         rayLength = FLOAT_MAX;
         rayColor = BC_COLOR_2;
 
-        HitInfo hit;
         Object *closestObject = nullptr;
         float3 position;
         float3 hitNormal;
-        for (Object *object : scene->getObjects()) {
-            object->intersect(ray, hit, depth);
-            if (hit.distance < rayLength) {
-                rayLength = hit.distance;
-                position = hit.position;
-                hitNormal = hit.normal;
+        for (Object *object : sceneObjects) {
+            HitInfo localHit;
+            object->intersect(ray, localHit, depth);
+            if (localHit.distance < rayLength) {
+                rayLength = localHit.distance;
+                position = localHit.position;
+                hitNormal = localHit.normal;
                 closestObject = object;
             }
         }

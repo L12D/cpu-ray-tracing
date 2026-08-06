@@ -20,17 +20,17 @@ Camera::Camera(int resolution) {
 }
 
 
-int Camera::get_width() {
+int Camera::get_width() const {
     return width;
 }
 
 
-int Camera::get_height() {
+int Camera::get_height() const {
     return height;
 }
 
 
-ray Camera::get_ray(int i, int j) {
+const ray& Camera::get_ray(int i, int j) const {
     return (*rays)[i][j];
 }
 

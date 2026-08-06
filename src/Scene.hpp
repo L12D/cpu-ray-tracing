@@ -23,7 +23,7 @@ class Scene {
     public :
 
         Scene(int sceneIndex);
-        std::vector<Object*> getObjects();
+        const std::vector<Object*>& getObjects() const;
         void render(Camera *camera, cv::Mat &image);
         ~Scene();
 

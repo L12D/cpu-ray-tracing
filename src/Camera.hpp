@@ -18,9 +18,9 @@ class Camera {
     public :
 
         Camera(int resolution);
-        int get_width();
-        int get_height();
-        ray get_ray(int i, int j);
+        int get_width() const;
+        int get_height() const;
+        const ray& get_ray(int i, int j) const;
         mat4 viewMatrix();
         void translate(float3 t);
         ~Camera();

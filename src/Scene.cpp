@@ -58,32 +58,33 @@ Scene::Scene(int sceneIndex) {
 }
 
 
-std::vector<Object*> Scene::getObjects() {
+const std::vector<Object*>& Scene::getObjects() const {
     return objects;
 }
 
 
 void Scene::render(Camera *camera, cv::Mat &image) {
-    int maxDepth = 3;
-    for (int i = 0; i < camera->get_height(); ++i) {
-        for (int j = 0; j < camera->get_width(); ++j) {
+    const int height = camera->get_height();
+    const int width = camera->get_width();
+    for (int i = 0; i < height; ++i) {
+        for (int j = 0; j < width; ++j) {
             if (j == 0 and i % 10 == 0) {
-                std::cout << "\rRendering row " << i << " of " << camera->get_height() << std::flush;
+                std::cout << "\rRendering row " << i << " of " << height << std::flush;
             }
-            ray ray = camera->get_ray(i, j);
+            const ray& ray = camera->get_ray(i, j);
             float rayLength = FLOAT_MAX;
             float3 color = BC_COLOR_2;
 
-            HitInfo hit;
             Object *closestObject = nullptr;
             float3 position;
             float3 normal;
             for (Object *object : objects) {
-                object->intersect(ray, hit, 0);
-                if (hit.distance < rayLength) {
-                    rayLength = hit.distance;
-                    position = hit.position;
-                    normal = hit.normal;
+                HitInfo localHit;
+                object->intersect(ray, localHit, 0);
+                if (localHit.distance < rayLength) {
+                    rayLength = localHit.distance;
+                    position = localHit.position;
+                    normal = localHit.normal;
                     closestObject = object;
                 }
             }
