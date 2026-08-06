@@ -91,7 +91,7 @@ float3 Object::getRayColor(float3 intersectionPoint, float3 normal, float3 incid
         //     rays.push_back(ray(intersectionPoint + mul(0.001f, normal), normalize(randomDirection)));
         // }
 
-        rays = generateRays(intersectionPoint, normal, incident, N_RAYS);
+        rays = generateRays(intersectionPoint, normal, N_RAYS);
 
     } else {
         rays.push_back(getMirrorRay(intersectionPoint, normal, incident));

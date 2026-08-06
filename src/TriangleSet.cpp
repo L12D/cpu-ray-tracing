@@ -1,4 +1,5 @@
 #include "TriangleSet.hpp"
+#include <array>
 
 
 
@@ -55,15 +56,15 @@ TriangleSet::TriangleSet(std::string filename) {
 
 
 bool traverseBVH(const std::vector<FlatBVHNode>& flatNodes, const std::vector<triangle>& triangles, int rootIndex, const ray& ray, HitInfo& hit) {
-    std::vector<int> stack;
-    stack.reserve(64);
-    stack.push_back(rootIndex); // root node is at the end of the vector
+    constexpr uint32_t kLeafNode = std::numeric_limits<uint32_t>::max();
+    std::array<int, 128> stack;
+    int stackSize = 0;
+    stack[stackSize++] = rootIndex;
 
     bool result = false;
 
-    while (!stack.empty()) {
-        int nodeIndex = stack.back();
-        stack.pop_back();
+    while (stackSize > 0) {
+        const int nodeIndex = stack[--stackSize];
 
         const FlatBVHNode& node = flatNodes[nodeIndex];
 
@@ -72,35 +73,31 @@ bool traverseBVH(const std::vector<FlatBVHNode>& flatNodes, const std::vector<tr
             continue;
         }
 
-        if (node.leftChildIndex == 4294967295) { // Leaf node
+        if (node.leftChildIndex == kLeafNode) { // Leaf node
             for (uint32_t i = 0; i < node.triangleCount; ++i) {
                 const triangle& tri = triangles[node.triangleOffset + i];
-
-                // Möller–Trumbore intersection test
                 const float3& v0 = tri.v0;
-                const float3& v1 = tri.v1;
-                const float3& v2 = tri.v2;
+                const float3& edge1 = tri.edge1;
+                const float3& edge2 = tri.edge2;
 
-                float3 edge1 = v1 - v0;
-                float3 edge2 = v2 - v0;
-                float3 h = cross(ray.direction, edge2);
-                float a = dot(edge1, h);
+                const float3 h = cross(ray.direction, edge2);
+                const float a = dot(edge1, h);
                 if (std::abs(a) < 1e-6f) continue;
 
-                float f = 1.0f / a;
-                float3 s = ray.origin - v0;
-                float u = f * dot(s, h);
+                const float f = 1.0f / a;
+                const float3 s = ray.origin - v0;
+                const float u = f * dot(s, h);
                 if (u < 0.0f || u > 1.0f) continue;
 
-                float3 q = cross(s, edge1);
-                float v = f * dot(ray.direction, q);
+                const float3 q = cross(s, edge1);
+                const float v = f * dot(ray.direction, q);
                 if (v < 0.0f || u + v > 1.0f) continue;
 
-                float t = f * dot(edge2, q);
+                const float t = f * dot(edge2, q);
                 if (t > 1e-6f && t < hit.distance) {
                     hit.distance = t;
                     hit.position = ray.origin + mul(t, ray.direction);
-                    hit.normal = normalize(cross(edge1, edge2));
+                    hit.normal = tri.normal;
                     result = true;
                 }
             }
@@ -114,14 +111,14 @@ bool traverseBVH(const std::vector<FlatBVHNode>& flatNodes, const std::vector<tr
 
             if (distLeft < distRight) {
                 if (distRight < hit.distance)
-                    stack.push_back(node.rightChildIndex);
+                    stack[stackSize++] = static_cast<int>(node.rightChildIndex);
                 if (distLeft < hit.distance)
-                    stack.push_back(node.leftChildIndex);
+                    stack[stackSize++] = static_cast<int>(node.leftChildIndex);
             } else {
                 if (distLeft < hit.distance)
-                    stack.push_back(node.leftChildIndex);
+                    stack[stackSize++] = static_cast<int>(node.leftChildIndex);
                 if (distRight < hit.distance)
-                    stack.push_back(node.rightChildIndex);
+                    stack[stackSize++] = static_cast<int>(node.rightChildIndex);
             }
         }
     }
@@ -198,6 +195,7 @@ void rotateBVH(std::vector<FlatBVHNode>& nodes, std::vector<triangle>& triangles
             matrix[1][0]*tri.v2.x + matrix[1][1]*tri.v2.y + matrix[1][2]*tri.v2.z,
             matrix[2][0]*tri.v2.x + matrix[2][1]*tri.v2.y + matrix[2][2]*tri.v2.z
         };
+        tri.updateDerivedData();
     }
 
     std::function<AABB(int)> updateBounds = [&](int nodeIndex) -> AABB {
@@ -231,6 +229,7 @@ void scaleBVH(std::vector<FlatBVHNode>& node, std::vector<triangle>& triangles, 
         tri.v0 = float3{tri.v0.x * scaling.x, tri.v0.y * scaling.y, tri.v0.z * scaling.z};
         tri.v1 = float3{tri.v1.x * scaling.x, tri.v1.y * scaling.y, tri.v1.z * scaling.z};
         tri.v2 = float3{tri.v2.x * scaling.x, tri.v2.y * scaling.y, tri.v2.z * scaling.z};
+        tri.updateDerivedData();
     }
 
     // Scale bounding boxes

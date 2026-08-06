@@ -134,14 +134,28 @@ struct ray {
 };
 
 
-std::vector<ray> generateRays(float3 origin, float3 normal, float3 direction, int n);
+std::vector<ray> generateRays(float3 origin, float3 normal, int n);
 ray getMirrorRay(float3 intersectionPoint, float3 normal, float3 incident);
 
 
 struct triangle {
     float3 v0, v1, v2;
+    float3 edge1, edge2;
+    float3 normal;
 
-    triangle(float3 v0, float3 v1, float3 v2) : v0(v0), v1(v1), v2(v2) {}
+    triangle(float3 v0, float3 v1, float3 v2) : v0(v0), v1(v1), v2(v2) {
+        updateDerivedData();
+    }
+
+    void updateDerivedData() {
+        edge1 = v1 - v0;
+        edge2 = v2 - v0;
+        const float3 normalVector = cross(edge1, edge2);
+        const float normalLengthSquared = dot(normalVector, normalVector);
+        normal = (normalLengthSquared > 0.0f)
+            ? mul(1.0f / std::sqrt(normalLengthSquared), normalVector)
+            : float3{0.0f, 0.0f, 0.0f};
+    }
 
     float3 centroid() const {
         return {(v0.x + v1.x + v2.x) / 3, (v0.y + v1.y + v2.y) / 3, (v0.z + v1.z + v2.z) / 3};

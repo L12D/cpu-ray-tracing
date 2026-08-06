@@ -11,6 +11,7 @@ class Sphere : public Shape {
 
         float3 center;
         float radius;
+        float inverseRadius;
     
     public :
 

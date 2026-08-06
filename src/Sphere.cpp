@@ -4,6 +4,7 @@
 Sphere::Sphere(float3 center, float radius) {
     this->center = center;
     this->radius = radius;
+    this->inverseRadius = radius != 0.0f ? 1.0f / radius : 0.0f;
 }
 
 
@@ -24,6 +25,7 @@ float Sphere::getRadius() {
 
 void Sphere::setRadius(float radius) {
     this->radius = radius;
+    this->inverseRadius = radius != 0.0f ? 1.0f / radius : 0.0f;
 }
 
 
@@ -48,12 +50,12 @@ bool Sphere::intersect(const ray& ray, HitInfo& hit) {
     if (t0 > 0.0) {
         hit.distance = t0;
         hit.position = ray.origin + mul(t0, ray.direction);
-        hit.normal = normalize(hit.position - this->center);
+        hit.normal = mul(inverseRadius, hit.position - this->center);
         return true;
     } else if (t1 > 0.0) {
         hit.distance = t1;
         hit.position = ray.origin + mul(t1, ray.direction);
-        hit.normal = normalize(hit.position - this->center);
+        hit.normal = mul(inverseRadius, hit.position - this->center);
         return true;
     }
 
@@ -73,4 +75,5 @@ void Sphere::rotate(float3 axis, float angle) {
 
 void Sphere::scale(float3 scaling) {
     this->radius *= scaling.x;  // Assuming uniform scaling for spheres
+    this->inverseRadius = radius != 0.0f ? 1.0f / radius : 0.0f;
 }

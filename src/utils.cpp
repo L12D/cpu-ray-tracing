@@ -84,7 +84,7 @@ float3 normalize(float3 a) {
 }
 
 
-std::vector<ray> generateRays(float3 origin, float3 normal, float3 direction, int n) {
+std::vector<ray> generateRays(float3 origin, float3 normal, int n) {
     std::vector<ray> rays;
     rays.reserve(n);
     thread_local std::mt19937 gen(std::random_device{}());
@@ -107,7 +107,7 @@ std::vector<ray> generateRays(float3 origin, float3 normal, float3 direction, in
             randomDirection = -randomDirection;
         }
         
-        rays.push_back(ray(origin + mul(0.001f, normal), normalize(randomDirection)));
+        rays.push_back(ray(origin + mul(0.001f, normal), randomDirection));
     }
 
     return rays;
