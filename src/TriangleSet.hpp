@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <iomanip>
 #include <chrono>
+#include <functional>
 
 #include "utils.hpp"
 #include "Shape.hpp"

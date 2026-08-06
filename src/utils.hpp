@@ -14,9 +14,9 @@ static constexpr float FLOAT_MAX = std::numeric_limits<float>::max();
 
 #define BC_COLOR_1 {0.15f, 0.15f, 0.15f}
 #define BC_COLOR_2 {0.3f, 0.3f, 0.3f}
-#define RESOLUTION 1080
+#define RESOLUTION 720
 #define SCENE 4
-#define N_RAYS 2000
+#define N_RAYS 50
 static constexpr float INV_N_RAYS = 1.0f / static_cast<float>(N_RAYS);
 #define MAX_DEPTH 3
 
