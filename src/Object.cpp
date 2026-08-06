@@ -52,11 +52,13 @@ void Object::intersect(const ray& ray, HitInfo &hit, int depth) {
 
     if (depth == MAX_DEPTH) {
         hit.distance = FLOAT_MAX;
+        return;
     }
 
     HitInfo shapeHit;
     if (!shape->intersect(ray, shapeHit)) {
         hit.distance = FLOAT_MAX;
+        return;
     }
     hit.distance = shapeHit.distance;
     hit.position = shapeHit.position;

@@ -13,7 +13,7 @@
 #include "Shape.hpp"
 
 
-class TriangleSet : public Shape {
+class TriangleSet {
     
     private :
 

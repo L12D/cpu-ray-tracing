@@ -51,3 +51,6 @@ These successive steps are implemented:
 
 ![Figure 15](figures/fig15.png)
 1h40, 2000 rays per pixel, 0.3 triangles, 1080p, with surface area heuristic
+
+![Figure 15](figures/fig16.png)
+1h40, 4000 rays per pixel, 0.05 triangles, 1080p, with surface area heuristic

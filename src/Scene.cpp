@@ -18,7 +18,7 @@ Scene::Scene(int sceneIndex) {
         sphere->setMirror();
         objects.push_back(sphere);
 
-        Object* bishop = new Object(new TriangleSet("assets/bishop.obj"), {0.5, 1.0, 0.5});
+        Object* bishop = new Object(new Mesh("assets/bishop.obj"), {0.5, 1.0, 0.5});
         bishop->scale({0.8, 0.8, 0.8});
         bishop->translate({2.5, 7, -3});
         objects.push_back(bishop);
@@ -27,12 +27,12 @@ Scene::Scene(int sceneIndex) {
         light->setLight();
         objects.push_back(light);
 
-        Object* bishop1 = new Object(new TriangleSet("assets/bishop.obj"), {0.5, 1.0, 0.5});
+        Object* bishop1 = new Object(new Mesh("assets/bishop.obj"), {0.5, 1.0, 0.5});
         bishop1->scale({0.8, 0.8, 0.8});
         bishop1->translate({2.5, 5.5, -3});
         objects.push_back(bishop1);
 
-        Object* bishop2 = new Object(new TriangleSet("assets/bishop.obj"), {1.0, 0.5, 0.5});
+        Object* bishop2 = new Object(new Mesh("assets/bishop.obj"), {1.0, 0.5, 0.5});
         bishop2->scale({0.8, 0.8, 0.8});
         bishop2->translate({2.5, 8, -3});
         objects.push_back(bishop2);
@@ -49,10 +49,10 @@ Scene::Scene(int sceneIndex) {
         light3->setLight();
         objects.push_back(light3);
 
-        Object* lion = new Object(new TriangleSet("assets/lion_14k.obj"), {0.7, 0.7, 0.7});
-        // lion->scale({0.8, 0.8, 0.8});
+        Object* lion = new Object(new Mesh("lion"), {0.7, 0.7, 0.7});
+        lion->scale({1.5, 1.5, 1.5});
         lion->rotate({1.0, 0.0, 0.0}, 90.0f);
-        lion->translate({0.0, 1.0, -0.2});
+        lion->translate({0.0, 1.0, -0.3});
         objects.push_back(lion);
     }
 }
