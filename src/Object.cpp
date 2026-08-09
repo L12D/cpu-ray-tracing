@@ -47,10 +47,10 @@ void Object::setMirror() {
 }
 
 
-void Object::intersect(const ray& ray, HitInfo &hit, int depth) {
+void Object::intersect(const ray& ray, HitInfo &hit) {
     // return the distance to the intersection point
 
-    if (depth == MAX_DEPTH) {
+    if (hit.actualDepth == MAX_ACTUAL_DEPTH) {
         hit.distance = FLOAT_MAX;
         return;
     }
@@ -66,21 +66,27 @@ void Object::intersect(const ray& ray, HitInfo &hit, int depth) {
 }
 
 
-float3 Object::getRayColor(float3 intersectionPoint, float3 normal, float3 incident, int depth) {
-    Application* app = Application::getInstance();
-    Scene* scene = app->getScene();
-
-    if (depth == MAX_DEPTH) {
+float3 Object::getRayColor(float3 intersectionPoint, float3 normal, float3 incident, int renderDepth, int actualDepth) {
+    if (actualDepth >= MAX_ACTUAL_DEPTH) {
         return BC_COLOR_2;
     }
+
+    Application* app = Application::getInstance();
+    Scene* scene = app->getScene();
 
     if (isLight) {
         return color;
     }
 
-    std::vector<ray> rays;
-    if (depth == 0 && !isMirror) {
+    HitInfo hit;
 
+    std::vector<ray> rays;
+    if (isMirror) {
+        rays.push_back(getMirrorRay(intersectionPoint, normal, incident));
+
+        hit.renderDepth = renderDepth;
+        hit.actualDepth = actualDepth + 1;
+    } else {
         // std::vector<float3> directions = app->getDirections();
         // for (float3& randomDirection : directions) {
         //     // Ensure the ray points in the same hemisphere as the normal
@@ -90,10 +96,18 @@ float3 Object::getRayColor(float3 intersectionPoint, float3 normal, float3 incid
         //     rays.push_back(ray(intersectionPoint + mul(0.001f, normal), normalize(randomDirection)));
         // }
 
-        rays = generateRays(intersectionPoint, normal, incident, N_RAYS);
+        if (renderDepth == 0) {
+            rays = generateRays(intersectionPoint, normal, incident, N_RAYS_1);
+        } else {
+            rays = generateRays(intersectionPoint, normal, incident, N_RAYS_2);
+        }
 
-    } else {
-        rays.push_back(getMirrorRay(intersectionPoint, normal, incident));
+        hit.renderDepth = renderDepth + 1;
+        hit.actualDepth = actualDepth + 1;
+    }
+
+    if (hit.renderDepth >= MAX_RENDER_DEPTH) {
+        return BC_COLOR_2;
     }
 
 
@@ -105,12 +119,11 @@ float3 Object::getRayColor(float3 intersectionPoint, float3 normal, float3 incid
         rayLength = FLOAT_MAX;
         rayColor = BC_COLOR_2;
 
-        HitInfo hit;
         Object *closestObject = nullptr;
         float3 position;
         float3 hitNormal;
         for (Object *object : scene->getObjects()) {
-            object->intersect(ray, hit, depth);
+            object->intersect(ray, hit);
             if (hit.distance < rayLength) {
                 rayLength = hit.distance;
                 position = hit.position;
@@ -121,19 +134,22 @@ float3 Object::getRayColor(float3 intersectionPoint, float3 normal, float3 incid
 
         if (closestObject != nullptr) {
             float3 direction = ray.direction;
-            if (depth == 0 && isMirror) {
-                rayColor = closestObject->getRayColor(position, hitNormal, direction, depth);
+            rayColor = closestObject->getRayColor(position, hitNormal, direction, hit.renderDepth, hit.actualDepth);
+            if (isMirror) {
+                rayColor = mul(MIRROR_REFLECTIVENESS, rayColor);
             } else {
-                // For non-mirror objects, we can use the object's color directly
-                rayColor = closestObject->getRayColor(position, hitNormal, direction, depth + 1);
                 rayColor = mul(dot(direction, normal), rayColor);
             }
         }
         
         reflexionColor = reflexionColor + rayColor;
     }
-    if (depth == 0 && !isMirror) {
-        reflexionColor = mul(INV_N_RAYS, reflexionColor);
+    if (!isMirror) {
+        if (renderDepth == 0) {
+            reflexionColor = mul(INV_N_RAYS_1, reflexionColor);
+        } else {
+            reflexionColor = mul(INV_N_RAYS_2, reflexionColor);
+        }
     }
     return reflexionColor.clamp()*color;
 }

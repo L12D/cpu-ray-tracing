@@ -86,6 +86,7 @@ float3 normalize(float3 a) {
 
 std::vector<ray> generateRays(float3 origin, float3 normal, float3 direction, int n) {
     std::vector<ray> rays;
+    rays.reserve(n);
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_real_distribution<float> dis(0.0f, 1.0f);

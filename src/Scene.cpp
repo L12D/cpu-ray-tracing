@@ -52,6 +52,7 @@ Scene::Scene(int sceneIndex) {
         Object* lion = new Object(new Mesh("lion"), {0.7, 0.7, 0.7});
         lion->scale({1.5, 1.5, 1.5});
         lion->rotate({1.0, 0.0, 0.0}, 90.0f);
+        // lion->translate({0.0, 1.0, -0.2});
         lion->translate({0.0, 1.0, -0.3});
         objects.push_back(lion);
     }
@@ -75,11 +76,13 @@ void Scene::render(Camera *camera, cv::Mat &image) {
             float3 color = BC_COLOR_2;
 
             HitInfo hit;
+            hit.renderDepth = 0;
+            hit.actualDepth = 0;
             Object *closestObject = nullptr;
             float3 position;
             float3 normal;
             for (Object *object : objects) {
-                object->intersect(ray, hit, 0);
+                object->intersect(ray, hit);
                 if (hit.distance < rayLength) {
                     rayLength = hit.distance;
                     position = hit.position;
@@ -93,7 +96,7 @@ void Scene::render(Camera *camera, cv::Mat &image) {
                 color = BC_COLOR_1;
             } else {
                 // Otherwise, calculate the color based on the object's material and lighting
-                color = closestObject->getRayColor(position, normal, ray.direction, 0);
+                color = closestObject->getRayColor(position, normal, ray.direction, hit.renderDepth, hit.actualDepth);
                 // color = {0.0, 0.0, 1.0};
             }
             image.at<cv::Vec3b>(i, j) = cv::Vec3b(color.x*255, color.y*255, color.z*255);

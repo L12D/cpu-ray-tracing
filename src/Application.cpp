@@ -35,7 +35,7 @@ std::vector<float3> Application::generateDirections() {
     std::mt19937 gen(rd());
     std::uniform_real_distribution<float> dis(0.0f, 1.0f);
 
-    for (int i = 0; i < N_RAYS; ++i) {
+    for (int i = 0; i < N_RAYS_1; ++i) {
         // Generate random angles
         float theta = 2.0f * M_PI * dis(gen);  // Azimuthal angle [0, 2π]
         float phi = acos(2.0f * dis(gen) - 1.0f);  // Polar angle [0, π]

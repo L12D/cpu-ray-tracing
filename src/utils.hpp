@@ -16,9 +16,14 @@ static constexpr float FLOAT_MAX = std::numeric_limits<float>::max();
 #define BC_COLOR_2 {0.3f, 0.3f, 0.3f}
 #define RESOLUTION 1080
 #define SCENE 4
-#define N_RAYS 4000
-static constexpr float INV_N_RAYS = 1.0f / static_cast<float>(N_RAYS);
-#define MAX_DEPTH 3
+#define N_RAYS_1 1500
+#define N_RAYS_2 1
+// rule of thumb (production usage): N_RAYS_2 = max(N_RAYS_1 / 100, 20)
+static constexpr float INV_N_RAYS_1 = 1.0f / static_cast<float>(N_RAYS_1);
+static constexpr float INV_N_RAYS_2 = 1.0f / static_cast<float>(N_RAYS_2);
+#define MAX_RENDER_DEPTH 4
+#define MAX_ACTUAL_DEPTH 10
+#define MIRROR_REFLECTIVENESS 0.9f
 
 
 struct float3 {
@@ -205,6 +210,8 @@ struct FlatBVHNode {
 
 
 struct HitInfo {
+    int renderDepth; // increased when the that generate a number of rays (not increased when it's a mirror)
+    int actualDepth; // increased every hit
     float3 position;
     float3 normal;
     float distance = FLOAT_MAX;
