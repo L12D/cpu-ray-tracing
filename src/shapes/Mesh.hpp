@@ -9,11 +9,11 @@
 #include <chrono>
 #include <functional>
 
-#include "utils.hpp"
+#include "../utils.hpp"
 #include "Shape.hpp"
 
 
-class TriangleSet {
+class Mesh: public Shape {
     
     private :
 
@@ -23,16 +23,17 @@ class TriangleSet {
     
     public :
 
-        TriangleSet(std::string filename);
+        Mesh();
+        Mesh(std::string filename);
+        void construct(std::vector<triangle> &triangles);
         bool intersect(const ray& ray, HitInfo& globalHit);
         void translate(float3 translation);
         void rotate(float3 axis, float angle);
         void scale(float3 scaling);
         std::unique_ptr<BVHNode> buildBVH(std::vector<triangle>& triangles, int depth = 0);
         int flattenBVH(const std::unique_ptr<BVHNode>& node);
-        ~TriangleSet() = default;
+        ~Mesh() = default;
 
 };
 
-
-void printStats(const std::unique_ptr<BVHNode>& root);
+void printStats(const std::unique_ptr<BVHNode> &root);

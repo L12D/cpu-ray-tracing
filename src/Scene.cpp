@@ -49,11 +49,49 @@ Scene::Scene(int sceneIndex) {
         light3->setLight();
         objects.push_back(light3);
 
-        Object* lion = new Object(new Mesh("lion"), {0.7, 0.7, 0.7});
-        lion->scale({1.5, 1.5, 1.5});
+        Object* lion = new Object(new Mesh("assets/lion05.obj"), {0.7, 0.7, 0.7});
+        // lion->scale({1.5, 1.5, 1.5});
         lion->rotate({1.0, 0.0, 0.0}, 90.0f);
-        // lion->translate({0.0, 1.0, -0.2});
-        lion->translate({0.0, 1.0, -0.3});
+        lion->translate({0.0, 1.0, -0.2});
+        // lion->translate({0.0, 1.0, -0.3});
+        objects.push_back(lion);
+    } else if (sceneIndex == 5) {
+        Object *wall1 = new Object(new Cube(), {1.0, 1.0, 1.0});
+        wall1->scale({1.0, 0.1, 1.0});
+        wall1->translate({0.0, 1.5, 0.0});
+        objects.push_back(wall1);
+
+        Object *wall2 = new Object(new Cube(), {0.1, 1.0, 0.1});
+        wall2->scale({0.1, 1.0, 1.0});
+        wall2->translate({-0.5, 1.0, 0.0});
+        objects.push_back(wall2);
+
+        Object *wall3 = new Object(new Cube(), {1.0, 0.1, 0.1});
+        wall3->scale({0.1, 1.0, 1.0});
+        wall3->translate({0.5, 1.0, 0.0});
+        objects.push_back(wall3);
+
+        Object *floor = new Object(new Cube(), {0.1, 0.1, 1.0});
+        floor->scale({1.0, 1.0, 0.1});
+        floor->translate({0.0, 1.0, -0.5});
+        objects.push_back(floor);
+
+        Object *cieling = new Object(new Cube(), {1.0, 1.0, 1.0});
+        cieling->scale({1.0, 1.0, 0.1});
+        cieling->translate({0.0, 1.0, 0.5});
+        objects.push_back(cieling);
+
+        Object *light = new Object(new Cube(), {5.0, 5.0, 5.0});
+        light->setLight();
+        light->scale({0.5, 0.5, 0.1});
+        light->translate({0.0, 1.0, 0.48});
+        objects.push_back(light);
+
+        Object* lion = new Object(new Mesh("assets/lion05.obj"), {1.0, 1.0, 1.0});
+        lion->setMirror();
+        lion->scale({1.3, 1.3, 1.3});
+        lion->rotate({1.0, 0.0, 0.0}, 90.0f);
+        lion->translate({0.0, 1.3, -0.3});
         objects.push_back(lion);
     }
 }

@@ -7,8 +7,9 @@
 #include "utils.hpp"
 #include "Camera.hpp"
 #include "Object.hpp"
-#include "Sphere.hpp"
-#include "Mesh.hpp"
+#include "shapes/Sphere.hpp"
+#include "shapes/Mesh.hpp"
+#include "shapes/Cube.hpp"
 
 
 class Object;

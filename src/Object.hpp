@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include "Shape.hpp"
+#include "shapes/Shape.hpp"
 #include "utils.hpp"
 #include "Scene.hpp"
 #include "Application.hpp"

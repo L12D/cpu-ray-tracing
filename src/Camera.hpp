@@ -12,7 +12,6 @@ class Camera {
 
         int width, height; // in pixels
         mat4 view;
-        float fov;
         std::vector<std::vector<ray>> *rays;
 
     public :

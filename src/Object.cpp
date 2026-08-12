@@ -87,19 +87,21 @@ float3 Object::getRayColor(float3 intersectionPoint, float3 normal, float3 incid
         hit.renderDepth = renderDepth;
         hit.actualDepth = actualDepth + 1;
     } else {
-        // std::vector<float3> directions = app->getDirections();
-        // for (float3& randomDirection : directions) {
-        //     // Ensure the ray points in the same hemisphere as the normal
-        //     if (dot(randomDirection, normal) < 0) {
-        //         randomDirection = -randomDirection;
-        //     }
-        //     rays.push_back(ray(intersectionPoint + mul(0.001f, normal), normalize(randomDirection)));
-        // }
-
         if (renderDepth == 0) {
-            rays = generateRays(intersectionPoint, normal, incident, N_RAYS_1);
+            if (PRODUCTION) {
+                std::vector<float3> directions = app->getDirections();
+                for (float3& randomDirection : directions) {
+                    // Ensure the ray points in the same hemisphere as the normal
+                    if (dot(randomDirection, normal) < 0) {
+                        randomDirection = -randomDirection;
+                    }
+                    rays.push_back(ray(intersectionPoint + mul(0.0001f, normal), normalize(randomDirection)));
+                }
+            } else {
+                rays = generateRays(intersectionPoint, normal, incident);
+            }
         } else {
-            rays = generateRays(intersectionPoint, normal, incident, N_RAYS_2);
+            rays.push_back(generateRay(intersectionPoint, normal, incident));
         }
 
         hit.renderDepth = renderDepth + 1;
@@ -144,12 +146,8 @@ float3 Object::getRayColor(float3 intersectionPoint, float3 normal, float3 incid
         
         reflexionColor = reflexionColor + rayColor;
     }
-    if (!isMirror) {
-        if (renderDepth == 0) {
-            reflexionColor = mul(INV_N_RAYS_1, reflexionColor);
-        } else {
-            reflexionColor = mul(INV_N_RAYS_2, reflexionColor);
-        }
+    if (!isMirror && renderDepth == 0) {
+        reflexionColor = mul(INV_N_RAYS, reflexionColor);
     }
     return reflexionColor.clamp()*color;
 }

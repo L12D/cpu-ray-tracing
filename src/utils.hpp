@@ -12,18 +12,19 @@
 
 static constexpr float FLOAT_MAX = std::numeric_limits<float>::max();
 
-#define BC_COLOR_1 {0.15f, 0.15f, 0.15f}
+#define BC_COLOR_1 {0.3f, 0.3f, 0.3f}
 #define BC_COLOR_2 {0.3f, 0.3f, 0.3f}
+
+#define PRODUCTION true
+static constexpr float FOV = M_PI / 3.3f;
 #define RESOLUTION 1080
-#define SCENE 4
-#define N_RAYS_1 1500
-#define N_RAYS_2 1
-// rule of thumb (production usage): N_RAYS_2 = max(N_RAYS_1 / 100, 20)
-static constexpr float INV_N_RAYS_1 = 1.0f / static_cast<float>(N_RAYS_1);
-static constexpr float INV_N_RAYS_2 = 1.0f / static_cast<float>(N_RAYS_2);
-#define MAX_RENDER_DEPTH 4
+#define SCENE 5
+#define N_RAYS 1000
+static constexpr float INV_N_RAYS = 1.0f / static_cast<float>(N_RAYS);
+
+#define MAX_RENDER_DEPTH 3
 #define MAX_ACTUAL_DEPTH 10
-#define MIRROR_REFLECTIVENESS 0.9f
+#define MIRROR_REFLECTIVENESS 0.95f
 
 
 struct float3 {
@@ -139,8 +140,9 @@ struct ray {
 };
 
 
-std::vector<ray> generateRays(float3 origin, float3 normal, float3 direction, int n);
+ray generateRay(float3 origin, float3 normal, float3 direction);
 ray getMirrorRay(float3 intersectionPoint, float3 normal, float3 incident);
+std::vector<ray> generateRays(float3 origin, float3 normal, float3 direction);
 
 
 struct triangle {
@@ -216,3 +218,6 @@ struct HitInfo {
     float3 normal;
     float distance = FLOAT_MAX;
 };
+
+
+bool intersect(const triangle &tri, const ray &ray, HitInfo &hit, bool &result);

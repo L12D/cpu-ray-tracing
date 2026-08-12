@@ -1,24 +1,26 @@
 #pragma once
 
 
+#include "../utils.hpp"
+#include "Mesh.hpp"
 #include "Shape.hpp"
-#include "TriangleSet.hpp"
 
 
-class Mesh: public Shape {
-
-    private:
-
-        TriangleSet *set;
-        TriangleSet *partialSet;
+class Cube: public Shape {
     
-    public:
+    private:
+        Mesh *mesh;
 
-        Mesh(std::string name);
+    public:
+        Cube();
+        Cube(float3 base, float3 v1, float3 v2, float3 v3);
         bool intersect(const ray& ray, HitInfo& globalHit);
         void translate(float3 translation);
         void rotate(float3 axis, float angle);
         void scale(float3 scaling);
-        ~Mesh();
+        ~Cube();
 
 };
+
+
+void printStats(const std::unique_ptr<BVHNode>& root);

@@ -2,7 +2,7 @@
 
 
 #include "Shape.hpp"
-#include "utils.hpp"
+#include "../utils.hpp"
 
 
 class Sphere : public Shape {

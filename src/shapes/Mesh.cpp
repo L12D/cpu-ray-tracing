@@ -1,11 +1,13 @@
-#include "TriangleSet.hpp"
+#include "Mesh.hpp"
 
 
+Mesh::Mesh() {}
 
-TriangleSet::TriangleSet(std::string filename) {
+
+Mesh::Mesh(std::string filename) {
     std::ifstream file(filename);
     if (!file) {
-        std::cerr << "Could not open OBJ file.\n";
+        std::cerr << "Could not open OBJ file\n";
         return;
     }
 
@@ -37,20 +39,16 @@ TriangleSet::TriangleSet(std::string filename) {
             triangles.push_back(tri);
         }
     }
-    std::cout << "Loading " << triangles.size() << " triangles.\n";
 
-    auto start = std::chrono::high_resolution_clock::now();
-    
+    construct(triangles);
+}
+
+
+void Mesh::construct(std::vector<triangle> &triangles) {
+    std::cout << "Loaded " << triangles.size() << " triangles\n";
+
     std::unique_ptr<BVHNode> root = buildBVH(triangles);
     rootIndex = flattenBVH(root);
-
-    auto end = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    std::cout << "BVH build: " << duration.count() << " ms" << std::endl;
-
-    printStats(root);
-    // std::cout << "Flattened BVH with " << nodes.size() << " nodes.\n";
-
 }
 
 
@@ -75,32 +73,7 @@ bool traverseBVH(const std::vector<FlatBVHNode>& flatNodes, const std::vector<tr
         if (node.leftChildIndex == 4294967295) { // Leaf node
             for (uint32_t i = 0; i < node.triangleCount; ++i) {
                 const triangle& tri = triangles[node.triangleOffset + i];
-
-                // Möller–Trumbore intersection test
-                const float3& v0 = tri.v0;
-                const float3& v1 = tri.v1;
-                const float3& v2 = tri.v2;
-
-                float3 edge1 = v1 - v0;
-                float3 edge2 = v2 - v0;
-                float3 h = cross(ray.direction, edge2);
-                float a = dot(edge1, h);
-                if (std::abs(a) < 1e-6f) continue;
-
-                float f = 1.0f / a;
-                float3 s = ray.origin - v0;
-                float u = f * dot(s, h);
-                if (u < 0.0f || u > 1.0f) continue;
-
-                float3 q = cross(s, edge1);
-                float v = f * dot(ray.direction, q);
-                if (v < 0.0f || u + v > 1.0f) continue;
-
-                float t = f * dot(edge2, q);
-                if (t > 1e-6f && t < hit.distance) {
-                    hit.distance = t;
-                    hit.position = ray.origin + mul(t, ray.direction);
-                    hit.normal = normalize(cross(edge1, edge2));
+                if (intersect(tri, ray, hit, result)) {
                     result = true;
                 }
             }
@@ -130,8 +103,7 @@ bool traverseBVH(const std::vector<FlatBVHNode>& flatNodes, const std::vector<tr
 }
 
 
-
-bool TriangleSet::intersect(const ray& ray, HitInfo& globalHit) {
+bool Mesh::intersect(const ray& ray, HitInfo& globalHit) {
     if (nodes.back().boundingBox.intersect(ray) >= FLOAT_MAX) {
         return false;
     }
@@ -162,7 +134,7 @@ void translateBVH(std::vector<FlatBVHNode>& nodes, std::vector<triangle>& triang
 }
 
 
-void TriangleSet::translate(float3 translation) {
+void Mesh::translate(float3 translation) {
     translateBVH(nodes, triangleArray, translation);
     // updateAABBs();
 }
@@ -220,7 +192,7 @@ void rotateBVH(std::vector<FlatBVHNode>& nodes, std::vector<triangle>& triangles
 }
 
 
-void TriangleSet::rotate(float3 axis, float angle) {
+void Mesh::rotate(float3 axis, float angle) {
     rotateBVH(nodes, triangleArray, axis, angle);
 }
 
@@ -249,7 +221,7 @@ void scaleBVH(std::vector<FlatBVHNode>& node, std::vector<triangle>& triangles, 
 }
 
 
-void TriangleSet::scale(float3 scaling) {
+void Mesh::scale(float3 scaling) {
     scaleBVH(nodes, triangleArray, scaling);
 }
 
@@ -314,7 +286,7 @@ void printStats(const std::unique_ptr<BVHNode>& root) {
 }
 
 
-std::unique_ptr<BVHNode> TriangleSet::buildBVH(std::vector<triangle>& triangles, int depth) {
+std::unique_ptr<BVHNode> Mesh::buildBVH(std::vector<triangle>& triangles, int depth) {
     auto node = std::make_unique<BVHNode>();
 
     // Compute bounding box
@@ -409,7 +381,7 @@ std::unique_ptr<BVHNode> TriangleSet::buildBVH(std::vector<triangle>& triangles,
 
 
 
-int TriangleSet::flattenBVH(const std::unique_ptr<BVHNode>& node) {
+int Mesh::flattenBVH(const std::unique_ptr<BVHNode>& node) {
     if (!node) {
         return -1;
     }
