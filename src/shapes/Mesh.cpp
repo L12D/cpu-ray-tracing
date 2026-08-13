@@ -129,6 +129,8 @@ void translateBVH(std::vector<FlatBVHNode>& nodes, std::vector<triangle>& triang
 
         triangles[i].edge1 = triangles[i].v1 - triangles[i].v0;
         triangles[i].edge2 = triangles[i].v2 - triangles[i].v0;
+
+        triangles[i].normal = normalize(cross(triangles[i].edge1, triangles[i].edge2));
     }
     for (FlatBVHNode& node : nodes) {
         node.boundingBox.min = node.boundingBox.min + translation;
@@ -176,6 +178,8 @@ void rotateBVH(std::vector<FlatBVHNode>& nodes, std::vector<triangle>& triangles
 
         tri.edge1 = tri.v1 - tri.v0;
         tri.edge2 = tri.v2 - tri.v0;
+
+        tri.normal = normalize(cross(tri.edge1, tri.edge2));
     }
 
     std::function<AABB(int)> updateBounds = [&](int nodeIndex) -> AABB {
@@ -212,6 +216,8 @@ void scaleBVH(std::vector<FlatBVHNode>& node, std::vector<triangle>& triangles, 
 
         tri.edge1 = tri.v1 - tri.v0;
         tri.edge2 = tri.v2 - tri.v0;
+
+        tri.normal = normalize(cross(tri.edge1, tri.edge2));
     }
 
     // Scale bounding boxes

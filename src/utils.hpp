@@ -146,9 +146,9 @@ std::vector<ray> generateRays(float3 origin, float3 normal, float3 direction);
 
 
 struct triangle {
-    float3 v0, v1, v2, edge1, edge2;
+    float3 v0, v1, v2, edge1, edge2, normal;
 
-    triangle(float3 v0, float3 v1, float3 v2) : v0(v0), v1(v1), v2(v2), edge1(v1 - v0), edge2(v2 - v0) {}
+    triangle(float3 v0, float3 v1, float3 v2) : v0(v0), v1(v1), v2(v2), edge1(v1 - v0), edge2(v2 - v0), normal(normalize(cross(edge1, edge2))) {}
 
     float3 centroid() const {
         return {(v0.x + v1.x + v2.x) / 3, (v0.y + v1.y + v2.y) / 3, (v0.z + v1.z + v2.z) / 3};

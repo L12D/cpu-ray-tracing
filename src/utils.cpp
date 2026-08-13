@@ -215,16 +215,17 @@ bool intersect(const triangle &tri, const ray &ray, HitInfo &hit, bool &result) 
     const float3 &v0 = tri.v0;
     const float3 &edge1 = tri.edge1;
     const float3 &edge2 = tri.edge2;
+    const float3 &normal = tri.normal;
+
+    if (dot(ray.direction, normal) >= 0) return false;
 
     float3 h = cross(ray.direction, edge2);
     float a = dot(edge1, h);
-
     if (std::abs(a) < 1e-6) return false;
 
     float f = 1.0f / a;
     float3 s = ray.origin - v0;
     float u = f * dot(s, h);
-
     if (u < 0.0f || u > 1.0) return false;
 
     float3 q = cross(s, edge1);
@@ -235,7 +236,7 @@ bool intersect(const triangle &tri, const ray &ray, HitInfo &hit, bool &result) 
     if (t > 1e-6f && t < hit.distance) {
         hit.distance = t;
         hit.position = ray.origin + mul(t, ray.direction);
-        hit.normal = normalize(cross(edge1, edge2));
+        hit.normal = normal;
         return true;
     }
 
