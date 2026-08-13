@@ -213,11 +213,9 @@ AABB AABB::fromTriangle(const triangle& tri) {
 bool intersect(const triangle &tri, const ray &ray, HitInfo &hit, bool &result) {
     // Möller–Trumbore intersection test
     const float3 &v0 = tri.v0;
-    const float3 &v1 = tri.v1;
-    const float3 &v2 = tri.v2;
+    const float3 &edge1 = tri.edge1;
+    const float3 &edge2 = tri.edge2;
 
-    float3 edge1 = v1 - v0;
-    float3 edge2 = v2 - v0;
     float3 h = cross(ray.direction, edge2);
     float a = dot(edge1, h);
 

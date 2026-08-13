@@ -126,6 +126,9 @@ void translateBVH(std::vector<FlatBVHNode>& nodes, std::vector<triangle>& triang
         triangles[i].v0 = triangles[i].v0 + translation;
         triangles[i].v1 = triangles[i].v1 + translation;
         triangles[i].v2 = triangles[i].v2 + translation;
+
+        triangles[i].edge1 = triangles[i].v1 - triangles[i].v0;
+        triangles[i].edge2 = triangles[i].v2 - triangles[i].v0;
     }
     for (FlatBVHNode& node : nodes) {
         node.boundingBox.min = node.boundingBox.min + translation;
@@ -170,6 +173,9 @@ void rotateBVH(std::vector<FlatBVHNode>& nodes, std::vector<triangle>& triangles
             matrix[1][0]*tri.v2.x + matrix[1][1]*tri.v2.y + matrix[1][2]*tri.v2.z,
             matrix[2][0]*tri.v2.x + matrix[2][1]*tri.v2.y + matrix[2][2]*tri.v2.z
         };
+
+        tri.edge1 = tri.v1 - tri.v0;
+        tri.edge2 = tri.v2 - tri.v0;
     }
 
     std::function<AABB(int)> updateBounds = [&](int nodeIndex) -> AABB {
@@ -203,6 +209,9 @@ void scaleBVH(std::vector<FlatBVHNode>& node, std::vector<triangle>& triangles, 
         tri.v0 = float3{tri.v0.x * scaling.x, tri.v0.y * scaling.y, tri.v0.z * scaling.z};
         tri.v1 = float3{tri.v1.x * scaling.x, tri.v1.y * scaling.y, tri.v1.z * scaling.z};
         tri.v2 = float3{tri.v2.x * scaling.x, tri.v2.y * scaling.y, tri.v2.z * scaling.z};
+
+        tri.edge1 = tri.v1 - tri.v0;
+        tri.edge2 = tri.v2 - tri.v0;
     }
 
     // Scale bounding boxes
