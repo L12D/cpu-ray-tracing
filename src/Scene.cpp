@@ -88,8 +88,8 @@ Scene::Scene(int sceneIndex) {
         objects.push_back(light);
 
         Object* lion = new Object(new Mesh("assets/lion05.obj"), {1.0, 1.0, 1.0});
-        lion->setMirror();
-        lion->scale({1.3, 1.3, 1.3});
+        // lion->setMirror();
+        // lion->scale({1.3, 1.3, 1.3});
         lion->rotate({1.0, 0.0, 0.0}, 90.0f);
         lion->translate({0.0, 1.3, -0.3});
         objects.push_back(lion);
