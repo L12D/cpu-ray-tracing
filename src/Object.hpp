@@ -15,8 +15,9 @@ class Object {
 
         Shape *shape;
         float3 color; // BGR
-        bool isLight;
-        bool isMirror;
+        bool light;
+        bool mirror;
+        bool invisible;
         std::vector<Object *> children;
     
     public :
@@ -27,8 +28,12 @@ class Object {
         void setShape(Shape *shape);
         float3 getColor();
         void setColor(float3 color);
-        void setLight();
-        void setMirror();
+        void setLight(bool light);
+        bool isLight();
+        void setMirror(bool mirror);
+        bool isMirror();
+        void setInvisible(bool invisible);
+        bool isInvisible();
         void intersect(const ray& ray, HitInfo &hit);
         float3 getRayColor(float3 intersectionPoint, float3 normal, float3 incident, int renderDepth, int actualDepth);
         void translate(float3 translation);

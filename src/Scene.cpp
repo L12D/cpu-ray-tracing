@@ -4,18 +4,18 @@
 Scene::Scene(int sceneIndex) {
     if (sceneIndex == 1) {
         Object *light = new Object(new Sphere({-2, 4, 0}, 1), {4.0, 4.0, 4.0});
-        light->setLight();
+        light->setLight(true);
         objects.push_back(light);
 
         objects.push_back(new Object(new Sphere({1, 4, 0}, 1), {0.0, 0.0, 1.0}));
         objects.push_back(new Object(new Sphere({0, 4, -4}, 3), {1.0, 1.0, 1.0}));
     } else if (sceneIndex == 2) {
         Object *light1 = new Object(new Sphere({-2.5, 6, 0}, 1.5), {8.0, 8.0, 8.0});
-        light1->setLight();
+        light1->setLight(true);
         objects.push_back(light1);
 
         Object *sphere = new Object(new Sphere({0, 14, 0}, 5), {1.0, 1.0, 1.0});
-        sphere->setMirror();
+        sphere->setMirror(true);
         objects.push_back(sphere);
 
         Object* bishop = new Object(new Mesh("assets/bishop.obj"), {0.5, 1.0, 0.5});
@@ -24,7 +24,7 @@ Scene::Scene(int sceneIndex) {
         objects.push_back(bishop);
     } else if (sceneIndex == 3) {
         Object *light = new Object(new Sphere({-2.5, 7, 0}, 2.0), {10.0, 10.0, 10.0});
-        light->setLight();
+        light->setLight(true);
         objects.push_back(light);
 
         Object* bishop1 = new Object(new Mesh("assets/bishop.obj"), {0.5, 1.0, 0.5});
@@ -38,15 +38,15 @@ Scene::Scene(int sceneIndex) {
         objects.push_back(bishop2);
     } else if (sceneIndex == 4) {
         Object *light1 = new Object(new Sphere({-2.3, 0.8, 0.0}, 1.0), {7.0, 7.0, 7.0});
-        light1->setLight();
+        light1->setLight(true);
         objects.push_back(light1);
 
         Object *light2 = new Object(new Sphere({2.3, 0.8, 0.0}, 1.0), {2.0, 2.0, 10.0});
-        light2->setLight();
+        light2->setLight(true);
         objects.push_back(light2);
 
         Object *light3 = new Object(new Sphere({0.0, 0.0, 2.0}, 1.0), {2.0, 2.0, 2.0});
-        light3->setLight();
+        light3->setLight(true);
         objects.push_back(light3);
 
         Object* lion = new Object(new Mesh("assets/lion05.obj"), {0.7, 0.7, 0.7});
@@ -57,42 +57,50 @@ Scene::Scene(int sceneIndex) {
         objects.push_back(lion);
     } else if (sceneIndex == 5) {
         Object *wall1 = new Object(new Cube(), {1.0, 1.0, 1.0});
-        wall1->scale({1.0, 0.1, 1.0});
+        wall1->setMirror(true);
+        wall1->scale({1.0, 0.01, 1.0});
         wall1->translate({0.0, 1.5, 0.0});
         objects.push_back(wall1);
 
         Object *wall2 = new Object(new Cube(), {0.1, 1.0, 0.1});
-        wall2->scale({0.1, 1.0, 1.0});
+        wall2->scale({0.01, 1.0, 1.0});
         wall2->translate({-0.5, 1.0, 0.0});
         objects.push_back(wall2);
 
         Object *wall3 = new Object(new Cube(), {1.0, 0.1, 0.1});
-        wall3->scale({0.1, 1.0, 1.0});
+        wall3->scale({0.01, 1.0, 1.0});
         wall3->translate({0.5, 1.0, 0.0});
         objects.push_back(wall3);
 
+        Object *wall4 = new Object(new Cube(), {1.0, 1.0, 1.0});
+        wall4->setInvisible(true);
+        wall4->setMirror(true);
+        wall4->scale({1.0, 0.01, 1.0});
+        wall4->translate({0.0, 0.5, 0.0});
+        objects.push_back(wall4);
+
         Object *floor = new Object(new Cube(), {0.1, 0.1, 1.0});
-        floor->scale({1.0, 1.0, 0.1});
+        floor->scale({1.0, 1.0, 0.01});
         floor->translate({0.0, 1.0, -0.5});
         objects.push_back(floor);
 
         Object *cieling = new Object(new Cube(), {1.0, 1.0, 1.0});
-        cieling->scale({1.0, 1.0, 0.1});
+        cieling->scale({1.0, 1.0, 0.01});
         cieling->translate({0.0, 1.0, 0.5});
         objects.push_back(cieling);
 
         Object *light = new Object(new Cube(), {5.0, 5.0, 5.0});
-        light->setLight();
-        light->scale({0.5, 0.5, 0.1});
-        light->translate({0.0, 1.0, 0.48});
+        light->setLight(true);
+        light->scale({0.4, 0.4, 0.1});
+        light->translate({0.0, 1.0, 0.52});
         objects.push_back(light);
 
-        Object* lion = new Object(new Mesh("assets/lion05.obj"), {1.0, 1.0, 1.0});
-        // lion->setMirror();
-        // lion->scale({1.3, 1.3, 1.3});
-        lion->rotate({1.0, 0.0, 0.0}, 90.0f);
-        lion->translate({0.0, 1.3, -0.3});
-        objects.push_back(lion);
+        // Object* lion = new Object(new Mesh("assets/lion05.obj"), {1.0, 1.0, 1.0});
+        // // lion->setMirror();
+        // // lion->scale({1.3, 1.3, 1.3});
+        // lion->rotate({1.0, 0.0, 0.0}, 90.0f);
+        // lion->translate({0.0, 1.3, -0.3});
+        // objects.push_back(lion);
     }
 }
 
@@ -120,6 +128,8 @@ void Scene::render(Camera *camera, cv::Mat &image) {
             float3 position;
             float3 normal;
             for (Object *object : objects) {
+                if (object->isInvisible()) continue;
+
                 object->intersect(ray, hit);
                 if (hit.distance < rayLength) {
                     rayLength = hit.distance;

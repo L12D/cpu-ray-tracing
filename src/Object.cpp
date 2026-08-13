@@ -4,16 +4,18 @@
 Object::Object() {
     this->shape = nullptr;
     this->color = {0, 0, 0};
-    this->isLight = false;
-    this->isMirror = false;
+    this->light = false;
+    this->mirror = false;
+    this->invisible = false;
 }
 
 
 Object::Object(Shape *shape, float3 color) {
     this->shape = shape;
     this->color = color;
-    this->isLight = false;
-    this->isMirror = false;
+    this->light = false;
+    this->mirror = false;
+    this->invisible = false;
 }
 
 
@@ -37,13 +39,33 @@ void Object::setColor(float3 color) {
 }
 
 
-void Object::setLight() {
-    this->isLight = true;
+void Object::setLight(bool light) {
+    this->light = light;
 }
 
 
-void Object::setMirror() {
-    this->isMirror = true;
+bool Object::isLight() {
+    return this->light;
+}
+
+
+void Object::setMirror(bool mirror) {
+    this->mirror = mirror;
+}
+
+
+bool Object::isMirror() {
+    return this->mirror;
+}
+
+
+void Object::setInvisible(bool invisible) {
+    this->invisible = invisible;
+}
+
+
+bool Object::isInvisible() {
+    return this->invisible;
 }
 
 
@@ -74,14 +96,14 @@ float3 Object::getRayColor(float3 intersectionPoint, float3 normal, float3 incid
     Application* app = Application::getInstance();
     Scene* scene = app->getScene();
 
-    if (isLight) {
+    if (light) {
         return color;
     }
 
     HitInfo hit;
 
     std::vector<ray> rays;
-    if (isMirror) {
+    if (mirror) {
         rays.push_back(getMirrorRay(intersectionPoint, normal, incident));
 
         hit.renderDepth = renderDepth;
@@ -113,7 +135,7 @@ float3 Object::getRayColor(float3 intersectionPoint, float3 normal, float3 incid
     }
 
 
-    float3 reflexionColor = BC_COLOR_2;
+    float3 reflexionColor = float3();
     float rayLength;
     float3 rayColor;
 
@@ -137,17 +159,20 @@ float3 Object::getRayColor(float3 intersectionPoint, float3 normal, float3 incid
         if (closestObject != nullptr) {
             float3 direction = ray.direction;
             rayColor = closestObject->getRayColor(position, hitNormal, direction, hit.renderDepth, hit.actualDepth);
-            if (isMirror) {
-                rayColor = mul(MIRROR_REFLECTIVENESS, rayColor);
-            } else {
+            if (!mirror) {
                 rayColor = mul(dot(direction, normal), rayColor);
             }
         }
         
         reflexionColor = reflexionColor + rayColor;
     }
-    if (!isMirror && renderDepth == 0) {
-        reflexionColor = mul(INV_N_RAYS, reflexionColor);
+    if (!mirror) {
+        if (renderDepth == 0) {
+            reflexionColor = mul(INV_N_RAYS, reflexionColor);
+        }
+        reflexionColor = reflexionColor + (float3)BC_COLOR_2;
+    } else {
+        reflexionColor = mul(MIRROR_REFLECTIVENESS, reflexionColor);
     }
     return reflexionColor.clamp()*color;
 }
