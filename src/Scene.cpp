@@ -56,51 +56,46 @@ Scene::Scene(int sceneIndex) {
         // lion->translate({0.0, 1.0, -0.3});
         objects.push_back(lion);
     } else if (sceneIndex == 5) {
-        Object *wall1 = new Object(new Cube(), {1.0, 1.0, 1.0});
+        Object *wall1 = new Object(new Quad({-0.5, 1.5, -0.5}, {1.0, 0.0, 1.0}, {1.0, 0.0, 0.0}, {0.0, 0.0, 1.0}), {1.0, 1.0, 1.0});
         wall1->setMirror(true);
-        wall1->scale({1.0, 0.01, 1.0});
-        wall1->translate({0.0, 1.5, 0.0});
         objects.push_back(wall1);
 
-        Object *wall2 = new Object(new Cube(), {0.1, 1.0, 0.1});
-        wall2->scale({0.01, 1.0, 1.0});
-        wall2->translate({-0.5, 1.0, 0.0});
+        Object *wall2 = new Object(new Quad({-0.5, 0.5, -0.5}, {0.0, 1.0, 1.0}, {0.0, 1.0, 0.0}, {0.0, 0.0, 1.0}), {0.1, 1.0, 0.1});
         objects.push_back(wall2);
 
-        Object *wall3 = new Object(new Cube(), {1.0, 0.1, 0.1});
-        wall3->scale({0.01, 1.0, 1.0});
-        wall3->translate({0.5, 1.0, 0.0});
+        Object *wall3 = new Object(new Quad({0.5, 0.5, -0.5}, {0.0, 1.0, 1.0}, {0.0, 1.0, 0.0}, {0.0, 0.0, 1.0}), {1.0, 0.1, 0.1});
         objects.push_back(wall3);
 
-        Object *wall4 = new Object(new Cube(), {1.0, 1.0, 1.0});
+        Object *wall4 = new Object(new Quad({-0.5, 0.5, -0.5}, {1.0, 0.0, 1.0}, {1.0, 0.0, 0.0}, {0.0, 0.0, 1.0}), {1.0, 1.0, 1.0});
         wall4->setInvisible(true);
         wall4->setMirror(true);
-        wall4->scale({1.0, 0.01, 1.0});
-        wall4->translate({0.0, 0.5, 0.0});
         objects.push_back(wall4);
 
-        Object *floor = new Object(new Cube(), {0.1, 0.1, 1.0});
-        floor->scale({1.0, 1.0, 0.01});
-        floor->translate({0.0, 1.0, -0.5});
+        Object *floor = new Object(new Quad({-0.5, 0.5, -0.5}, {1.0, 1.0, 0.0}, {1.0, 0.0, 0.0}, {0.0, 1.0, 0.0}), {1.0, 1.0, 1.0});
         objects.push_back(floor);
 
-        Object *cieling = new Object(new Cube(), {1.0, 1.0, 1.0});
-        cieling->scale({1.0, 1.0, 0.01});
-        cieling->translate({0.0, 1.0, 0.5});
+        Object *cieling = new Object(new Quad({-0.5, 0.5, 0.5}, {1.0, 1.0, 0.0}, {1.0, 0.0, 0.0}, {0.0, 1.0, 0.0}), {1.0, 1.0, 1.0});
         objects.push_back(cieling);
 
-        Object *light = new Object(new Cube(), {5.0, 5.0, 5.0});
+        Object *light = new Object(new Cube(), {7.0, 7.0, 7.0});
         light->setLight(true);
         light->scale({0.4, 0.4, 0.1});
         light->translate({0.0, 1.0, 0.52});
         objects.push_back(light);
 
-        // Object* lion = new Object(new Mesh("assets/lion05.obj"), {1.0, 1.0, 1.0});
-        // // lion->setMirror();
-        // // lion->scale({1.3, 1.3, 1.3});
-        // lion->rotate({1.0, 0.0, 0.0}, 90.0f);
-        // lion->translate({0.0, 1.3, -0.3});
-        // objects.push_back(lion);
+        Object* lion1 = new Object(new Mesh("assets/lion05.obj"), {0.8, 0.8, 0.8});
+        lion1->scale({0.8, 0.8, 0.8});
+        lion1->rotate({1.0, 0.0, 0.0}, 90.0f);
+        lion1->rotate({0.0, 0.0, 1.0}, 90.0f);
+        lion1->translate({-0.3, 1.0, -0.25});
+        objects.push_back(lion1);
+
+        Object* lion2 = new Object(new Mesh("assets/lion05.obj"), {0.8, 0.8, 0.8});
+        lion2->scale({0.8, 0.8, 0.8});
+        lion2->rotate({1.0, 0.0, 0.0}, 90.0f);
+        lion2->rotate({0.0, 0.0, -1.0}, 90.0f);
+        lion2->translate({0.3, 1.0, -0.25});
+        objects.push_back(lion2);
     }
 }
 
@@ -111,7 +106,6 @@ std::vector<Object*> Scene::getObjects() {
 
 
 void Scene::render(Camera *camera, cv::Mat &image) {
-    int maxDepth = 3;
     for (int i = 0; i < camera->get_height(); ++i) {
         for (int j = 0; j < camera->get_width(); ++j) {
             if (j == 0 and i % 10 == 0) {

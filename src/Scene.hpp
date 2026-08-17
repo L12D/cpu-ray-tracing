@@ -10,6 +10,7 @@
 #include "shapes/Sphere.hpp"
 #include "shapes/Mesh.hpp"
 #include "shapes/Cube.hpp"
+#include "shapes/Quad.hpp"
 
 
 class Object;

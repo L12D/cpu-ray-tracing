@@ -1,8 +1,7 @@
 #include "Cube.hpp"
 
 
-Cube::Cube() : Cube({-0.5, -0.5, -0.5}, {1.0, 0.0, 0.0}, {0.0, 1.0, 0.0}, {0.0, 0.0, 1.0}) {
-}
+Cube::Cube() : Cube({-0.5, -0.5, -0.5}, {1.0, 0.0, 0.0}, {0.0, 1.0, 0.0}, {0.0, 0.0, 1.0}) {}
 
 
 Cube::Cube(float3 base, float3 v1, float3 v2, float3 v3) {

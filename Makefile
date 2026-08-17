@@ -1,6 +1,6 @@
 # Fichiers
 TARGET = main
-SRCS = src/main.cpp src/utils.cpp src/Camera.cpp src/Scene.cpp src/shapes/Sphere.cpp src/Object.cpp src/shapes/Shape.cpp src/Application.cpp src/shapes/Mesh.cpp src/shapes/Cube.cpp
+SRCS = src/main.cpp src/utils.cpp src/Camera.cpp src/Scene.cpp src/shapes/Sphere.cpp src/Object.cpp src/shapes/Shape.cpp src/Application.cpp src/shapes/Mesh.cpp src/shapes/Cube.cpp src/shapes/Quad.cpp
 OBJS = $(SRCS:.cpp=.o)
 OBJS := $(patsubst %.o, build/%.o, $(OBJS))
 

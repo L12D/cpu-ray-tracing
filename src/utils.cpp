@@ -210,7 +210,7 @@ AABB AABB::fromTriangle(const triangle& tri) {
 }
 
 
-bool intersect(const triangle &tri, const ray &ray, HitInfo &hit, bool &result) {
+bool intersectOrientedTriangle(const triangle &tri, const ray &ray, HitInfo &hit) {
     // Möller–Trumbore intersection test
     const float3 &v0 = tri.v0;
     const float3 &edge1 = tri.edge1;
@@ -237,6 +237,42 @@ bool intersect(const triangle &tri, const ray &ray, HitInfo &hit, bool &result) 
         hit.distance = t;
         hit.position = ray.origin + mul(t, ray.direction);
         hit.normal = normal;
+        return true;
+    }
+
+    return false;
+}
+
+
+bool intersectTriangle(const triangle &tri, const ray &ray, HitInfo &hit) {
+    // Möller–Trumbore intersection test
+    const float3 &v0 = tri.v0;
+    const float3 &edge1 = tri.edge1;
+    const float3 &edge2 = tri.edge2;
+    const float3 &normal = tri.normal;
+
+    float3 h = cross(ray.direction, edge2);
+    float a = dot(edge1, h);
+    if (std::abs(a) < 1e-6) return false;
+
+    float f = 1.0f / a;
+    float3 s = ray.origin - v0;
+    float u = f * dot(s, h);
+    if (u < 0.0f || u > 1.0) return false;
+
+    float3 q = cross(s, edge1);
+    float v = f * dot(ray.direction, q);
+    if (v < 0.0f || u + v > 1.0) return false;
+
+    float t = f * dot(edge2, q);
+    if (t > 1e-6f && t < hit.distance) {
+        hit.distance = t;
+        hit.position = ray.origin + mul(t, ray.direction);
+        if (dot(normal, ray.direction) < 0.0) {
+            hit.normal = normal;
+        } else {
+            hit.normal = -normal;
+        }
         return true;
     }
 

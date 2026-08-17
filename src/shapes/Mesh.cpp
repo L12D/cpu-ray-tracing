@@ -73,7 +73,7 @@ bool traverseBVH(const std::vector<FlatBVHNode>& flatNodes, const std::vector<tr
         if (node.leftChildIndex == 4294967295) { // Leaf node
             for (uint32_t i = 0; i < node.triangleCount; ++i) {
                 const triangle& tri = triangles[node.triangleOffset + i];
-                if (intersect(tri, ray, hit, result)) {
+                if (intersectOrientedTriangle(tri, ray, hit)) {
                     result = true;
                 }
             }
