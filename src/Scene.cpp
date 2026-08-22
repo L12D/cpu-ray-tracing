@@ -57,6 +57,37 @@ Scene::Scene(int sceneIndex) {
         objects.push_back(lion);
     } else if (sceneIndex == 5) {
         Object *wall1 = new Object(new Quad({-0.5, 1.5, -0.5}, {1.0, 0.0, 1.0}, {1.0, 0.0, 0.0}, {0.0, 0.0, 1.0}), {1.0, 1.0, 1.0});
+        objects.push_back(wall1);
+
+        Object *wall2 = new Object(new Quad({-0.5, 0.5, -0.5}, {0.0, 1.0, 1.0}, {0.0, 1.0, 0.0}, {0.0, 0.0, 1.0}), {0.1, 1.0, 0.1});
+        objects.push_back(wall2);
+
+        Object *wall3 = new Object(new Quad({0.5, 0.5, -0.5}, {0.0, 1.0, 1.0}, {0.0, 1.0, 0.0}, {0.0, 0.0, 1.0}), {1.0, 0.1, 0.1});
+        objects.push_back(wall3);
+
+        Object *wall4 = new Object(new Quad({-0.5, 0.5, -0.5}, {1.0, 0.0, 1.0}, {1.0, 0.0, 0.0}, {0.0, 0.0, 1.0}), {1.0, 1.0, 1.0});
+        wall4->setInvisible(true);
+        objects.push_back(wall4);
+
+        Object *floor = new Object(new Quad({-0.5, 0.5, -0.5}, {1.0, 1.0, 0.0}, {1.0, 0.0, 0.0}, {0.0, 1.0, 0.0}), {1.0, 1.0, 1.0});
+        objects.push_back(floor);
+
+        Object *cieling = new Object(new Quad({-0.5, 0.5, 0.5}, {1.0, 1.0, 0.0}, {1.0, 0.0, 0.0}, {0.0, 1.0, 0.0}), {1.0, 1.0, 1.0});
+        objects.push_back(cieling);
+
+        Object *light = new Object(new Cube(), {7.0, 7.0, 7.0});
+        light->setLight(true);
+        light->scale({0.4, 0.4, 0.1});
+        light->translate({0.0, 1.0, 0.52});
+        objects.push_back(light);
+
+        Object* lion = new Object(new Mesh("assets/lion05.obj"), {0.8, 0.8, 0.8});
+        lion->scale({0.8, 0.8, 0.8});
+        lion->rotate({1.0, 0.0, 0.0}, 90.0f);
+        lion->translate({0.0, 1.2, -0.25});
+        objects.push_back(lion);
+    } else if (sceneIndex == 6) {
+        Object *wall1 = new Object(new Quad({-0.5, 1.5, -0.5}, {1.0, 0.0, 1.0}, {1.0, 0.0, 0.0}, {0.0, 0.0, 1.0}), {1.0, 1.0, 1.0});
         wall1->setMirror(true);
         objects.push_back(wall1);
 

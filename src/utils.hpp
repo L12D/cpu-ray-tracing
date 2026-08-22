@@ -17,13 +17,13 @@ static constexpr float FLOAT_MAX = std::numeric_limits<float>::max();
 
 #define PRODUCTION false
 static constexpr float FOV = M_PI / 3.1f;
-#define RESOLUTION 1080
+#define RESOLUTION 540
 #define SCENE 5
-#define N_RAYS 1000
+#define N_RAYS 10
 static constexpr float INV_N_RAYS = 1.0f / static_cast<float>(N_RAYS);
 
-#define MAX_RENDER_DEPTH 4
-#define MAX_ACTUAL_DEPTH 14
+#define MAX_RENDER_DEPTH 3
+#define MAX_ACTUAL_DEPTH 10
 #define MIRROR_REFLECTIVENESS 0.85f
 
 

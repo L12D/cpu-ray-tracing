@@ -58,5 +58,8 @@ These successive steps are implemented:
 ![Figure 17](figures/fig17.png)
 1h20, 500 rays per pixel, 0.05 triangles, 1080p
 
-![Figure 17](figures/fig17.png)
+![Figure 18](figures/fig18.png)
 2h20, 1000 rays per pixel, 0.05 triangles, 1080p (mirror)
+
+![Figure 19](figures/fig19.png)
+~3h, 1000 rays per pixel, 1080p
