@@ -1,12 +1,12 @@
 #pragma once
 
 
+#include <memory>
 #include <vector>
 #include <opencv2/opencv.hpp>
 
 #include "utils.hpp"
 #include "Camera.hpp"
-#include "Object.hpp"
 #include "shapes/Sphere.hpp"
 #include "shapes/Mesh.hpp"
 #include "shapes/Cube.hpp"
@@ -18,15 +18,15 @@ class Object;
 
 class Scene {
 
-    private :
+    private:
 
-        std::vector<Object*> objects;
-        
-    public :
+        std::vector<std::unique_ptr<Object>> m_objects;
 
-        Scene(int sceneIndex);
-        std::vector<Object*> getObjects();
-        void render(Camera *camera, cv::Mat &image);
+    public:
+
+        explicit Scene(int sceneIndex);
         ~Scene();
+        [[nodiscard]] const std::vector<std::unique_ptr<Object>>& getObjects() const noexcept;
+        void render(const Camera& camera, cv::Mat& image) const;
 
 };

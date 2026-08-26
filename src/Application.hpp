@@ -1,8 +1,11 @@
 #pragma once
 
 
+#include <memory>
+#include <vector>
+#include <opencv2/opencv.hpp>
+
 #include "Camera.hpp"
-#include "Scene.hpp"
 
 
 class Scene;
@@ -10,22 +13,25 @@ class Scene;
 
 class Application {
 
-    private :
+    private:
 
-        static Application *instance;
-        Camera* camera;
-        Scene *scene;
-        std::vector<float3> directions;
+        std::unique_ptr<Camera> m_camera;
+        std::unique_ptr<Scene> m_scene;
+        std::vector<float3> m_directions;
+
         Application();
 
-    public :
+    public:
 
-        static Application *getInstance();
-        Camera *getCamera();
-        Scene *getScene();
-        std::vector<float3> generateDirections();
-        std::vector<float3> getDirections();
-        void render(cv::Mat &image);
+        Application(const Application&) = delete;
+        Application& operator=(const Application&) = delete;
         ~Application();
+
+        [[nodiscard]] static Application& getInstance();
+        [[nodiscard]] Camera& getCamera() const noexcept;
+        [[nodiscard]] Scene& getScene() const noexcept;
+        [[nodiscard]] std::vector<float3> generateDirections() const;
+        [[nodiscard]] std::vector<float3> getDirections() const;
+        void render(cv::Mat& image) const;
 
 };

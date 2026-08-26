@@ -1,37 +1,39 @@
 #include "Application.hpp"
 
+#include "Scene.hpp"
 
-Application *Application::instance = nullptr;
+#include <utility>
 
 
-Application::Application() {
-    camera = new Camera(RESOLUTION);
-    scene = new Scene(SCENE);
-    if (PRODUCTION) {
-        directions = generateDirections();
+Application::Application()
+    : m_camera(std::make_unique<Camera>(RESOLUTION)),
+      m_scene(std::make_unique<Scene>(SCENE)) {
+    if constexpr (PRODUCTION) {
+        m_directions = generateDirections();
     }
 }
 
 
-Application *Application::getInstance() {
-    if (instance == nullptr) {
-        instance = new Application();
-    }
+Application& Application::getInstance() {
+    static Application instance;
     return instance;
 }
 
 
-Camera *Application::getCamera() {
-    return camera;
+Application::~Application() = default;
+
+
+Camera& Application::getCamera() const noexcept {
+    return *m_camera;
 }
 
 
-Scene *Application::getScene() {
-    return scene;
+Scene& Application::getScene() const noexcept {
+    return *m_scene;
 }
 
 
-std::vector<float3> Application::generateDirections() {
+std::vector<float3> Application::generateDirections() const {
     std::vector<float3> result;
     result.reserve(N_RAYS);
     std::random_device rd;
@@ -40,9 +42,9 @@ std::vector<float3> Application::generateDirections() {
 
     for (int i = 0; i < N_RAYS; ++i) {
         // Generate random angles
-        float theta = 2.0f * M_PI * dis(gen);  // Azimuthal angle [0, 2π]
-        float phi = acos(2.0f * dis(gen) - 1.0f);  // Polar angle [0, π]
-        
+        const float theta = 2.0f * static_cast<float>(PI) * dis(gen); // Azimuthal angle [0, 2π]
+        const float phi = acos(2.0f * dis(gen) - 1.0f);               // Polar angle [0, π]
+
         // Convert spherical to Cartesian coordinates
         float3 randomDirection = {
             sin(phi) * cos(theta),
@@ -56,17 +58,11 @@ std::vector<float3> Application::generateDirections() {
 }
 
 
-std::vector<float3> Application::getDirections() {
-    return directions;
+std::vector<float3> Application::getDirections() const {
+    return m_directions;
 }
 
 
-void Application::render(cv::Mat &image) {
-    scene->render(camera, image);
-}
-
-
-Application::~Application() {
-    delete camera;
-    delete scene;
+void Application::render(cv::Mat& image) const {
+    m_scene->render(*m_camera, image);
 }

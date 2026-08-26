@@ -8,20 +8,20 @@
 
 class Camera {
 
-    private :
+    private:
 
-        int width, height; // in pixels
-        mat4 view;
-        std::vector<std::vector<ray>> *rays;
+        int m_width;  // in pixels
+        int m_height; // in pixels
+        mat4 m_view;
+        std::vector<std::vector<Ray>> m_rays;
 
-    public :
+    public:
 
-        Camera(int resolution);
-        int get_width();
-        int get_height();
-        ray get_ray(int i, int j);
-        mat4 viewMatrix();
+        explicit Camera(int resolution);
+        [[nodiscard]] int getWidth() const noexcept;
+        [[nodiscard]] int getHeight() const noexcept;
+        [[nodiscard]] const Ray& getRay(int i, int j) const noexcept;
+        [[nodiscard]] mat4 viewMatrix() const noexcept;
         void translate(float3 t);
-        ~Camera();
 
 };

@@ -1,39 +1,36 @@
 #pragma once
 
 
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <algorithm>
-#include <iomanip>
-#include <chrono>
-#include <functional>
+#include <memory>
+#include <string>
+#include <vector>
 
 #include "../utils.hpp"
 #include "Shape.hpp"
 
 
-class Mesh: public Shape {
-    
-    private :
+class Mesh : public Shape {
 
-        std::vector<triangle> triangleArray;
-        std::vector<FlatBVHNode> nodes;
-        int rootIndex;
-    
-    public :
+    private:
 
-        Mesh();
-        Mesh(std::string filename);
-        void construct(std::vector<triangle> &triangles);
-        bool intersect(const ray& ray, HitInfo& globalHit);
-        void translate(float3 translation);
-        void rotate(float3 axis, float angle);
-        void scale(float3 scaling);
-        std::unique_ptr<BVHNode> buildBVH(std::vector<triangle>& triangles, int depth = 0);
+        std::vector<Triangle> m_triangleArray;
+        std::vector<FlatBVHNode> m_nodes;
+        int m_rootIndex = -1;
+
+    public:
+
+        Mesh() = default;
+        explicit Mesh(const std::string& filename);
+        void construct(std::vector<Triangle>& triangles);
+        bool intersect(const Ray& ray, HitInfo& globalHit) override;
+        void translate(float3 translation) override;
+        void rotate(float3 axis, float angle) override;
+        void scale(float3 scaling) override;
+        [[nodiscard]] std::unique_ptr<BVHNode> buildBVH(std::vector<Triangle>& triangles, int depth = 0);
         int flattenBVH(const std::unique_ptr<BVHNode>& node);
-        ~Mesh() = default;
+        ~Mesh() override = default;
 
 };
 
-void printStats(const std::unique_ptr<BVHNode> &root);
+
+void printStats(const std::unique_ptr<BVHNode>& root);

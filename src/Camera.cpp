@@ -1,49 +1,44 @@
 #include "Camera.hpp"
 
 
-Camera::Camera(int resolution) {
-    height = resolution;
-    width = resolution * 16 / 9;
-    view = id();
-    rays = new std::vector<std::vector<ray>>(height, std::vector<ray>(width));
-    float gap = 2*std::tan(FOV/2)/height;
-    for (int i = 0; i < height; ++i) {
-        for (int j = 0; j < width; ++j) {
-            float x = (j - width/2) * gap;
-            float y = 1.0;
-            float z = -(i - height/2) * gap;
-            float3 dir = normalize({x, y, z});
-            (*rays)[i][j] = ray({0, 0, 0}, dir);
+Camera::Camera(int resolution)
+    : m_width(resolution * 16 / 9),
+      m_height(resolution),
+      m_view(identity()),
+      m_rays(m_height, std::vector<Ray>(m_width)) {
+    const float gap = 2 * std::tan(FOV / 2) / m_height;
+    for (int i = 0; i < m_height; ++i) {
+        for (int j = 0; j < m_width; ++j) {
+            const float x = (j - m_width / 2) * gap;
+            const float y = 1.0;
+            const float z = -(i - m_height / 2) * gap;
+            const float3 dir = normalize({x, y, z});
+            m_rays[i][j] = Ray({0, 0, 0}, dir);
         }
     }
 }
 
 
-int Camera::get_width() {
-    return width;
+int Camera::getWidth() const noexcept {
+    return m_width;
 }
 
 
-int Camera::get_height() {
-    return height;
+int Camera::getHeight() const noexcept {
+    return m_height;
 }
 
 
-ray Camera::get_ray(int i, int j) {
-    return (*rays)[i][j];
+const Ray& Camera::getRay(int i, int j) const noexcept {
+    return m_rays[i][j];
 }
 
 
-mat4 Camera::viewMatrix() {
-    return view;
+mat4 Camera::viewMatrix() const noexcept {
+    return m_view;
 }
 
 
 void Camera::translate(float3 t) {
-    view = mTranslate(-t)*view;
-}
-
-
-Camera::~Camera() {
-    delete rays;
+    m_view = mTranslate(-t) * m_view;
 }

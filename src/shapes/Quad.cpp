@@ -1,25 +1,39 @@
 #include "Quad.hpp"
 
 
-Quad::Quad(): Quad({-0.5, 0.0, -0.5}, {1.0, 0.0, 1.0}, {1.0, 0.0, 0.0}, {0.0, 0.0, 1.0}) {}
+namespace {
+
+void translateTriangle(Triangle& tri, const float3& translation) {
+    tri.v0 = tri.v0 + translation;
+    tri.v1 = tri.v1 + translation;
+    tri.v2 = tri.v2 + translation;
+
+    tri.edge1 = tri.v1 - tri.v0;
+    tri.edge2 = tri.v2 - tri.v0;
+
+    tri.normal = normalize(cross(tri.edge1, tri.edge2));
+}
+
+} // namespace
+
+
+Quad::Quad() : Quad({-0.5, 0.0, -0.5}, {1.0, 0.0, 1.0}, {1.0, 0.0, 0.0}, {0.0, 0.0, 1.0}) {}
 
 
 Quad::Quad(float3 base, float3 diagonal, float3 v1, float3 v2)
-    : tri1(base, base + diagonal, base + v1), tri2(base, base + diagonal, base + v2) {}
+    : m_tri1(base, base + diagonal, base + v1), m_tri2(base, base + diagonal, base + v2) {}
 
 
-bool Quad::intersect(const ray& ray, HitInfo& globalHit) {
+bool Quad::intersect(const Ray& ray, HitInfo& globalHit) {
     HitInfo closestHit;
-    closestHit.distance = FLOAT_MAX;
     bool foundHit = false;
 
-    if (intersectTriangle(tri1, ray, closestHit)) {
+    if (intersectTriangle(m_tri1, ray, closestHit)) {
         foundHit = true;
     }
 
     HitInfo secondHit;
-    secondHit.distance = FLOAT_MAX;
-    if (intersectTriangle(tri2, ray, secondHit) && secondHit.distance < closestHit.distance) {
+    if (intersectTriangle(m_tri2, ray, secondHit) && secondHit.distance < closestHit.distance) {
         closestHit = secondHit;
         foundHit = true;
     }
@@ -35,31 +49,16 @@ bool Quad::intersect(const ray& ray, HitInfo& globalHit) {
 
 
 void Quad::translate(float3 translation) {
-    tri1.v0 = tri1.v0 + translation;
-    tri1.v1 = tri1.v1 + translation;
-    tri1.v2 = tri1.v2 + translation;
-
-    tri1.edge1 = tri1.v1 - tri1.v0;
-    tri1.edge2 = tri1.v2 - tri1.v0;
-
-    tri1.normal = normalize(cross(tri1.edge1, tri1.edge2));
-
-    tri2.v0 = tri2.v0 + translation;
-    tri2.v1 = tri2.v1 + translation;
-    tri2.v2 = tri2.v2 + translation;
-
-    tri2.edge1 = tri2.v1 - tri2.v0;
-    tri2.edge2 = tri2.v2 - tri2.v0;
-
-    tri2.normal = normalize(cross(tri2.edge1, tri2.edge2));
+    translateTriangle(m_tri1, translation);
+    translateTriangle(m_tri2, translation);
 }
 
 
-void Quad::rotate(float3 axis, float angle) {
+void Quad::rotate(float3 /*axis*/, float /*angle*/) {
     // TODO
 }
 
 
-void Quad::scale(float3 scaling) {
+void Quad::scale(float3 /*scaling*/) {
     // TODO
 }

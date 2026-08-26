@@ -1,59 +1,58 @@
 #include "Sphere.hpp"
 
 
-Sphere::Sphere(float3 center, float radius) {
-    this->center = center;
-    this->radius = radius;
+Sphere::Sphere(float3 center, float radius)
+    : m_center(center),
+      m_radius(radius) {}
+
+
+float3 Sphere::getCenter() const noexcept {
+    return m_center;
 }
 
 
-float3 Sphere::getCenter() {
-    return this->center;
+void Sphere::setCenter(float3 center) noexcept {
+    m_center = center;
 }
 
 
-void Sphere::setCenter(float3 center) {
-    this->center = center;
+float Sphere::getRadius() const noexcept {
+    return m_radius;
 }
 
 
-float Sphere::getRadius() {
-    return this->radius;
+void Sphere::setRadius(float radius) noexcept {
+    m_radius = radius;
 }
 
 
-void Sphere::setRadius(float radius) {
-    this->radius = radius;
-}
+bool Sphere::intersect(const Ray& ray, HitInfo& hit) {
+    const float3 dir = ray.direction;
+    const float3 oc = ray.origin - m_center;
+    const float b = 2.0f * dot(oc, dir);
+    const float c = dot(oc, oc) - m_radius * m_radius;
 
-
-bool Sphere::intersect(const ray& ray, HitInfo& hit) {
-    float3 dir = ray.direction;
-    float3 oc = ray.origin - this->center;
-    float b = 2.0f * dot(oc, dir);
-    float c = dot(oc, oc) - radius * radius;
-
-    float discriminant = b * b - 4.0f * c;  // Since a = 1
+    const float discriminant = b * b - 4.0f * c; // Since a = 1
 
     if (discriminant < 0.0f) {
         return false;
     }
 
-    float sqrtDiscriminant = sqrt(discriminant);
+    const float sqrtDiscriminant = sqrt(discriminant);
 
-    float t0 = (-b - sqrtDiscriminant) * 0.5f;  // Dividing by 2 directly
-    float t1 = (-b + sqrtDiscriminant) * 0.5f;
+    const float t0 = (-b - sqrtDiscriminant) * 0.5f; // Dividing by 2 directly
+    const float t1 = (-b + sqrtDiscriminant) * 0.5f;
 
     // Return the closest valid intersection point
     if (t0 > 0.0) {
         hit.distance = t0;
-        hit.position = ray.origin + mul(t0, ray.direction);
-        hit.normal = normalize(hit.position - this->center);
+        hit.position = ray.origin + t0 * ray.direction;
+        hit.normal = normalize(hit.position - m_center);
         return true;
     } else if (t1 > 0.0) {
         hit.distance = t1;
-        hit.position = ray.origin + mul(t1, ray.direction);
-        hit.normal = normalize(hit.position - this->center);
+        hit.position = ray.origin + t1 * ray.direction;
+        hit.normal = normalize(hit.position - m_center);
         return true;
     }
 
@@ -62,15 +61,15 @@ bool Sphere::intersect(const ray& ray, HitInfo& hit) {
 
 
 void Sphere::translate(float3 translation) {
-    this->center = this->center + translation;
+    m_center = m_center + translation;
 }
 
 
-void Sphere::rotate(float3 axis, float angle) {
+void Sphere::rotate(float3 /*axis*/, float /*angle*/) {
     // Nothing to do here
 }
 
 
 void Sphere::scale(float3 scaling) {
-    this->radius *= scaling.x;  // Assuming uniform scaling for spheres
+    m_radius *= scaling.x; // Assuming uniform scaling for spheres
 }

@@ -1,158 +1,163 @@
 #include "Scene.hpp"
 
+#include "Object.hpp"
+
+#include <utility>
+
 
 Scene::Scene(int sceneIndex) {
     if (sceneIndex == 1) {
-        Object *light = new Object(new Sphere({-2, 4, 0}, 1), {4.0, 4.0, 4.0});
+        auto light = std::make_unique<Object>(std::make_unique<Sphere>(float3{-2, 4, 0}, 1), float3{4.0, 4.0, 4.0});
         light->setLight(true);
-        objects.push_back(light);
+        m_objects.push_back(std::move(light));
 
-        objects.push_back(new Object(new Sphere({1, 4, 0}, 1), {0.0, 0.0, 1.0}));
-        objects.push_back(new Object(new Sphere({0, 4, -4}, 3), {1.0, 1.0, 1.0}));
+        m_objects.push_back(std::make_unique<Object>(std::make_unique<Sphere>(float3{1, 4, 0}, 1), float3{0.0, 0.0, 1.0}));
+        m_objects.push_back(std::make_unique<Object>(std::make_unique<Sphere>(float3{0, 4, -4}, 3), float3{1.0, 1.0, 1.0}));
     } else if (sceneIndex == 2) {
-        Object *light1 = new Object(new Sphere({-2.5, 6, 0}, 1.5), {8.0, 8.0, 8.0});
+        auto light1 = std::make_unique<Object>(std::make_unique<Sphere>(float3{-2.5, 6, 0}, 1.5), float3{8.0, 8.0, 8.0});
         light1->setLight(true);
-        objects.push_back(light1);
+        m_objects.push_back(std::move(light1));
 
-        Object *sphere = new Object(new Sphere({0, 14, 0}, 5), {1.0, 1.0, 1.0});
+        auto sphere = std::make_unique<Object>(std::make_unique<Sphere>(float3{0, 14, 0}, 5), float3{1.0, 1.0, 1.0});
         sphere->setMirror(true);
-        objects.push_back(sphere);
+        m_objects.push_back(std::move(sphere));
 
-        Object* bishop = new Object(new Mesh("assets/bishop.obj"), {0.5, 1.0, 0.5});
+        auto bishop = std::make_unique<Object>(std::make_unique<Mesh>("assets/bishop.obj"), float3{0.5, 1.0, 0.5});
         bishop->scale({0.8, 0.8, 0.8});
         bishop->translate({2.5, 7, -3});
-        objects.push_back(bishop);
+        m_objects.push_back(std::move(bishop));
     } else if (sceneIndex == 3) {
-        Object *light = new Object(new Sphere({-2.5, 7, 0}, 2.0), {10.0, 10.0, 10.0});
+        auto light = std::make_unique<Object>(std::make_unique<Sphere>(float3{-2.5, 7, 0}, 2.0), float3{10.0, 10.0, 10.0});
         light->setLight(true);
-        objects.push_back(light);
+        m_objects.push_back(std::move(light));
 
-        Object* bishop1 = new Object(new Mesh("assets/bishop.obj"), {0.5, 1.0, 0.5});
+        auto bishop1 = std::make_unique<Object>(std::make_unique<Mesh>("assets/bishop.obj"), float3{0.5, 1.0, 0.5});
         bishop1->scale({0.8, 0.8, 0.8});
         bishop1->translate({2.5, 5.5, -3});
-        objects.push_back(bishop1);
+        m_objects.push_back(std::move(bishop1));
 
-        Object* bishop2 = new Object(new Mesh("assets/bishop.obj"), {1.0, 0.5, 0.5});
+        auto bishop2 = std::make_unique<Object>(std::make_unique<Mesh>("assets/bishop.obj"), float3{1.0, 0.5, 0.5});
         bishop2->scale({0.8, 0.8, 0.8});
         bishop2->translate({2.5, 8, -3});
-        objects.push_back(bishop2);
+        m_objects.push_back(std::move(bishop2));
     } else if (sceneIndex == 4) {
-        Object *light1 = new Object(new Sphere({-2.3, 0.8, 0.0}, 1.0), {7.0, 7.0, 7.0});
+        auto light1 = std::make_unique<Object>(std::make_unique<Sphere>(float3{-2.3, 0.8, 0.0}, 1.0), float3{7.0, 7.0, 7.0});
         light1->setLight(true);
-        objects.push_back(light1);
+        m_objects.push_back(std::move(light1));
 
-        Object *light2 = new Object(new Sphere({2.3, 0.8, 0.0}, 1.0), {2.0, 2.0, 10.0});
+        auto light2 = std::make_unique<Object>(std::make_unique<Sphere>(float3{2.3, 0.8, 0.0}, 1.0), float3{2.0, 2.0, 10.0});
         light2->setLight(true);
-        objects.push_back(light2);
+        m_objects.push_back(std::move(light2));
 
-        Object *light3 = new Object(new Sphere({0.0, 0.0, 2.0}, 1.0), {2.0, 2.0, 2.0});
+        auto light3 = std::make_unique<Object>(std::make_unique<Sphere>(float3{0.0, 0.0, 2.0}, 1.0), float3{2.0, 2.0, 2.0});
         light3->setLight(true);
-        objects.push_back(light3);
+        m_objects.push_back(std::move(light3));
 
-        Object* lion = new Object(new Mesh("assets/lion05.obj"), {0.7, 0.7, 0.7});
+        auto lion = std::make_unique<Object>(std::make_unique<Mesh>("assets/lion05.obj"), float3{0.7, 0.7, 0.7});
         // lion->scale({1.5, 1.5, 1.5});
         lion->rotate({1.0, 0.0, 0.0}, 90.0f);
         lion->translate({0.0, 1.0, -0.2});
         // lion->translate({0.0, 1.0, -0.3});
-        objects.push_back(lion);
+        m_objects.push_back(std::move(lion));
     } else if (sceneIndex == 5) {
-        Object *wall1 = new Object(new Quad({-0.5, 1.5, -0.5}, {1.0, 0.0, 1.0}, {1.0, 0.0, 0.0}, {0.0, 0.0, 1.0}), {1.0, 1.0, 1.0});
-        objects.push_back(wall1);
+        auto wall1 = std::make_unique<Object>(std::make_unique<Quad>(float3{-0.5, 1.5, -0.5}, float3{1.0, 0.0, 1.0}, float3{1.0, 0.0, 0.0}, float3{0.0, 0.0, 1.0}), float3{1.0, 1.0, 1.0});
+        m_objects.push_back(std::move(wall1));
 
-        Object *wall2 = new Object(new Quad({-0.5, 0.5, -0.5}, {0.0, 1.0, 1.0}, {0.0, 1.0, 0.0}, {0.0, 0.0, 1.0}), {0.1, 1.0, 0.1});
-        objects.push_back(wall2);
+        auto wall2 = std::make_unique<Object>(std::make_unique<Quad>(float3{-0.5, 0.5, -0.5}, float3{0.0, 1.0, 1.0}, float3{0.0, 1.0, 0.0}, float3{0.0, 0.0, 1.0}), float3{0.1, 1.0, 0.1});
+        m_objects.push_back(std::move(wall2));
 
-        Object *wall3 = new Object(new Quad({0.5, 0.5, -0.5}, {0.0, 1.0, 1.0}, {0.0, 1.0, 0.0}, {0.0, 0.0, 1.0}), {1.0, 0.1, 0.1});
-        objects.push_back(wall3);
+        auto wall3 = std::make_unique<Object>(std::make_unique<Quad>(float3{0.5, 0.5, -0.5}, float3{0.0, 1.0, 1.0}, float3{0.0, 1.0, 0.0}, float3{0.0, 0.0, 1.0}), float3{1.0, 0.1, 0.1});
+        m_objects.push_back(std::move(wall3));
 
-        Object *wall4 = new Object(new Quad({-0.5, 0.5, -0.5}, {1.0, 0.0, 1.0}, {1.0, 0.0, 0.0}, {0.0, 0.0, 1.0}), {1.0, 1.0, 1.0});
+        auto wall4 = std::make_unique<Object>(std::make_unique<Quad>(float3{-0.5, 0.5, -0.5}, float3{1.0, 0.0, 1.0}, float3{1.0, 0.0, 0.0}, float3{0.0, 0.0, 1.0}), float3{1.0, 1.0, 1.0});
         wall4->setInvisible(true);
-        objects.push_back(wall4);
+        m_objects.push_back(std::move(wall4));
 
-        Object *floor = new Object(new Quad({-0.5, 0.5, -0.5}, {1.0, 1.0, 0.0}, {1.0, 0.0, 0.0}, {0.0, 1.0, 0.0}), {1.0, 1.0, 1.0});
-        objects.push_back(floor);
+        auto floor = std::make_unique<Object>(std::make_unique<Quad>(float3{-0.5, 0.5, -0.5}, float3{1.0, 1.0, 0.0}, float3{1.0, 0.0, 0.0}, float3{0.0, 1.0, 0.0}), float3{1.0, 1.0, 1.0});
+        m_objects.push_back(std::move(floor));
 
-        Object *cieling = new Object(new Quad({-0.5, 0.5, 0.5}, {1.0, 1.0, 0.0}, {1.0, 0.0, 0.0}, {0.0, 1.0, 0.0}), {1.0, 1.0, 1.0});
-        objects.push_back(cieling);
+        auto cieling = std::make_unique<Object>(std::make_unique<Quad>(float3{-0.5, 0.5, 0.5}, float3{1.0, 1.0, 0.0}, float3{1.0, 0.0, 0.0}, float3{0.0, 1.0, 0.0}), float3{1.0, 1.0, 1.0});
+        m_objects.push_back(std::move(cieling));
 
-        Object *light = new Object(new Cube(), {7.0, 7.0, 7.0});
+        auto light = std::make_unique<Object>(std::make_unique<Cube>(), float3{7.0, 7.0, 7.0});
         light->setLight(true);
         light->scale({0.4, 0.4, 0.1});
         light->translate({0.0, 1.0, 0.52});
-        objects.push_back(light);
+        m_objects.push_back(std::move(light));
 
-        Object* lion = new Object(new Mesh("assets/lion05.obj"), {0.8, 0.8, 0.8});
+        auto lion = std::make_unique<Object>(std::make_unique<Mesh>("assets/lion05.obj"), float3{0.8, 0.8, 0.8});
         lion->scale({0.8, 0.8, 0.8});
         lion->rotate({1.0, 0.0, 0.0}, 90.0f);
         lion->translate({0.0, 1.2, -0.25});
-        objects.push_back(lion);
+        m_objects.push_back(std::move(lion));
     } else if (sceneIndex == 6) {
-        Object *wall1 = new Object(new Quad({-0.5, 1.5, -0.5}, {1.0, 0.0, 1.0}, {1.0, 0.0, 0.0}, {0.0, 0.0, 1.0}), {1.0, 1.0, 1.0});
+        auto wall1 = std::make_unique<Object>(std::make_unique<Quad>(float3{-0.5, 1.5, -0.5}, float3{1.0, 0.0, 1.0}, float3{1.0, 0.0, 0.0}, float3{0.0, 0.0, 1.0}), float3{1.0, 1.0, 1.0});
         wall1->setMirror(true);
-        objects.push_back(wall1);
+        m_objects.push_back(std::move(wall1));
 
-        Object *wall2 = new Object(new Quad({-0.5, 0.5, -0.5}, {0.0, 1.0, 1.0}, {0.0, 1.0, 0.0}, {0.0, 0.0, 1.0}), {0.1, 1.0, 0.1});
-        objects.push_back(wall2);
+        auto wall2 = std::make_unique<Object>(std::make_unique<Quad>(float3{-0.5, 0.5, -0.5}, float3{0.0, 1.0, 1.0}, float3{0.0, 1.0, 0.0}, float3{0.0, 0.0, 1.0}), float3{0.1, 1.0, 0.1});
+        m_objects.push_back(std::move(wall2));
 
-        Object *wall3 = new Object(new Quad({0.5, 0.5, -0.5}, {0.0, 1.0, 1.0}, {0.0, 1.0, 0.0}, {0.0, 0.0, 1.0}), {1.0, 0.1, 0.1});
-        objects.push_back(wall3);
+        auto wall3 = std::make_unique<Object>(std::make_unique<Quad>(float3{0.5, 0.5, -0.5}, float3{0.0, 1.0, 1.0}, float3{0.0, 1.0, 0.0}, float3{0.0, 0.0, 1.0}), float3{1.0, 0.1, 0.1});
+        m_objects.push_back(std::move(wall3));
 
-        Object *wall4 = new Object(new Quad({-0.5, 0.5, -0.5}, {1.0, 0.0, 1.0}, {1.0, 0.0, 0.0}, {0.0, 0.0, 1.0}), {1.0, 1.0, 1.0});
+        auto wall4 = std::make_unique<Object>(std::make_unique<Quad>(float3{-0.5, 0.5, -0.5}, float3{1.0, 0.0, 1.0}, float3{1.0, 0.0, 0.0}, float3{0.0, 0.0, 1.0}), float3{1.0, 1.0, 1.0});
         wall4->setInvisible(true);
         wall4->setMirror(true);
-        objects.push_back(wall4);
+        m_objects.push_back(std::move(wall4));
 
-        Object *floor = new Object(new Quad({-0.5, 0.5, -0.5}, {1.0, 1.0, 0.0}, {1.0, 0.0, 0.0}, {0.0, 1.0, 0.0}), {1.0, 1.0, 1.0});
-        objects.push_back(floor);
+        auto floor = std::make_unique<Object>(std::make_unique<Quad>(float3{-0.5, 0.5, -0.5}, float3{1.0, 1.0, 0.0}, float3{1.0, 0.0, 0.0}, float3{0.0, 1.0, 0.0}), float3{1.0, 1.0, 1.0});
+        m_objects.push_back(std::move(floor));
 
-        Object *cieling = new Object(new Quad({-0.5, 0.5, 0.5}, {1.0, 1.0, 0.0}, {1.0, 0.0, 0.0}, {0.0, 1.0, 0.0}), {1.0, 1.0, 1.0});
-        objects.push_back(cieling);
+        auto cieling = std::make_unique<Object>(std::make_unique<Quad>(float3{-0.5, 0.5, 0.5}, float3{1.0, 1.0, 0.0}, float3{1.0, 0.0, 0.0}, float3{0.0, 1.0, 0.0}), float3{1.0, 1.0, 1.0});
+        m_objects.push_back(std::move(cieling));
 
-        Object *light = new Object(new Cube(), {7.0, 7.0, 7.0});
+        auto light = std::make_unique<Object>(std::make_unique<Cube>(), float3{7.0, 7.0, 7.0});
         light->setLight(true);
         light->scale({0.4, 0.4, 0.1});
         light->translate({0.0, 1.0, 0.52});
-        objects.push_back(light);
+        m_objects.push_back(std::move(light));
 
-        Object* lion1 = new Object(new Mesh("assets/lion05.obj"), {0.8, 0.8, 0.8});
+        auto lion1 = std::make_unique<Object>(std::make_unique<Mesh>("assets/lion05.obj"), float3{0.8, 0.8, 0.8});
         lion1->scale({0.8, 0.8, 0.8});
         lion1->rotate({1.0, 0.0, 0.0}, 90.0f);
         lion1->rotate({0.0, 0.0, 1.0}, 90.0f);
         lion1->translate({-0.3, 1.0, -0.25});
-        objects.push_back(lion1);
+        m_objects.push_back(std::move(lion1));
 
-        Object* lion2 = new Object(new Mesh("assets/lion05.obj"), {0.8, 0.8, 0.8});
+        auto lion2 = std::make_unique<Object>(std::make_unique<Mesh>("assets/lion05.obj"), float3{0.8, 0.8, 0.8});
         lion2->scale({0.8, 0.8, 0.8});
         lion2->rotate({1.0, 0.0, 0.0}, 90.0f);
         lion2->rotate({0.0, 0.0, -1.0}, 90.0f);
         lion2->translate({0.3, 1.0, -0.25});
-        objects.push_back(lion2);
+        m_objects.push_back(std::move(lion2));
     }
 }
 
 
-std::vector<Object*> Scene::getObjects() {
-    return objects;
+const std::vector<std::unique_ptr<Object>>& Scene::getObjects() const noexcept {
+    return m_objects;
 }
 
 
-void Scene::render(Camera *camera, cv::Mat &image) {
-    for (int i = 0; i < camera->get_height(); ++i) {
-        for (int j = 0; j < camera->get_width(); ++j) {
-            if (j == 0 and i % 10 == 0) {
-                std::cout << "\rRendering row " << i << " of " << camera->get_height() << std::flush;
+Scene::~Scene() = default;
+
+
+void Scene::render(const Camera& camera, cv::Mat& image) const {
+    for (int i = 0; i < camera.getHeight(); ++i) {
+        for (int j = 0; j < camera.getWidth(); ++j) {
+            if (j == 0 && i % 10 == 0) {
+                std::cout << "\rRendering row " << i << " of " << camera.getHeight() << std::flush;
             }
-            ray ray = camera->get_ray(i, j);
+            const Ray ray = camera.getRay(i, j);
             float rayLength = FLOAT_MAX;
             float3 color = BC_COLOR_2;
 
             HitInfo hit;
-            hit.renderDepth = 0;
-            hit.actualDepth = 0;
-            Object *closestObject = nullptr;
+            Object* closestObject = nullptr;
             float3 position;
             float3 normal;
-            for (Object *object : objects) {
+            for (const auto& object : m_objects) {
                 if (object->isInvisible()) continue;
 
                 object->intersect(ray, hit);
@@ -160,7 +165,7 @@ void Scene::render(Camera *camera, cv::Mat &image) {
                     rayLength = hit.distance;
                     position = hit.position;
                     normal = hit.normal;
-                    closestObject = object;
+                    closestObject = object.get();
                 }
             }
 
@@ -172,15 +177,8 @@ void Scene::render(Camera *camera, cv::Mat &image) {
                 color = closestObject->getRayColor(position, normal, ray.direction, hit.renderDepth, hit.actualDepth);
                 // color = {0.0, 0.0, 1.0};
             }
-            image.at<cv::Vec3b>(i, j) = cv::Vec3b(color.x*255, color.y*255, color.z*255);
+            image.at<cv::Vec3b>(i, j) = cv::Vec3b(static_cast<uchar>(color.x * 255), static_cast<uchar>(color.y * 255), static_cast<uchar>(color.z * 255));
         }
     }
     std::cout << std::endl;
-}
-
-
-Scene::~Scene() {
-    for (auto object : objects) {
-        delete object;
-    }
 }

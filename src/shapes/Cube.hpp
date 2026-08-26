@@ -6,21 +6,20 @@
 #include "Shape.hpp"
 
 
-class Cube: public Shape {
-    
+class Cube : public Shape {
+
     private:
-        Mesh *mesh;
+
+        Mesh m_mesh;
 
     public:
+
         Cube();
         Cube(float3 base, float3 v1, float3 v2, float3 v3);
-        bool intersect(const ray& ray, HitInfo& globalHit);
-        void translate(float3 translation);
-        void rotate(float3 axis, float angle);
-        void scale(float3 scaling);
-        ~Cube();
+        bool intersect(const Ray& ray, HitInfo& globalHit) override;
+        void translate(float3 translation) override;
+        void rotate(float3 axis, float angle) override;
+        void scale(float3 scaling) override;
+        ~Cube() override = default;
 
 };
-
-
-void printStats(const std::unique_ptr<BVHNode>& root);
